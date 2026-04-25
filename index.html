@@ -374,7 +374,7 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 // CONFIGURATION
 // ============================================================
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbxbfOEwZu-4wdkzq-hjb87GvY8cO1mSQw7Qwr9Ydxo2N-fMJpt3OV1JPfRC-utmqg/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbyvupmj8wRWEykSKgFuH3RvFzq4mROIh49zOOlfMZGdYQA7_nHpf6WrOycl58yyye35/exec',
     LATE_THRESHOLD: 15, // minutes after shift start
     SHIFT_START: '09:00',
     SHIFT_END: '18:00',
@@ -411,6 +411,60 @@ const U = {
 // API SERVICE (Google Apps Script Backend)
 // ============================================================
 const API = {
+    // Robust GAS fetch — handles Google redirect pages + uses form-urlencoded
+    async gasFetch(payload){
+        const json = JSON.stringify(payload);
+        console.log('[HRMIS] Sending:', json);
+
+        // Method 1: URLSearchParams (application/x-www-form-urlencoded) — most reliable with GAS
+        try {
+            const params = new URLSearchParams();
+            params.append('payload', json);
+            const res = await fetch(CONFIG.GAS_URL, {
+                method: 'POST',
+                body: params,
+                redirect: 'follow'
+            });
+            const text = await res.text();
+            // Check if Google returned a redirect HTML page instead of JSON
+            if (text.trim().startsWith('<') || text.includes('window.location')) {
+                console.warn('[HRMIS] Got HTML redirect, trying text/plain fallback...');
+                // Method 2: text/plain fallback
+                const res2 = await fetch(CONFIG.GAS_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'text/plain'},
+                    body: json,
+                    redirect: 'follow'
+                });
+                const text2 = await res2.text();
+                console.log('[HRMIS] Fallback response:', text2);
+                if (text2.trim().startsWith('{')) return JSON.parse(text2);
+            } else {
+                console.log('[HRMIS] Response:', text);
+                if (text.trim().startsWith('{')) return JSON.parse(text);
+            }
+        } catch(e) {
+            console.error('[HRMIS] URLSearchParams method failed:', e);
+        }
+
+        // Method 2: text/plain direct
+        try {
+            const res = await fetch(CONFIG.GAS_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'text/plain'},
+                body: json,
+                redirect: 'follow'
+            });
+            const text = await res.text();
+            console.log('[HRMIS] text/plain response:', text);
+            if (text.trim().startsWith('{')) return JSON.parse(text);
+        } catch(e) {
+            console.error('[HRMIS] text/plain method failed:', e);
+        }
+
+        return { success: false, error: 'Network error — could not reach server' };
+    },
+
     async call(action, data={}){
         const body = { action, ...data };
         // Only attach session auth after login (skip for login action)
@@ -420,13 +474,7 @@ const API = {
             body.role = App.state.role;
         }
         try {
-            const res = await fetch(CONFIG.GAS_URL, {
-                method: 'POST',
-                headers: {'Content-Type':'text/plain'},
-                body: JSON.stringify(body)
-            });
-            const text = await res.text();
-            return JSON.parse(text);
+            return await this.gasFetch(body);
         } catch(e) {
             console.error('API Error:', e);
             Toast.error('Network error. Please check your connection.');
@@ -434,7 +482,16 @@ const API = {
         }
     },
 
-    async login(empID, pass){ return await this.call('login', { empID, password: pass }); },
+    async login(empID, pass){
+        const payload = { action: 'login', empID: empID, password: pass };
+        try {
+            return await this.gasFetch(payload);
+        } catch(e) {
+            console.error('Login API Error:', e);
+            Toast.error('Network error. Please check your connection.');
+            return { success: false, error: 'Network error' };
+        }
+    },
     async getDashboard(){ return await this.call('getDashboard'); },
     async getEmployees(){ return await this.call('getEmployees'); },
     async saveEmployee(data){ return await this.call('saveEmployee', { employeeData: data }); },
@@ -569,23 +626,30 @@ const App = {
         e.preventDefault();
         const empID = U.val('loginEmpID');
         const pass = U.val('loginPass');
-        if(!empID || !pass) return;
+        console.log('[HRMIS Login] empID:', JSON.stringify(empID), 'pass length:', pass ? pass.length : 0);
+        if(!empID || !pass){
+            U.id('loginError').textContent = 'Please enter both Employee ID and Password';
+            return;
+        }
         const btn = U.id('loginBtn');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
         btn.disabled = true;
         U.id('loginError').textContent = '';
         try {
             const res = await API.login(empID, pass);
+            console.log('[HRMIS Login] API response:', res);
             if(res.success){
-                this.state = { ...this.state, token: res.token, empID: res.empID, role: res.role, name: res.name };
-                localStorage.setItem('hrmis_session', JSON.stringify({ token:res.token, empID:res.empID, role:res.role, name:res.name }));
+                const d = res.data || res; // Login data may be nested under .data
+                this.state = { ...this.state, token: d.token, empID: d.empID, role: d.role, name: d.name };
+                localStorage.setItem('hrmis_session', JSON.stringify({ token:d.token, empID:d.empID, role:d.role, name:d.name }));
                 this.showApp();
                 this.navigate('dashboard');
-                Toast.success('Welcome, ' + res.name + '!');
+                Toast.success('Welcome, ' + d.name + '!');
             } else {
                 U.id('loginError').textContent = res.error || 'Invalid credentials';
             }
         } catch(e){
+            console.error('[HRMIS Login] Exception:', e);
             U.id('loginError').textContent = 'Connection failed';
         }
         btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
