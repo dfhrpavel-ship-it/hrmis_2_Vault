@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#6C63FF">
+<title>Enterprise HRMIS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script>window.ChartJsLoaded=false;window.QrLoaded=false;window.PdfLoaded=false;</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onload="window.ChartJsLoaded=true" onerror="console.warn('Chart.js CDN failed')"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" onload="window.QrLoaded=true" onerror="console.warn('html5-qrcode CDN failed')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" onload="window.PdfLoaded=true" onerror="console.warn('html2pdf.js CDN failed')"></script>
+<style>
+:root{
+--primary:#6C63FF;--primary-dark:#5a52d5;--primary-light:#8b85ff;
+--secondary:#00BCD4;--secondary-dark:#0097a7;
+--accent:#FF6B6B;--accent2:#FFA726;
+--success:#4CAF50;--warning:#FF9800;--error:#F44336;--info:#2196F3;
+--bg:#f0f2f5;--card:#fff;--text:#1a1a2e;--text-light:#6b7280;--text-muted:#9ca3af;
+--border:#e5e7eb;--shadow:0 2px 12px rgba(0,0,0,.08);
+--glass:rgba(255,255,255,.7);--glass-border:rgba(255,255,255,.3);
+--radius:12px;--radius-lg:16px;--radius-xl:20px;
+--sidebar-w:260px;--bottom-nav-h:64px;
+--transition:all .3s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:14px;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:3px}
+a{text-decoration:none;color:inherit}
+input,select,textarea,button{font-family:inherit;font-size:inherit;outline:none}
+img{max-width:100%}
+
+/* ========== LOADING SCREEN ========== */
+#appLoader{position:fixed;inset:0;background:linear-gradient(135deg,#6C63FF,#8b85ff);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10000;transition:opacity .5s}
+#appLoader.hidden{opacity:0;pointer-events:none}
+.loader-spinner{width:48px;height:48px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+.loader-text{color:#fff;margin-top:16px;font-size:1.1rem;font-weight:500}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ========== LOGIN SCREEN ========== */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);display:flex;align-items:center;justify-content:center;z-index:9000;transition:opacity .4s,transform .4s}
+#loginScreen.hidden{opacity:0;transform:scale(1.05);pointer-events:none}
+.login-container{width:90%;max-width:400px;padding:32px;border-radius:var(--radius-xl);background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo i{font-size:3rem;color:var(--primary);margin-bottom:8px;display:block}
+.login-logo h1{font-size:1.5rem;color:#fff;font-weight:700}
+.login-logo p{color:rgba(255,255,255,.6);font-size:.85rem;margin-top:4px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;color:rgba(255,255,255,.8);margin-bottom:6px;font-size:.85rem;font-weight:500}
+.form-input{width:100%;padding:12px 16px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:.95rem;transition:var(--transition)}
+.form-input:focus{border-color:var(--primary);background:rgba(255,255,255,.15);box-shadow:0 0 0 3px rgba(108,99,255,.2)}
+.form-input::placeholder{color:rgba(255,255,255,.4)}
+.form-input.light-input{background:rgba(0,0,0,.15);border-color:rgba(255,255,255,.25)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius);border:none;cursor:pointer;font-weight:600;font-size:.9rem;transition:var(--transition);white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 15px rgba(108,99,255,.4)}
+.btn-primary:hover{background:var(--primary-dark);box-shadow:0 6px 20px rgba(108,99,255,.5)}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--error);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-secondary{background:var(--secondary);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-sm{padding:8px 16px;font-size:.8rem;border-radius:8px}
+.btn-full{width:100%}
+.btn-icon{width:36px;height:36px;padding:0;border-radius:50%;font-size:.9rem}
+.login-btn{width:100%;padding:14px;font-size:1rem;margin-top:8px}
+.login-error{color:var(--accent);text-align:center;font-size:.85rem;margin-top:12px;min-height:20px}
+
+/* ========== MAIN APP ========== */
+#mainApp{display:none;min-height:100vh}
+#mainApp.active{display:flex}
+
+/* ========== SIDEBAR (Desktop) ========== */
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:linear-gradient(180deg,#1a1a2e,#16213e);color:#fff;z-index:1000;display:flex;flex-direction:column;transition:transform .3s;overflow-y:auto}
+.sidebar-header{padding:20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-header i{font-size:1.8rem;color:var(--primary-light)}
+.sidebar-header h2{font-size:1.1rem;font-weight:700}
+.sidebar-header span{font-size:.7rem;color:rgba(255,255,255,.5)}
+.sidebar-nav{flex:1;padding:12px 0}
+.nav-section{padding:8px 20px;font-size:.7rem;text-transform:uppercase;color:rgba(255,255,255,.35);letter-spacing:1px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.7);cursor:pointer;transition:var(--transition);font-size:.9rem;border-left:3px solid transparent;margin:1px 0}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{background:rgba(108,99,255,.2);color:var(--primary-light);border-left-color:var(--primary-light)}
+.nav-item i{width:20px;text-align:center;font-size:.95rem}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.sidebar-user{display:flex;align-items:center;gap:10px}
+.sidebar-user .avatar{width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+.sidebar-user .info{flex:1}
+.sidebar-user .info .name{font-size:.85rem;font-weight:600}
+.sidebar-user .info .role{font-size:.7rem;color:rgba(255,255,255,.5)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999}
+
+/* ========== MAIN CONTENT ========== */
+.main-content{flex:1;margin-left:var(--sidebar-w);min-height:100vh;padding-bottom:calc(var(--bottom-nav-h) + 20px);transition:margin .3s}
+.page-header{padding:20px 24px 12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.page-header h1{font-size:1.4rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.page-header h1 i{color:var(--primary)}
+.page-body{padding:8px 24px 24px}
+
+/* ========== BOTTOM NAV (Mobile) ========== */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-nav-h);background:#fff;border-top:1px solid var(--border);display:flex;z-index:1000;box-shadow:0 -2px 10px rgba(0,0,0,.05)}
+.bottom-nav .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text-muted);font-size:.65rem;cursor:pointer;transition:var(--transition);border-left:none;padding:4px}
+.bottom-nav .nav-item i{font-size:1.15rem}
+.bottom-nav .nav-item.active{color:var(--primary)}
+.bottom-nav .nav-item:active{background:rgba(108,99,255,.05)}
+
+/* ========== CARDS ========== */
+.card{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;transition:var(--transition);border:1px solid var(--border)}
+.card:hover{box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.card-header h3{font-size:1.05rem;font-weight:600;display:flex;align-items:center;gap:8px}
+.card-header h3 i{color:var(--primary);font-size:.9rem}
+
+/* ========== STAT CARDS ========== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border-left:4px solid var(--primary);position:relative;overflow:hidden;transition:var(--transition)}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:60px;height:60px;border-radius:50%;opacity:.08}
+.stat-card.blue{border-left-color:var(--info)} .stat-card.blue::after{background:var(--info)}
+.stat-card.green{border-left-color:var(--success)} .stat-card.green::after{background:var(--success)}
+.stat-card.orange{border-left-color:var(--warning)} .stat-card.orange::after{background:var(--warning)}
+.stat-card.red{border-left-color:var(--error)} .stat-card.red::after{background:var(--error)}
+.stat-card.purple{border-left-color:var(--primary)} .stat-card.purple::after{background:var(--primary)}
+.stat-card.cyan{border-left-color:var(--secondary)} .stat-card.cyan::after{background:var(--secondary)}
+.stat-card .stat-icon{font-size:1.5rem;margin-bottom:8px;opacity:.7}
+.stat-card .stat-value{font-size:1.5rem;font-weight:700;line-height:1}
+.stat-card .stat-label{font-size:.75rem;color:var(--text-light);margin-top:4px}
+
+/* ========== TABLES ========== */
+.table-container{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead{background:var(--bg)}
+th{padding:12px 14px;text-align:left;font-weight:600;color:var(--text-light);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+td{padding:10px 14px;border-top:1px solid var(--border)}
+tbody tr{transition:var(--transition)}
+tbody tr:hover{background:rgba(108,99,255,.03)}
+
+/* ========== BADGES ========== */
+.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:.7rem;font-weight:600;white-space:nowrap}
+.badge-success{background:rgba(76,175,80,.1);color:var(--success)}
+.badge-warning{background:rgba(255,152,0,.1);color:var(--warning)}
+.badge-danger{background:rgba(244,67,54,.1);color:var(--error)}
+.badge-info{background:rgba(33,150,243,.1);color:var(--info)}
+.badge-primary{background:rgba(108,99,255,.1);color:var(--primary)}
+
+/* ========== MODAL ========== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:5000;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.modal{background:var(--card);border-radius:var(--radius-xl);width:100%;max-width:600px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:modalIn .3s ease}
+.modal.modal-lg{max-width:800px}
+.modal.modal-xl{max-width:1000px}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:none}}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h2{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.modal-header h2 i{color:var(--primary)}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--text-light);transition:var(--transition)}
+.modal-close:hover{background:var(--error);color:#fff}
+.modal-body{padding:24px;overflow-y:auto;flex:1}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+/* ========== FORMS ========== */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--text-light);margin-bottom:5px}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-size:.9rem;transition:var(--transition)}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.form-input-sm{padding:8px 12px;font-size:.85rem}
+.form-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.85rem}
+.form-check input[type="checkbox"]{width:18px;height:18px;accent-color:var(--primary)}
+.form-file{position:relative;display:block}
+.form-file input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:1}
+.form-file .file-label{display:flex;align-items:center;gap:8px;padding:12px 16px;border:2px dashed var(--border);border-radius:var(--radius);color:var(--text-light);text-align:center;transition:var(--transition)}
+.form-file:hover .file-label{border-color:var(--primary);color:var(--primary)}
+
+/* ========== STEPPER ========== */
+.stepper{display:flex;align-items:center;justify-content:center;margin-bottom:24px;padding:0 16px;flex-wrap:wrap;gap:4px}
+.step{display:flex;align-items:center;gap:6px}
+.step-number{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;background:var(--border);color:var(--text-muted);transition:var(--transition);flex-shrink:0}
+.step.active .step-number{background:var(--primary);color:#fff}
+.step.done .step-number{background:var(--success);color:#fff}
+.step-label{font-size:.7rem;color:var(--text-muted);display:none}
+.step.active .step-label,.step.done .step-label{color:var(--text)}
+.step-line{width:20px;height:2px;background:var(--border);margin:0 4px;flex-shrink:0}
+.step.done+.step-line{background:var(--success)}
+
+/* ========== TOAST ========== */
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:14px 20px;border-radius:var(--radius);color:#fff;font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:toastIn .3s ease;min-width:280px;max-width:400px}
+.toast.success{background:var(--success)}.toast.error{background:var(--error)}
+.toast.warning{background:var(--warning)}.toast.info{background:var(--info)}
+.toast.removing{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(100px)}}
+
+/* ========== LOADING SPINNER ========== */
+.spinner-overlay{position:fixed;inset:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:8000;backdrop-filter:blur(4px)}
+.spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
+
+/* ========== CHART CONTAINER ========== */
+.chart-container{position:relative;width:100%;max-height:300px;margin:auto}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:20px}
+
+/* ========== ATTENDANCE ========== */
+.attendance-clock{text-align:center;padding:30px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:var(--radius-xl);color:#fff;margin-bottom:20px}
+.attendance-clock .time{font-size:2.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.attendance-clock .date{opacity:.8;margin-top:4px;font-size:.9rem}
+.attendance-clock .status{margin-top:12px;font-size:1rem;font-weight:600}
+
+/* ========== TABS ========== */
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto;padding-bottom:0}
+.tab{padding:10px 20px;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--text-light);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:var(--transition)}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* ========== SEARCH & FILTER ========== */
+.search-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--card);margin-bottom:16px;transition:var(--transition)}
+.search-bar:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+.search-bar i{color:var(--text-muted)}
+.search-bar input{flex:1;border:none;background:none;font-size:.9rem;color:var(--text)}
+.search-bar input:focus{outline:none}
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar select{padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--card);font-size:.85rem}
+
+/* ========== EMPTY STATE ========== */
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-muted)}
+.empty-state i{font-size:3rem;margin-bottom:12px;opacity:.4}
+.empty-state p{font-size:.9rem}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:768px){
+.sidebar{transform:translateX(-100%)}
+.sidebar.open{transform:none}
+.sidebar-overlay.open{display:block}
+.main-content{margin-left:0!important}
+.page-header{padding:16px 16px 8px}
+.page-body{padding:8px 16px 16px}
+.page-header h1{font-size:1.15rem}
+.form-row{grid-template-columns:1fr}
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.charts-grid{grid-template-columns:1fr}
+.modal{max-width:100%;max-height:95vh;border-radius:var(--radius-lg) var(--radius-lg) 0 0;margin-top:auto}
+.modal-overlay{align-items:flex-end;padding:0}
+.modal-header{padding:16px 20px}
+.modal-body{padding:20px}
+.modal-footer{padding:12px 20px}
+.toast-container{top:10px;right:10px;left:10px}
+.toast{min-width:auto}
+.step-label{display:none!important}
+.nav-section{padding:6px 16px;font-size:.65rem}
+.nav-item{padding:10px 16px;font-size:.85rem}
+.attendance-clock .time{font-size:2rem}
+}
+@media(min-width:769px){
+.bottom-nav{display:none}
+}
+
+/* ========== MISC ========== */
+.text-center{text-align:center}.text-right{text-align:right}
+.text-success{color:var(--success)}.text-danger{color:var(--error)}.text-warning{color:var(--warning)}.text-info{color:var(--info)}.text-primary{color:var(--primary)}.text-muted{color:var(--text-muted)}
+.mt-1{margin-top:8px}.mt-2{margin-top:16px}.mt-3{margin-top:24px}
+.mb-1{margin-bottom:8px}.mb-2{margin-bottom:16px}.mb-3{margin-bottom:24px}
+.flex{display:flex}.flex-between{display:flex;align-items:center;justify-content:space-between}.flex-center{display:flex;align-items:center;justify-content:center}.flex-gap{display:flex;gap:8px;align-items:center}
+.gap-2{gap:16px}.flex-wrap{flex-wrap:wrap}
+.w-full{width:100%}.hidden{display:none!important}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:.8rem}
+.avatar-sm{width:28px;height:28px;font-size:.7rem}
+.avatar-lg{width:48px;height:48px;font-size:1.1rem}
+.tag{display:inline-block;padding:3px 8px;border-radius:4px;font-size:.7rem;font-weight:600;background:var(--bg);color:var(--text-light)}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-bar .fill{height:100%;background:var(--primary);border-radius:3px;transition:width .5s}
+.notice-card{border-left:4px solid var(--primary);padding:16px;background:var(--card);border-radius:0 var(--radius) var(--radius) 0;margin-bottom:12px;box-shadow:var(--shadow)}
+.ticket-card{padding:14px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;transition:var(--transition)}
+.ticket-card:hover{border-color:var(--primary);box-shadow:0 2px 8px rgba(108,99,255,.1)}
+.salary-head-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;background:var(--card)}
+.salary-head-item .drag-handle{cursor:grab;color:var(--text-muted)}
+.salary-head-item .head-info{flex:1}
+.salary-head-item .head-name{font-weight:600;font-size:.9rem}
+.salary-head-item .head-type{font-size:.75rem;color:var(--text-light)}
+.checklist-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.checklist-item:last-child{border-bottom:none}
+.checklist-item input[type="checkbox"]{width:20px;height:20px;accent-color:var(--primary)}
+.qr-scanner-container{width:100%;max-width:350px;margin:16px auto;border-radius:var(--radius);overflow:hidden;border:2px solid var(--primary)}
+#qr-reader{width:100%}
+</style>
+</head>
+<body>
+
+<!-- ==================== APP LOADER ==================== -->
+<div id="appLoader"><div class="loader-spinner"></div><div class="loader-text">Loading HRMIS...</div></div>
+
+<!-- ==================== TOAST CONTAINER ==================== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="loginScreen">
+<div class="login-container">
+<div class="login-logo"><i class="fas fa-building"></i><h1>Enterprise HRMIS</h1><p>Human Resource Management Information System</p></div>
+<form id="loginForm" onsubmit="return App.login(event)">
+<div class="form-group">
+<label><i class="fas fa-id-badge"></i> Employee ID</label>
+<input type="text" class="form-input" id="loginEmpID" placeholder="Enter your Employee ID" required autocomplete="username">
+</div>
+<div class="form-group">
+<label><i class="fas fa-lock"></i> Password</label>
+<input type="password" class="form-input" id="loginPass" placeholder="Enter your password" required autocomplete="current-password">
+</div>
+<button type="submit" class="btn btn-primary login-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+<div class="login-error" id="loginError"></div>
+</form>
+</div>
+</div>
+
+<!-- ==================== MAIN APPLICATION ==================== -->
+<div id="mainApp">
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="App.toggleSidebar(false)"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<i class="fas fa-building"></i>
+<div><h2>HRMIS</h2><span>Enterprise Edition</span></div>
+</div>
+<div class="sidebar-nav" id="sidebarNav"></div>
+<div class="sidebar-footer">
+<div class="sidebar-user">
+<div class="avatar" id="sidebarAvatar">A</div>
+<div class="info">
+<div class="name" id="sidebarName">Admin User</div>
+<div class="role" id="sidebarRole">Administrator</div>
+</div>
+<button class="btn-icon" style="background:rgba(255,255,255,.1);color:#fff;border:none;cursor:pointer" onclick="App.logout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+</div>
+</div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+<div id="pageContent"></div>
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav"></nav>
+</div>
+
+<!-- ==================== GENERIC MODAL ==================== -->
+<div class="modal-overlay" id="modalOverlay">
+<div class="modal" id="modalBox">
+<div class="modal-header">
+<h2 id="modalTitle"><i class="fas fa-info-circle"></i> <span>Modal</span></h2>
+<button class="modal-close" onclick="Modal.close()"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-body" id="modalBody"></div>
+<div class="modal-footer" id="modalFooter"></div>
+</div>
+</div>
+
+<!-- ==================== CONFIRM DIALOG ==================== -->
+<div class="modal-overlay" id="confirmOverlay">
+<div class="modal" style="max-width:420px">
+<div class="modal-header"><h2><i class="fas fa-exclamation-triangle text-warning"></i> <span>Confirm</span></h2><button class="modal-close" onclick="Confirm.close()"><i class="fas fa-times"></i></button></div>
+<div class="modal-body" id="confirmBody" style="text-align:center;padding:24px"></div>
+<div class="modal-footer" id="confirmFooter"></div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const CONFIG = {
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbxbfOEwZu-4wdkzq-hjb87GvY8cO1mSQw7Qwr9Ydxo2N-fMJpt3OV1JPfRC-utmqg/exec',
+    LATE_THRESHOLD: 15, // minutes after shift start
+    SHIFT_START: '09:00',
+    SHIFT_END: '18:00',
+};
+
+// ============================================================
+// UTILITY HELPERS
+// ============================================================
+const U = {
+    $(sel){ return document.querySelector(sel) },
+    $$(sel){ return document.querySelectorAll(sel) },
+    id(id){ return document.getElementById(id) },
+    html(el, html){ if(typeof el==='string') el=U.id(el); if(el) el.innerHTML=html; },
+    val(id){ const el=U.id(id); return el ? el.value.trim() : ''; },
+    setVal(id, v){ const el=U.id(id); if(el) el.value=v; },
+    genId(){ return Date.now().toString(36) + Math.random().toString(36).substr(2,5) },
+    formatCurrency(n){ return '৳' + Number(n||0).toLocaleString('en-BD', {minimumFractionDigits:0, maximumFractionDigits:2}) },
+    formatDate(d){ if(!d) return '-'; const dt=new Date(d); return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) },
+    formatTime(d){ if(!d) return '-'; const dt=new Date(d); return dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) },
+    formatDateTime(d){ return U.formatDate(d)+' '+U.formatTime(d) },
+    today(){ return new Date().toISOString().split('T')[0] },
+    now(){ return new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) },
+    getMonthYear(){ const d=new Date(); return d.toLocaleDateString('en-GB',{month:'short',year:'numeric'}) },
+    daysInMonth(m,y){ return new Date(y,m+1,0).getDate() },
+    escHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML },
+    debounce(fn, ms){ let t; return function(...a){ clearTimeout(t); t=setTimeout(()=>fn.apply(this,a),ms) } },
+    timeDiffMin(start, end){
+        const [sh,sm]=start.split(':').map(Number), [eh,em]=end.split(':').map(Number);
+        return (eh*60+em)-(sh*60+sm);
+    }
+};
+
+// ============================================================
+// API SERVICE (Google Apps Script Backend)
+// ============================================================
+const API = {
+    async call(action, data={}){
+        const body = { action, ...data, token: App.state.token, empID: App.state.empID, role: App.state.role };
+        try {
+            const res = await fetch(CONFIG.GAS_URL, {
+                method: 'POST',
+                headers: {'Content-Type':'text/plain'},
+                body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            return JSON.parse(text);
+        } catch(e) {
+            console.error('API Error:', e);
+            Toast.error('Network error. Please check your connection.');
+            return { success: false, error: 'Network error' };
+        }
+    },
+
+    async login(empID, pass){ return await this.call('login', { empID, password: pass }); },
+    async getDashboard(){ return await this.call('getDashboard'); },
+    async getEmployees(){ return await this.call('getEmployees'); },
+    async saveEmployee(data){ return await this.call('saveEmployee', { employeeData: data }); },
+    async getAttendance(filters){ return await this.call('getAttendance', filters||{}); },
+    async checkIn(data){ return await this.call('checkIn', data); },
+    async checkOut(recordID){ return await this.call('checkOut', { recordID }); },
+    async getLeaves(){ return await this.call('getLeaves'); },
+    async saveLeave(data){ return await this.call('saveLeave', { leaveData: data }); },
+    async updateLeaveStatus(leaveID, status){ return await this.call('updateLeaveStatus', { leaveID, status }); },
+    async getSalaryStructure(){ return await this.call('getSalaryStructure'); },
+    async saveSalaryStructure(data){ return await this.call('saveSalaryStructure', { structureData: data }); },
+    async getPayroll(monthYear){ return await this.call('getPayroll', { monthYear: monthYear || U.getMonthYear() }); },
+    async generatePayroll(monthYear){ return await this.call('generatePayroll', { monthYear }); },
+    async getLoans(){ return await this.call('getLoans'); },
+    async saveLoan(data){ return await this.call('saveLoan', { loanData: data }); },
+    async updateLoanStatus(loanID, status){ return await this.call('updateLoanStatus', { loanID, status }); },
+    async getPerformance(){ return await this.call('getPerformance'); },
+    async savePerformance(data){ return await this.call('savePerformance', { perfData: data }); },
+    async getDailyTasks(){ return await this.call('getDailyTasks'); },
+    async saveTask(data){ return await this.call('saveTask', { taskData: data }); },
+    async updateTask(taskID, completed){ return await this.call('updateTask', { taskID, isCompleted: completed }); },
+    async getNotices(){ return await this.call('getNotices'); },
+    async saveNotice(data){ return await this.call('saveNotice', { noticeData: data }); },
+    async deleteNotice(noticeID){ return await this.call('deleteNotice', { noticeID }); },
+    async getTickets(){ return await this.call('getTickets'); },
+    async saveTicket(data){ return await this.call('saveTicket', { ticketData: data }); },
+    async replyTicket(ticketID, reply){ return await this.call('replyTicket', { ticketID, reply }); },
+    async updateTicketStatus(ticketID, status){ return await this.call('updateTicketStatus', { ticketID, status }); },
+    async getClearance(){ return await this.call('getClearance'); },
+    async saveClearance(data){ return await this.call('saveClearance', { clearanceData: data }); },
+    async uploadFile(fileName, base64Data, mimeType, folder){ return await this.call('uploadFile', { fileName, base64Data, mimeType, folder }); },
+    async getPromotions(){ return await this.call('getPromotions'); },
+    async savePromotion(data){ return await this.call('savePromotion', { promoData: data }); }
+};
+
+function getEmpName(empID){ return empID; /* Name resolved by backend */ }
+
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+const Toast = {
+    show(msg, type='info'){
+        const c = U.id('toastContainer');
+        const icons = { success:'fa-check-circle', error:'fa-times-circle', warning:'fa-exclamation-circle', info:'fa-info-circle' };
+        const t = document.createElement('div');
+        t.className = `toast ${type}`;
+        t.innerHTML = `<i class="fas ${icons[type]}"></i><span>${msg}</span>`;
+        c.appendChild(t);
+        setTimeout(()=>{ t.classList.add('removing'); setTimeout(()=>t.remove(), 300) }, 3500);
+    },
+    success(msg){ this.show(msg, 'success') },
+    error(msg){ this.show(msg, 'error') },
+    warning(msg){ this.show(msg, 'warning') },
+    info(msg){ this.show(msg, 'info') }
+};
+
+// ============================================================
+// LOADING SPINNER
+// ============================================================
+const Loading = {
+    show(){ let el = U.id('globalSpinner'); if(!el){ el=document.createElement('div'); el.id='globalSpinner'; el.className='spinner-overlay'; el.innerHTML='<div class="spinner"></div>'; document.body.appendChild(el); } el.style.display='flex'; },
+    hide(){ const el = U.id('globalSpinner'); if(el) el.style.display='none'; }
+};
+
+// ============================================================
+// MODAL
+// ============================================================
+const Modal = {
+    open(title, bodyHtml, footerHtml='', size=''){
+        U.id('modalTitle').innerHTML = title;
+        U.id('modalBody').innerHTML = bodyHtml;
+        U.id('modalFooter').innerHTML = footerHtml;
+        const box = U.id('modalBox');
+        box.className = 'modal' + (size ? ' modal-'+size : '');
+        U.id('modalOverlay').classList.add('active');
+    },
+    close(){ U.id('modalOverlay').classList.remove('active'); },
+    setTitle(t){ U.id('modalTitle').innerHTML = t; },
+    setBody(h){ U.id('modalBody').innerHTML = h; },
+    setFooter(h){ U.id('modalFooter').innerHTML = h; }
+};
+
+// ============================================================
+// CONFIRM DIALOG
+// ============================================================
+const Confirm = {
+    open(msg, onYes, onNo=null){
+        U.id('confirmBody').innerHTML = `<i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--warning);margin-bottom:12px"></i><p style="font-size:1rem">${msg}</p>`;
+        U.id('confirmFooter').innerHTML = `<button class="btn btn-outline btn-sm" onclick="Confirm.close();${onNo?'('+onNo.toString()+')()':''}">Cancel</button><button class="btn btn-primary btn-sm" onclick="Confirm.close();(${onYes.toString()})()">Confirm</button>`;
+        U.id('confirmOverlay').classList.add('active');
+    },
+    close(){ U.id('confirmOverlay').classList.remove('active'); }
+};
+
+// ============================================================
+// APP STATE & CORE
+// ============================================================
+const App = {
+    state: { token:null, empID:null, role:null, name:null, currentPage:'dashboard', charts:{} },
+
+    init(){
+        const saved = localStorage.getItem('hrmis_session');
+        if(saved){
+            try {
+                const s = JSON.parse(saved);
+                if(s.token && s.empID){
+                    Object.assign(this.state, s);
+                    this.showApp();
+                    this.navigate('dashboard');
+                    return;
+                }
+            } catch(e){}
+        }
+        this.showLogin();
+    },
+
+    showLogin(){
+        U.id('appLoader').classList.add('hidden');
+        U.id('loginScreen').classList.remove('hidden');
+        U.id('mainApp').classList.remove('active');
+    },
+
+    showApp(){
+        U.id('appLoader').classList.add('hidden');
+        U.id('loginScreen').classList.add('hidden');
+        U.id('mainApp').classList.add('active');
+        this.buildNavigation();
+        this.updateUserDisplay();
+    },
+
+    async login(e){
+        e.preventDefault();
+        const empID = U.val('loginEmpID');
+        const pass = U.val('loginPass');
+        if(!empID || !pass) return;
+        const btn = U.id('loginBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+        btn.disabled = true;
+        U.id('loginError').textContent = '';
+        try {
+            const res = await API.login(empID, pass);
+            if(res.success){
+                this.state = { ...this.state, token: res.token, empID: res.empID, role: res.role, name: res.name };
+                localStorage.setItem('hrmis_session', JSON.stringify({ token:res.token, empID:res.empID, role:res.role, name:res.name }));
+                this.showApp();
+                this.navigate('dashboard');
+                Toast.success('Welcome, ' + res.name + '!');
+            } else {
+                U.id('loginError').textContent = res.error || 'Invalid credentials';
+            }
+        } catch(e){
+            U.id('loginError').textContent = 'Connection failed';
+        }
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        btn.disabled = false;
+    },
+
+    logout(){
+        localStorage.removeItem('hrmis_session');
+        this.state = { token:null, empID:null, role:null, name:null, currentPage:'dashboard', charts:{} };
+        U.id('loginPass').value = '';
+        this.showLogin();
+    },
+
+    buildNavigation(){
+        const isAdmin = this.state.role === 'Admin';
+        const adminNav = [
+            { section:'MAIN' },
+            { id:'dashboard', icon:'fa-tachometer-alt', label:'Dashboard' },
+            { section:'PEOPLE' },
+            { id:'employees', icon:'fa-users', label:'Employees' },
+            { id:'attendance-admin', icon:'fa-fingerprint', label:'Attendance' },
+            { id:'leaves-admin', icon:'fa-calendar-alt', label:'Leaves' },
+            { section:'FINANCE' },
+            { id:'salary-structure', icon:'fa-sliders-h', label:'Salary Structure' },
+            { id:'payroll', icon:'fa-money-bill-wave', label:'Payroll' },
+            { id:'loans-admin', icon:'fa-hand-holding-usd', label:'Loans/Advances' },
+            { section:'PERFORMANCE' },
+            { id:'performance', icon:'fa-chart-line', label:'Performance' },
+            { id:'daily-tasks-admin', icon:'fa-tasks', label:'Daily Tasks' },
+            { id:'promotions', icon:'fa-level-up-alt', label:'Promotions' },
+            { id:'clearance', icon:'fa-door-open', label:'Offboarding' },
+            { section:'ENGAGEMENT' },
+            { id:'notices-admin', icon:'fa-bullhorn', label:'Notices' },
+            { id:'helpdesk-admin', icon:'fa-headset', label:'Helpdesk' },
+        ];
+        const empNav = [
+            { section:'SELF SERVICE' },
+            { id:'dashboard', icon:'fa-tachometer-alt', label:'Dashboard' },
+            { id:'my-attendance', icon:'fa-fingerprint', label:'Attendance' },
+            { id:'my-leaves', icon:'fa-calendar-alt', label:'Leaves' },
+            { id:'my-payslips', icon:'fa-file-invoice-dollar', label:'Payslips' },
+            { id:'my-loans', icon:'fa-hand-holding-usd', label:'Loans' },
+            { id:'my-tasks', icon:'fa-tasks', label:'My Tasks' },
+            { id:'my-notices', icon:'fa-bullhorn', label:'Notices' },
+            { id:'my-helpdesk', icon:'fa-headset', label:'Helpdesk' },
+        ];
+        const navItems = isAdmin ? adminNav : empNav;
+
+        // Sidebar
+        let sidebarHtml = '';
+        navItems.forEach(n => {
+            if(n.section) { sidebarHtml += `<div class="nav-section">${n.section}</div>`; return; }
+            sidebarHtml += `<div class="nav-item" data-page="${n.id}" onclick="App.navigate('${n.id}')"><i class="fas ${n.icon}"></i><span>${n.label}</span></div>`;
+        });
+        U.id('sidebarNav').innerHTML = sidebarHtml;
+
+        // Bottom nav (mobile) - show first 5 non-section items
+        const bottomItems = navItems.filter(n=>!n.section).slice(0,5);
+        let bottomHtml = '';
+        bottomItems.forEach(n => {
+            bottomHtml += `<div class="nav-item" data-page="${n.id}" onclick="App.navigate('${n.id}')"><i class="fas ${n.icon}"></i><span>${n.label}</span></div>`;
+        });
+        U.id('bottomNav').innerHTML = bottomHtml;
+    },
+
+    updateUserDisplay(){
+        U.id('sidebarName').textContent = this.state.name || 'User';
+        U.id('sidebarRole').textContent = this.state.role || 'Employee';
+        U.id('sidebarAvatar').textContent = (this.state.name || 'U').charAt(0).toUpperCase();
+    },
+
+    navigate(page){
+        this.state.currentPage = page;
+        // Update active nav
+        U.$$('.nav-item').forEach(n => { n.classList.toggle('active', n.dataset.page === page) });
+        // Destroy old charts
+        Object.values(this.state.charts).forEach(c => { if(c && c.destroy) c.destroy() });
+        this.state.charts = {};
+        // Close sidebar on mobile
+        this.toggleSidebar(false);
+        // Render page
+        const renderer = Pages[page];
+        if(renderer) renderer.render();
+        else U.id('pageContent').innerHTML = '<div class="empty-state"><i class="fas fa-construction"></i><p>Page under construction</p></div>';
+        window.scrollTo(0,0);
+    },
+
+    toggleSidebar(show){
+        const sb = U.id('sidebar');
+        const ov = U.id('sidebarOverlay');
+        if(show === undefined) show = !sb.classList.contains('open');
+        sb.classList.toggle('open', show);
+        ov.classList.toggle('open', show);
+    }
+};
+
+// ============================================================
+// PAGE RENDERERS
+// ============================================================
+const Pages = {};
+
+// ==================== DASHBOARD ====================
+Pages.dashboard = {
+    async render(){
+        const isAdmin = App.state.role === 'Admin';
+        Loading.show();
+        const res = await API.getDashboard();
+        Loading.hide();
+        const d = res.success ? res.data : {};
+        const totalEmp = d.totalEmployees || 0;
+        const presentToday = d.presentToday || 0;
+        const onLeave = d.onLeave || 0;
+        const pendingTickets = d.pendingTickets || 0;
+        const totalPayroll = d.totalPayroll || 0;
+        const attendanceRate = totalEmp ? Math.round((presentToday/totalEmp)*100) : 0;
+
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1><span class="text-muted">${U.today()}</span></div>
+        <div class="page-body">
+        <div class="stats-grid">
+            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">${totalEmp}</div><div class="stat-label">Total Employees</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div class="stat-value">${presentToday}</div><div class="stat-label">Present Today</div></div>
+            <div class="stat-card cyan"><div class="stat-icon"><i class="fas fa-percentage"></i></div><div class="stat-value">${attendanceRate}%</div><div class="stat-label">Attendance Rate</div></div>
+            <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-plane-departure"></i></div><div class="stat-value">${onLeave}</div><div class="stat-label">On Leave</div></div>
+            <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-headset"></i></div><div class="stat-value">${pendingTickets}</div><div class="stat-label">Pending Tickets</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value">${U.formatCurrency(totalPayroll)}</div><div class="stat-label">Monthly Payroll</div></div>
+        </div>
+        <div class="charts-grid">
+            <div class="card"><div class="card-header"><h3><i class="fas fa-chart-pie"></i> Department Headcount</h3></div><div class="chart-container"><canvas id="chartDeptHeadcount"></canvas></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> Attendance Overview</h3></div><div class="chart-container"><canvas id="chartAttendance"></canvas></div></div>
+        </div>`;
+
+        if(isAdmin){
+            html += `<div class="card"><div class="card-header"><h3><i class="fas fa-chart-doughnut"></i> Salary Distribution by Department</h3></div><div class="chart-container"><canvas id="chartSalaryDist"></canvas></div></div>`;
+        }
+
+        html += `<div class="card"><div class="card-header"><h3><i class="fas fa-bell"></i> Recent Notices</h3></div><div id="dashNotices"><div class="text-muted text-center" style="padding:20px">Loading...</div></div></div></div>`;
+        U.id('pageContent').innerHTML = html;
+
+        // Charts
+        setTimeout(()=>{
+            const deptData = d.deptHeadcount || {};
+            const labels = Object.keys(deptData);
+            const values = Object.values(deptData);
+            const colors = ['#6C63FF','#00BCD4','#FF6B6B','#FFA726','#4CAF50','#9C27B0','#E91E63','#3F51B5'];
+
+            if(labels.length){
+                App.state.charts.deptHC = new Chart(document.getElementById('chartDeptHeadcount'), {
+                    type:'pie', data:{ labels, datasets:[{data:values, backgroundColor:colors.slice(0,labels.length), borderWidth:0}] },
+                    options:{ responsive:true, maintainAspectRatio:true, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, padding:8, font:{size:11} } } } }
+                });
+            }
+            const attData = d.weeklyAttendance || [0,0,0,0,0,0,0];
+            App.state.charts.att = new Chart(document.getElementById('chartAttendance'), {
+                type:'bar',
+                data:{ labels:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], datasets:[
+                    { label:'Present', data:attData, backgroundColor:'rgba(108,99,255,.7)', borderRadius:6 },
+                ]},
+                options:{ responsive:true, maintainAspectRatio:true, plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1}} } }
+            });
+
+            if(isAdmin){
+                const salData = d.salaryDistribution || {};
+                const sLabels = Object.keys(salData);
+                const sValues = Object.values(salData);
+                if(sLabels.length){
+                    App.state.charts.salDist = new Chart(document.getElementById('chartSalaryDist'), {
+                        type:'doughnut',
+                        data:{ labels:sLabels, datasets:[{data:sValues, backgroundColor:colors.slice(0,sLabels.length), borderWidth:0}] },
+                        options:{ responsive:true, maintainAspectRatio:true, plugins:{ legend:{ position:'right', labels:{ boxWidth:12, padding:8, font:{size:11} } } } }
+                    });
+                }
+            }
+        }, 100);
+
+        // Load recent notices
+        const nRes = await API.getNotices();
+        if(nRes.success && nRes.data && nRes.data.length){
+            const notices = nRes.data.slice(0,3);
+            U.id('dashNotices').innerHTML = notices.map(n => `
+                <div class="notice-card">
+                    <div class="flex-between mb-1"><strong>${U.escHtml(n.title||'')}</strong><span class="text-muted" style="font-size:.75rem">${U.formatDate(n.date||n.noticeDate)}</span></div>
+                    <p style="font-size:.85rem;color:var(--text-light)">${U.escHtml((n.content||'').substring(0,150))}${(n.content||'').length>150?'...':''}</p>
+                </div>
+            `).join('');
+        } else {
+            U.id('dashNotices').innerHTML = '<div class="empty-state" style="padding:20px"><p>No recent notices</p></div>';
+        }
+    }
+};
+
+// ==================== EMPLOYEES (Admin) ====================
+Pages.employees = {
+    employees: [],
+    currentStep: 1,
+    totalSteps: 5,
+    editMode: false,
+    editEmpID: null,
+
+    async render(){
+        Loading.show();
+        const res = await API.getEmployees();
+        Loading.hide();
+        this.employees = res.success ? (res.data || []) : [];
+        let html = `
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> Employees</h1>
+            <button class="btn btn-primary btn-sm" onclick="Pages.employees.openWizard()"><i class="fas fa-plus"></i> Add Employee</button>
+        </div>
+        <div class="page-body">
+        <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Search by name, ID, department..." id="empSearchInput" oninput="Pages.employees.filterTable()"></div>
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>Department</th><th>Designation</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="empTableBody">
+        ${this.employees.length ? this.employees.map(e => `
+            <tr>
+                <td><span class="tag">${U.escHtml(e.empID||e['Employee ID']||'')}</span></td>
+                <td><strong>${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')}</strong></td>
+                <td>${U.escHtml(e.department||e.DEPARTMENT||'')}</td>
+                <td>${U.escHtml(e.designation||e.DESIGNATION||'')}</td>
+                <td><span class="badge ${e.status==='Active'?'badge-success':'badge-danger'}">${U.escHtml(e.status||'Active')}</span></td>
+                <td class="flex-gap">
+                    <button class="btn btn-sm btn-primary" onclick="Pages.employees.viewEmployee('${e.empID||e['Employee ID']}')"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-warning" onclick="Pages.employees.openWizard('${e.empID||e['Employee ID']}')"><i class="fas fa-edit"></i></button>
+                </td>
+            </tr>
+        `).join('') : '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users"></i><p>No employees found</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    filterTable(){
+        const q = U.val('empSearchInput').toLowerCase();
+        U.$$('#empTableBody tr').forEach(tr => {
+            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    },
+
+    getStepFields(){
+        return [
+            // Step 1: Personal Info
+            ['fullName','FULL NAME (As per NID)','text'],['nickname','Nickname','text'],['empID','Employee ID','text'],['designation','DESIGNATION','text'],
+            ['department','DEPARTMENT','text'],['joiningDate','JOINING DATE','date'],['probationEndDate','Probation End Date','date'],
+            ['nid','NID NUMBER','text'],['fatherName','FATHER\'S NAME','text'],['motherName','MOTHER\'S NAME','text'],
+            ['dob','DATE OF BIRTH','date'],['maritalStatus','Marital Status','select:Single,Married,Divorced,Widowed'],
+            ['gender','Gender','select:Male,Female,Other'],['religion','Religion','text'],['bloodGroup','Blood Group','select:A+,A-,B+,B-,O+,O-,AB+,AB-'],
+            ['email','E-MAIL ID','email'],['emailPersonal','Email Address','email'],
+            ['mobile','MOBILE NUMBER (Personal)','tel'],['officialPhone','Official Phone Number','tel'],
+            ['shift','Shift Preference','select:Day,Night,Custom'],
+            // Step 2: Address & Emergency
+            ['permanentAddress','PERMANENT ADDRESS (According to NID)','textarea'],['presentAddress','PRESENT ADDRESS','textarea'],
+            ['emergencyName1','EMERGENCY CONTACT NAME 1','text'],['relation1','RELATION WITH 1','text'],['emergencyPhone1','EMERGENCY CONTACT NUMBER','tel'],
+            ['emergencyName2','EMERGENCY CONTACT NAME 2','text'],['relation2','RELATION WITH 2','text'],['emergencyPhone2','EMERGENCY CONTACT NUMBER 2','tel'],
+            // Step 3: Education & Career
+            ['degree1','EDUCATIONAL DEGREE 1','text'],['subject1','SUBJECT 1','text'],['institution1','INSTITUTION 1','text'],
+            ['degree2','EDUCATIONAL DEGREE 2','text'],['subject2','SUBJECT 2','text'],['institution2','INSTITUTION 2','text'],
+            ['degree3','EDUCATIONAL DEGREE 3','text'],['subject3','SUBJECT 3','text'],['institution3','INSTITUTION 3','text'],
+            ['lastCompany','LAST EMPLOYMENT COMPANY NAME','text'],['lastTenure','LAST EMPLOYMENT TENURE','text'],
+            ['lastDesignation','LAST EMPLOYMENT DESIGNATION','text'],['lastDept','LAST EMPLOYMENT DEPARTMENT','text'],
+            ['lastIncrement','LAST INCREMENT AT VAULT','text'],['references','References Name (if any)','text'],
+            ['topSkills','TOP 3 SKILLS','text'],['specialDegree','Special Degree','text'],
+            // Step 4: Finance & Banking
+            ['joiningSalary','Joining Salary','number'],['tin','TIN','text'],
+            ['bankName','BANK NAME','text'],['accountHolder','ACCOUNT HOLDER NAME','text'],
+            ['bankAccount','BANK ACCOUNT NUMBER','text'],['routingNumber','ROUTING NUMBER','text'],
+            ['nagad','MFS-Nagad','tel'],['bkash','MFS-Bkash','tel'],
+            // Step 5: Other Info
+            ['lineManager','LINE MANAGER NAME','text'],['linkedin','LinkedIn ID (Link)','url'],['facebook','Facebook ID (Link)','url'],
+            ['awardRecognition','AWARD RECOGNITION','textarea'],['employmentType','Employment Type','select:Full-Time,Part-Time,Contract,Intern,Probation'],
+            ['classifications','Classifications','text'],['assetsAssigned','Assets Assigned','text'],
+            ['status','Status','select:Active,Inactive,Terminated'],['terminationDate','Termination Date (LWD)','date'],
+            ['refTermination','Ref of Termination','text']
+        ];
+    },
+
+    getStepsConfig(){
+        return ['Personal Info','Address & Emergency','Education & Career','Finance & Banking','Other Info'];
+    },
+
+    openWizard(empID=null){
+        this.editMode = !!empID;
+        this.editEmpID = empID;
+        this.currentStep = 1;
+        const emp = empID ? this.employees.find(e=>(e.empID||e['Employee ID'])===empID) : null;
+        const steps = this.getStepsConfig();
+        const allFields = this.getStepFields();
+        const perStep = Math.ceil(allFields.length / this.totalSteps);
+
+        const stepperHtml = steps.map((s,i) => `
+            ${i>0?'<div class="step-line"></div>':''}
+            <div class="step ${i<this.currentStep?'done':''} ${i===this.currentStep-1?'active':''}">
+                <div class="step-number">${i<this.currentStep-1?'<i class="fas fa-check" style="font-size:.7rem"></i>':(i+1)}</div>
+            </div>
+        `).join('');
+
+        let formHtml = '';
+        const start = (this.currentStep-1)*perStep;
+        const end = Math.min(start+perStep, allFields.length);
+        for(let i=start; i<end; i++){
+            const [key, label, type] = allFields[i];
+            const val = emp ? (emp[key]||emp[label]||'') : '';
+            let inputHtml = '';
+            if(type === 'textarea'){
+                inputHtml = `<textarea class="form-textarea" id="wizard_${key}" placeholder="${label}">${val}</textarea>`;
+            } else if(type.startsWith('select:')){
+                const opts = type.split(':')[1].split(',');
+                inputHtml = `<select class="form-select" id="wizard_${key}"><option value="">Select...</option>${opts.map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select>`;
+            } else {
+                inputHtml = `<input type="${type}" class="form-input" id="wizard_${key}" value="${val}" placeholder="${label}">`;
+            }
+            formHtml += `<div class="form-group"><label>${label}</label>${inputHtml}</div>`;
+        }
+
+        const footerHtml = `
+            ${this.currentStep>1?`<button class="btn btn-outline btn-sm" onclick="Pages.employees.wizardStep(${this.currentStep-1})"><i class="fas fa-arrow-left"></i> Back</button>`:'<span></span>'}
+            ${this.currentStep<this.totalSteps?`<button class="btn btn-primary btn-sm" onclick="Pages.employees.wizardStep(${this.currentStep+1})">Next <i class="fas fa-arrow-right"></i></button>`
+            :`<button class="btn btn-success btn-sm" onclick="Pages.employees.saveWizard()"><i class="fas fa-save"></i> ${this.editMode?'Update':'Save'} Employee</button>`}
+        `;
+
+        Modal.open(`<i class="fas fa-user-plus"></i> <span>${this.editMode?'Edit':'Add'} Employee</span>`,
+            `<div class="stepper" id="wizardStepper">${stepperHtml}</div><div id="wizardFormArea">${formHtml}</div>`,
+            footerHtml, 'lg'
+        );
+    },
+
+    wizardStep(step){
+        this.currentStep = step;
+        const empID = this.editEmpID;
+        this.openWizard(empID || null);
+    },
+
+    async saveWizard(){
+        const allFields = this.getStepFields();
+        const data = {};
+        allFields.forEach(([key, label]) => {
+            const el = U.id('wizard_'+key);
+            if(el) data[key] = el.value;
+        });
+        if(!data.empID){ Toast.error('Employee ID is required'); return; }
+        if(!data.fullName){ Toast.error('Full Name is required'); return; }
+
+        Loading.show();
+        const res = await API.saveEmployee({ ...data, _editMode: this.editMode, _editEmpID: this.editEmpID });
+        Loading.hide();
+        if(res.success){
+            Toast.success(this.editMode ? 'Employee updated successfully' : 'Employee added successfully');
+            Modal.close();
+            this.render();
+        } else {
+            Toast.error(res.error || 'Failed to save employee');
+        }
+    },
+
+    viewEmployee(empID){
+        const emp = this.employees.find(e=>(e.empID||e['Employee ID'])===empID);
+        if(!emp) return;
+        const fields = this.getStepFields();
+        let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+        fields.forEach(([key, label]) => {
+            const val = emp[key] || emp[label] || '-';
+            html += `<div style="padding:8px;background:var(--bg);border-radius:8px"><div style="font-size:.7rem;color:var(--text-light);margin-bottom:2px">${label}</div><div style="font-weight:500;font-size:.85rem">${U.escHtml(String(val))}</div></div>`;
+        });
+        html += '</div>';
+        Modal.open(`<i class="fas fa-user"></i> <span>Employee Profile</span>`, html, '', 'lg');
+    }
+};
+
+// ==================== ATTENDANCE ADMIN ====================
+Pages['attendance-admin'] = {
+    records: [],
+    async render(){
+        Loading.show();
+        const res = await API.getAttendance({});
+        Loading.hide();
+        this.records = res.success ? (res.data || []) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-fingerprint"></i> Attendance</h1></div>
+        <div class="page-body">
+        <div class="filter-bar">
+            <input type="date" class="form-input form-input-sm" id="attAdminDate" value="${U.today()}" onchange="Pages['attendance-admin'].filter()" style="width:auto">
+            <select class="form-select form-input-sm" id="attAdminDept" onchange="Pages['attendance-admin'].filter()" style="width:auto"><option value="">All Departments</option></select>
+        </div>
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Late</th><th>Type</th></tr></thead>
+        <tbody>
+        ${this.records.map(r => `
+            <tr>
+                <td><span class="tag">${U.escHtml(r.empID||'')}</span></td>
+                <td>${U.escHtml(r.name||'')}</td>
+                <td>${U.formatDate(r.date||'')}</td>
+                <td>${U.formatTime(r.checkInTime||'')}</td>
+                <td>${U.formatTime(r.checkOutTime||'')}</td>
+                <td><span class="badge ${r.lateStatus==='Late'?'badge-danger':'badge-success'}">${U.escHtml(r.lateStatus||'-')}</span></td>
+                <td>${U.escHtml(r.attendanceType||'')}</td>
+            </tr>
+        `).join('') || '<tr><td colspan="7"><div class="empty-state"><p>No attendance records</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+    filter(){ this.render(); }
+};
+
+// ==================== MY ATTENDANCE (Employee) ====================
+Pages['my-attendance'] = {
+    checkedIn: false,
+    todayRecord: null,
+    qrScanner: null,
+
+    async render(){
+        Loading.show();
+        const res = await API.getAttendance({ empID: App.state.empID, limit: 30 });
+        Loading.hide();
+        const records = res.success ? (res.data || []) : [];
+        this.todayRecord = records.find(r => r.date === U.today()) || null;
+        this.checkedIn = !!(this.todayRecord && this.todayRecord.checkInTime && !this.todayRecord.checkOutTime);
+
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-fingerprint"></i> My Attendance</h1></div>
+        <div class="page-body">
+        <div class="attendance-clock">
+            <div class="time" id="liveClock">${U.now()}</div>
+            <div class="date">${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+            <div class="status" id="attStatus">${this.todayRecord ? (this.checkedIn ? '<i class="fas fa-clock"></i> Checked In' : '<i class="fas fa-check-circle"></i> Completed') : '<i class="fas fa-hourglass-start"></i> Not Checked In'}</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-qrcode"></i> Mark Attendance</h3></div>
+            <div class="flex-gap flex-wrap">
+                <button class="btn ${this.checkedIn?'btn-danger':'btn-success'} btn-full" id="btnCheckIn" onclick="Pages['my-attendance'].toggleCheckIn()">
+                    <i class="fas ${this.checkedIn?'fa-sign-out-alt':'fa-sign-in-alt'}"></i> ${this.checkedIn?'Check Out':'Check In (GPS)'}
+                </button>
+            </div>
+            <div class="divider"></div>
+            <p class="text-muted text-center mb-2" style="font-size:.85rem">Or scan QR Code to check in/out</p>
+            <button class="btn btn-secondary btn-full btn-sm" onclick="Pages['my-attendance'].startQRScan()"><i class="fas fa-qrcode"></i> Scan QR Code</button>
+            <div class="qr-scanner-container hidden" id="qrScannerBox"><div id="qr-reader"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-history"></i> Recent Records</h3></div>
+            <div class="table-container">
+            <table>
+            <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Late</th></tr></thead>
+            <tbody>
+            ${records.slice(0,15).map(r => `
+                <tr>
+                    <td>${U.formatDate(r.date)}</td>
+                    <td>${U.formatTime(r.checkInTime)}</td>
+                    <td>${U.formatTime(r.checkOutTime)||'-'}</td>
+                    <td><span class="badge ${r.lateStatus==='Late'?'badge-danger':'badge-success'}">${r.lateStatus||'-'}</span></td>
+                </tr>
+            `).join('') || '<tr><td colspan="4"><div class="empty-state"><p>No records yet</p></div></td></tr>'}
+            </tbody></table></div>
+        </div></div>`;
+        U.id('pageContent').innerHTML = html;
+
+        // Live clock
+        this._clockInterval = setInterval(()=>{
+            const el = U.id('liveClock');
+            if(el) el.textContent = U.now();
+        }, 1000);
+    },
+
+    async toggleCheckIn(){
+        if(this.checkedIn){
+            if(!this.todayRecord || !this.todayRecord.recordID){ Toast.error('No active check-in record'); return; }
+            Loading.show();
+            const res = await API.checkOut(this.todayRecord.recordID);
+            Loading.hide();
+            if(res.success){ Toast.success('Checked out successfully'); this.render(); }
+            else Toast.error(res.error||'Failed to check out');
+        } else {
+            let lat='', lng='';
+            try {
+                const pos = await new Promise((resolve,reject)=>{
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {timeout:10000, enableHighAccuracy:true});
+                });
+                lat = pos.coords.latitude.toFixed(6);
+                lng = pos.coords.longitude.toFixed(6);
+            } catch(e){ Toast.warning('GPS unavailable. Proceeding without location.'); }
+            Loading.show();
+            const res = await API.checkIn({ lat, lng, method: 'GPS' });
+            Loading.hide();
+            if(res.success){ Toast.success('Checked in successfully'); this.render(); }
+            else Toast.error(res.error||'Failed to check in');
+        }
+    },
+
+    startQRScan(){
+        const box = U.id('qrScannerBox');
+        box.classList.remove('hidden');
+        if(!this.qrScanner){
+            this.qrScanner = new Html5Qrcode('qr-reader');
+        }
+        this.qrScanner.start(
+            { facingMode:'environment' },
+            { fps:10, qrbox:200 },
+            async (decodedText) => {
+                await this.qrScanner.stop();
+                box.classList.add('hidden');
+                // QR contains empID; validate and check in
+                if(decodedText === App.state.empID){
+                    Loading.show();
+                    const res = await API.checkIn({ method:'QR' });
+                    Loading.hide();
+                    if(res.success){ Toast.success('QR Attendance marked!'); this.render(); }
+                    else Toast.error(res.error||'Already checked in');
+                } else {
+                    Toast.error('Invalid QR code for your profile');
+                }
+            },
+            ()=>{}
+        ).catch(e => { Toast.error('Camera access denied or unavailable'); box.classList.add('hidden'); });
+    }
+};
+
+// ==================== LEAVES ADMIN ====================
+Pages['leaves-admin'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getLeaves();
+        Loading.hide();
+        const leaves = res.success ? (res.data || []) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-calendar-alt"></i> Leave Management</h1></div>
+        <div class="page-body">
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+        ${leaves.map(l => `
+            <tr>
+                <td><span class="tag">${U.escHtml(l.empID||'')}</span></td>
+                <td>${U.escHtml(l.name||'')}</td>
+                <td>${U.formatDate(l.startDate)}</td>
+                <td>${U.formatDate(l.endDate)}</td>
+                <td>${U.escHtml((l.reason||'').substring(0,40))}</td>
+                <td><span class="badge ${l.status==='Approved'?'badge-success':l.status==='Rejected'?'badge-danger':'badge-warning'}">${U.escHtml(l.status||'Pending')}</span></td>
+                <td class="flex-gap">
+                    ${l.status==='Pending'?`
+                        <button class="btn btn-sm btn-success" onclick="Pages['leaves-admin'].updateStatus('${l.leaveID}','Approved')"><i class="fas fa-check"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="Pages['leaves-admin'].updateStatus('${l.leaveID}','Rejected')"><i class="fas fa-times"></i></button>
+                    `:'<span class="text-muted" style="font-size:.8rem">Processed</span>'}
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="7"><div class="empty-state"><p>No leave requests</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    async updateStatus(leaveID, status){
+        Loading.show();
+        const res = await API.updateLeaveStatus(leaveID, status);
+        Loading.hide();
+        if(res.success){ Toast.success(`Leave ${status.toLowerCase()}`); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== MY LEAVES (Employee) ====================
+Pages['my-leaves'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getLeaves();
+        Loading.hide();
+        const leaves = (res.success ? (res.data||[]) : []).filter(l => l.empID === App.state.empID);
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-calendar-alt"></i> My Leaves</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages['my-leaves'].openForm()"><i class="fas fa-plus"></i> Apply Leave</button></div>
+        <div class="page-body">
+        <div class="table-container">
+        <table>
+        <thead><tr><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th></tr></thead>
+        <tbody>
+        ${leaves.map(l => {
+            const days = Math.ceil((new Date(l.endDate)-new Date(l.startDate))/(1000*60*60*24))+1;
+            return `<tr>
+                <td>${U.formatDate(l.startDate)}</td><td>${U.formatDate(l.endDate)}</td><td>${days}</td>
+                <td>${U.escHtml(l.reason||'')}</td>
+                <td><span class="badge ${l.status==='Approved'?'badge-success':l.status==='Rejected'?'badge-danger':'badge-warning'}">${l.status||'Pending'}</span></td>
+            </tr>`;
+        }).join('') || '<tr><td colspan="5"><div class="empty-state"><p>No leave applications</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-calendar-plus"></i> <span>Apply for Leave</span>',
+            `<div class="form-group"><label>Start Date</label><input type="date" class="form-input" id="leaveStart" value="${U.today()}" min="${U.today()}"></div>
+             <div class="form-group"><label>End Date</label><input type="date" class="form-input" id="leaveEnd" value="${U.today()}" min="${U.today()}"></div>
+             <div class="form-group"><label>Reason</label><textarea class="form-textarea" id="leaveReason" placeholder="Enter reason for leave"></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button><button class="btn btn-primary btn-sm" onclick="Pages['my-leaves'].submit()">Submit</button>`
+        );
+    },
+
+    async submit(){
+        const s=U.val('leaveStart'), e=U.val('leaveEnd'), r=U.val('leaveReason');
+        if(!s||!e||!r){ Toast.error('All fields required'); return; }
+        Loading.show();
+        const res = await API.saveLeave({ empID:App.state.empID, startDate:s, endDate:e, reason:r, status:'Pending' });
+        Loading.hide();
+        if(res.success){ Toast.success('Leave applied'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== SALARY STRUCTURE BUILDER (Admin) ====================
+Pages['salary-structure'] = {
+    heads: [],
+
+    async render(){
+        Loading.show();
+        const res = await API.getSalaryStructure();
+        Loading.hide();
+        this.heads = res.success ? (res.data || []) : [];
+        if(!this.heads.length) this.heads = this.getDefaultHeads();
+
+        const earnings = this.heads.filter(h=>h.isDeduction!=='Yes').sort((a,b)=>(a.displayOrder||0)-(b.displayOrder||0));
+        const deductions = this.heads.filter(h=>h.isDeduction==='Yes').sort((a,b)=>(a.displayOrder||0)-(b.displayOrder||0));
+
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-sliders-h"></i> Salary Structure Builder</h1></div>
+        <div class="page-body">
+        <div class="card mb-2">
+            <p class="text-muted" style="font-size:.85rem">Define your organization's salary heads. These drive all payroll calculations and payslip generation. No hardcoded values — everything is data-driven.</p>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-plus-circle text-success"></i> Earnings</h3>
+                <button class="btn btn-success btn-sm" onclick="Pages['salary-structure'].addHead('No')"><i class="fas fa-plus"></i> Add Earning</button>
+            </div>
+            <div id="earningsList">
+            ${earnings.map(h => this.renderHeadItem(h)).join('') || '<p class="text-muted text-center">No earnings configured</p>'}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-minus-circle text-danger"></i> Deductions</h3>
+                <button class="btn btn-danger btn-sm" onclick="Pages['salary-structure'].addHead('Yes')"><i class="fas fa-plus"></i> Add Deduction</button>
+            </div>
+            <div id="deductionsList">
+            ${deductions.map(h => this.renderHeadItem(h)).join('') || '<p class="text-muted text-center">No deductions configured</p>'}
+            </div>
+        </div>
+        <div class="mt-2 text-center">
+            <button class="btn btn-primary" onclick="Pages['salary-structure'].saveAll()"><i class="fas fa-save"></i> Save Structure</button>
+        </div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    renderHeadItem(h){
+        const typeColors = {'Fixed':'badge-info','% of Basic':'badge-primary','% of Gross':'badge-warning','Custom Formula':'badge-danger'};
+        return `
+        <div class="salary-head-item" data-headid="${h.headID||''}">
+            <div class="head-info">
+                <div class="head-name">${U.escHtml(h.headName)}</div>
+                <div class="head-type"><span class="badge ${typeColors[h.headType]||'badge-info'}">${U.escHtml(h.headType)}</span> — ${U.escHtml(h.value||h.formula||'0')}${h.headType==='Fixed'?' BDT':''}</div>
+            </div>
+            <div class="flex-gap">
+                <button class="btn btn-sm btn-warning" onclick="Pages['salary-structure'].editHead('${h.headID}')"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-sm btn-danger" onclick="Pages['salary-structure'].deleteHead('${h.headID}')"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>`;
+    },
+
+    addHead(isDeduction){
+        const h = { headID:U.genId(), headName:'', headType:'Fixed', value:'0', isDeduction, displayOrder:this.heads.length+1, isActive:'Yes' };
+        this.headForm(h);
+    },
+
+    editHead(headID){
+        const h = this.heads.find(x=>x.headID===headID);
+        if(h) this.headForm(h);
+    },
+
+    headForm(h){
+        Modal.open(`<i class="fas fa-cog"></i> <span>${h.headID && this.heads.find(x=>x.headID===h.headID)?'Edit':'Add'} Salary Head</span>`,
+            `<div class="form-group"><label>Head Name</label><input type="text" class="form-input" id="shHeadName" value="${h.headName||''}" placeholder="e.g. Basic Salary, House Rent"></div>
+             <div class="form-row">
+                <div class="form-group"><label>Type</label><select class="form-select" id="shHeadType" onchange="Pages['salary-structure'].toggleValueField()">
+                    <option value="Fixed" ${h.headType==='Fixed'?'selected':''}>Fixed Amount</option>
+                    <option value="% of Basic" ${h.headType==='% of Basic'?'selected':''}>% of Basic</option>
+                    <option value="% of Gross" ${h.headType==='% of Gross'?'selected':''}>% of Gross</option>
+                    <option value="Custom Formula" ${h.headType==='Custom Formula'?'selected':''}>Custom Formula</option>
+                </select></div>
+                <div class="form-group"><label>Value / Formula</label><input type="text" class="form-input" id="shHeadValue" value="${h.value||h.formula||''}" placeholder="e.g. 5000 or 40 or basic*0.05"></div>
+             </div>
+             <div class="form-row">
+                <div class="form-group"><label>Is Deduction?</label><select class="form-select" id="shIsDeduction">
+                    <option value="No" ${h.isDeduction!=='Yes'?'selected':''}>No (Earning)</option>
+                    <option value="Yes" ${h.isDeduction==='Yes'?'selected':''}>Yes (Deduction)</option>
+                </select></div>
+                <div class="form-group"><label>Display Order</label><input type="number" class="form-input" id="shDisplayOrder" value="${h.displayOrder||1}"></div>
+             </div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages['salary-structure'].saveHead('${h.headID}')"><i class="fas fa-save"></i> Save</button>`
+        );
+    },
+
+    async saveHead(headID){
+        const data = {
+            headID,
+            headName: U.val('shHeadName'),
+            headType: U.val('shHeadType'),
+            value: U.val('shHeadValue'),
+            isDeduction: U.val('shIsDeduction'),
+            displayOrder: parseInt(U.val('shDisplayOrder'))||1,
+            isActive: 'Yes'
+        };
+        if(!data.headName){ Toast.error('Head name required'); return; }
+        const idx = this.heads.findIndex(h=>h.headID===headID);
+        if(idx>=0) this.heads[idx] = data;
+        else this.heads.push(data);
+        Modal.close();
+        Toast.success('Salary head saved');
+        this.render();
+    },
+
+    async deleteHead(headID){
+        this.heads = this.heads.filter(h=>h.headID!==headID);
+        Toast.info('Head removed (save to apply)');
+        this.render();
+    },
+
+    async saveAll(){
+        Loading.show();
+        const res = await API.saveSalaryStructure(this.heads);
+        Loading.hide();
+        if(res.success) Toast.success('Salary structure saved successfully');
+        else Toast.error(res.error||'Failed to save');
+    },
+
+    getDefaultHeads(){
+        return [
+            {headID:'h1',headName:'Basic Salary',headType:'Fixed',value:'0',isDeduction:'No',displayOrder:1,isActive:'Yes'},
+            {headID:'h2',headName:'House Rent',headType:'% of Basic',value:'40',isDeduction:'No',displayOrder:2,isActive:'Yes'},
+            {headID:'h3',headName:'Medical Allowance',headType:'Fixed',value:'1500',isDeduction:'No',displayOrder:3,isActive:'Yes'},
+            {headID:'h4',headName:'Conveyance',headType:'Fixed',value:'2000',isDeduction:'No',displayOrder:4,isActive:'Yes'},
+            {headID:'h5',headName:'Service Charge',headType:'Fixed',value:'1000',isDeduction:'No',displayOrder:5,isActive:'Yes'},
+            {headID:'h6',headName:'Provident Fund',headType:'% of Basic',value:'10',isDeduction:'Yes',displayOrder:10,isActive:'Yes'},
+            {headID:'h7',headName:'Tax',headType:'% of Gross',value:'0',isDeduction:'Yes',displayOrder:11,isActive:'Yes'},
+        ];
+    }
+};
+
+// ==================== PAYROLL (Admin) ====================
+Pages.payroll = {
+    async render(){
+        const monthYear = U.getMonthYear();
+        Loading.show();
+        const [structRes, payrollRes] = await Promise.all([API.getSalaryStructure(), API.getPayroll(monthYear)]);
+        Loading.hide();
+        const structure = structRes.success ? (structRes.data || []) : [];
+        const payroll = payrollRes.success ? (payrollRes.data || []) : [];
+        const activeHeads = structure.filter(h=>h.isActive==='Yes').sort((a,b)=>(a.displayOrder||0)-(b.displayOrder||0));
+        const earnings = activeHeads.filter(h=>h.isDeduction!=='Yes');
+        const deductions = activeHeads.filter(h=>h.isDeduction==='Yes');
+
+        let html = `
+        <div class="page-header">
+            <h1><i class="fas fa-money-bill-wave"></i> Payroll</h1>
+            <div class="flex-gap">
+                <input type="month" class="form-input form-input-sm" id="payrollMonth" style="width:auto" value="${new Date().toISOString().slice(0,7)}" onchange="Pages.payroll.render()">
+                <button class="btn btn-primary btn-sm" onclick="Pages.payroll.generate()"><i class="fas fa-calculator"></i> Generate Payroll</button>
+                <button class="btn btn-success btn-sm" onclick="Pages.payroll.exportPDF()"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            </div>
+        </div>
+        <div class="page-body">
+        <div class="stats-grid">
+            <div class="stat-card green"><div class="stat-value">${payroll.length}</div><div class="stat-label">Employees Processed</div></div>
+            <div class="stat-card blue"><div class="stat-value">${U.formatCurrency(prollTotal(payroll,'totalPaid'))}</div><div class="stat-label">Total Disbursed</div></div>
+        </div>
+        <div id="payrollTableContainer" class="card">
+        <div class="table-container" style="overflow-x:auto">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>Department</th>
+            ${activeHeads.map(h=>`<th style="font-size:.7rem;${h.isDeduction==='Yes'?'color:var(--error)':''}">${U.escHtml(h.headName)}</th>`).join('')}
+            <th class="text-success" style="font-weight:700">Net Pay</th>
+        </tr></thead>
+        <tbody>
+        ${payroll.map(p => `<tr>
+            <td><span class="tag">${U.escHtml(p.empID||'')}</span></td>
+            <td>${U.escHtml(p.name||'')}</td>
+            <td>${U.escHtml(p.department||'')}</td>
+            ${activeHeads.map(h => {
+                const v = p[h.headName] || 0;
+                return `<td style="font-size:.8rem;${h.isDeduction==='Yes'?'color:var(--error)':''}">${Number(v).toLocaleString()}</td>`;
+            }).join('')}
+            <td class="text-success" style="font-weight:700">${U.formatCurrency(p.totalPaid||0)}</td>
+        </tr>`).join('') || '<tr><td colspan="'+(3+activeHeads.length+1)+'"><div class="empty-state"><p>Click "Generate Payroll" to calculate salaries</p></div></td></tr>'}
+        </tbody></table></div></div></div>`;
+        U.id('pageContent').innerHTML = html;
+
+        function prallTotal(arr, key){ return arr.reduce((s,a)=>s+Number(a[key]||0),0); }
+    },
+
+    async generate(){
+        const month = U.id('payrollMonth') ? U.id('payrollMonth').value : new Date().toISOString().slice(0,7);
+        const [m,y] = month.split('-');
+        const my = new Date(y,m-1).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+        Confirm.open('Generate payroll for '+my+'?', async ()=>{
+            Loading.show();
+            const res = await API.generatePayroll(my);
+            Loading.hide();
+            if(res.success){ Toast.success('Payroll generated successfully'); this.render(); }
+            else Toast.error(res.error||'Failed to generate payroll');
+        });
+    },
+
+    exportPDF(){
+        Toast.info('Generating PDF...');
+        const el = U.id('payrollTableContainer');
+        if(!el){ Toast.error('No payroll data to export'); return; }
+        html2pdf().set({margin:10,filename:'Payroll_'+U.getMonthYear()+'.pdf',html2canvas:{scale:2},jsPDF:{format:'a4',orientation:'landscape'}}).from(el).save().then(()=>Toast.success('PDF exported'));
+    }
+};
+
+// ==================== MY PAYSLIPS (Employee) ====================
+Pages['my-payslips'] = {
+    async render(){
+        Loading.show();
+        const [structRes, payrollRes] = await Promise.all([API.getSalaryStructure(), API.getPayroll(U.getMonthYear())]);
+        Loading.hide();
+        const structure = (structRes.success ? structRes.data : []).filter(h=>h.isActive==='Yes').sort((a,b)=>(a.displayOrder||0)-(b.displayOrder||0));
+        const allPayroll = payrollRes.success ? (payrollRes.data||[]) : [];
+        const myPayroll = allPayroll.filter(p=>p.empID===App.state.empID);
+        const earnings = structure.filter(h=>h.isDeduction!=='Yes');
+        const deductions = structure.filter(h=>h.isDeduction==='Yes');
+        const latest = myPayroll[0] || {};
+
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-file-invoice-dollar"></i> My Payslips</h1></div>
+        <div class="page-body">
+        ${myPayroll.length ? `
+        <div class="card" id="payslipCard">
+            <div class="card-header"><h3><i class="fas fa-receipt"></i> ${U.escHtml(latest.monthYear||U.getMonthYear())}</h3>
+                <button class="btn btn-sm btn-secondary" onclick="Pages['my-payslips'].downloadPDF()"><i class="fas fa-download"></i> Download</button>
+            </div>
+            <div class="form-row mb-2"><div><strong>Employee ID:</strong> ${U.escHtml(App.state.empID)}</div><div><strong>Name:</strong> ${U.escHtml(App.state.name)}</div></div>
+            <div class="divider"></div>
+            <h4 class="text-success mb-1" style="font-size:.95rem"><i class="fas fa-plus-circle"></i> Earnings</h4>
+            ${earnings.map(h=>`<div class="flex-between mb-1"><span>${U.escHtml(h.headName)}</span><strong>${U.formatCurrency(latest[h.headName]||0)}</strong></div>`).join('')}
+            <div class="divider"></div>
+            <h4 class="text-danger mb-1" style="font-size:.95rem"><i class="fas fa-minus-circle"></i> Deductions</h4>
+            ${deductions.map(h=>`<div class="flex-between mb-1"><span>${U.escHtml(h.headName)}</span><strong style="color:var(--error)">-${U.formatCurrency(latest[h.headName]||0)}</strong></div>`).join('')}
+            ${latest.loanDeduction ? `<div class="flex-between mb-1"><span>Loan/Advance Deduction</span><strong style="color:var(--error)">-${U.formatCurrency(latest.loanDeduction)}</strong></div>` : ''}
+            <div class="divider"></div>
+            <div class="flex-between"><strong style="font-size:1.1rem">Net Pay</strong><strong style="font-size:1.1rem;color:var(--success)">${U.formatCurrency(latest.totalPaid||0)}</strong></div>
+        </div>` : '<div class="empty-state"><i class="fas fa-file-invoice-dollar"></i><p>No payslips available yet</p></div>'}
+        </div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    downloadPDF(){
+        const el = U.id('payslipCard');
+        if(!el) return;
+        html2pdf().set({margin:10,filename:'Payslip_'+App.state.empID+'_'+U.getMonthYear()+'.pdf'}).from(el).save().then(()=>Toast.success('Payslip downloaded'));
+    }
+};
+
+// ==================== LOANS ADMIN ====================
+Pages['loans-admin'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getLoans();
+        Loading.hide();
+        const loans = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-hand-holding-usd"></i> Loans & Advances</h1></div>
+        <div class="page-body">
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Loan ID</th><th>Emp ID</th><th>Name</th><th>Amount</th><th>EMI</th><th>Remaining</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+        ${loans.map(l => `
+            <tr>
+                <td><span class="tag">${U.escHtml(l.loanID||'')}</span></td>
+                <td>${U.escHtml(l.empID||'')}</td>
+                <td>${U.escHtml(l.name||'')}</td>
+                <td>${U.formatCurrency(l.amount)}</td>
+                <td>${U.formatCurrency(l.emiAmount)}</td>
+                <td>${U.formatCurrency(l.remainingBalance)}</td>
+                <td><span class="badge ${l.status==='Approved'?'badge-success':l.status==='Rejected'?'badge-danger':l.status==='Paid'?'badge-info':'badge-warning'}">${l.status||'Pending'}</span></td>
+                <td class="flex-gap">
+                    ${l.status==='Pending'?`
+                        <button class="btn btn-sm btn-success" onclick="Pages['loans-admin'].updateStatus('${l.loanID}','Approved')"><i class="fas fa-check"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="Pages['loans-admin'].updateStatus('${l.loanID}','Rejected')"><i class="fas fa-times"></i></button>
+                    `:'-'}
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="8"><div class="empty-state"><p>No loan applications</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    async updateStatus(loanID, status){
+        Loading.show();
+        const res = await API.updateLoanStatus(loanID, status);
+        Loading.hide();
+        if(res.success){ Toast.success('Loan '+status.toLowerCase()); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== MY LOANS (Employee) ====================
+Pages['my-loans'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getLoans();
+        Loading.hide();
+        const loans = (res.success?(res.data||[]):[]).filter(l=>l.empID===App.state.empID);
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-hand-holding-usd"></i> My Loans</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages['my-loans'].openForm()"><i class="fas fa-plus"></i> Apply</button></div>
+        <div class="page-body">
+        ${loans.length ? loans.map(l => `
+        <div class="card">
+            <div class="flex-between mb-1">
+                <strong>${U.escHtml(l.loanID)}</strong>
+                <span class="badge ${l.status==='Approved'?'badge-success':l.status==='Rejected'?'badge-danger':l.status==='Paid'?'badge-info':'badge-warning'}">${l.status}</span>
+            </div>
+            <div class="form-row">
+                <div><span class="text-muted">Amount:</span> <strong>${U.formatCurrency(l.amount)}</strong></div>
+                <div><span class="text-muted">EMI:</span> <strong>${U.formatCurrency(l.emiAmount)}</strong></div>
+                <div><span class="text-muted">Remaining:</span> <strong>${U.formatCurrency(l.remainingBalance)}</strong></div>
+            </div>
+            ${l.remainingBalance>0?`<div class="mt-2"><div class="progress-bar"><div class="fill" style="width:${Math.round(((l.amount-l.remainingBalance)/l.amount)*100)}%"></div></div></div>`:''}
+        </div>`).join('') : '<div class="empty-state"><i class="fas fa-hand-holding-usd"></i><p>No loan applications</p></div>'}
+        </div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-hand-holding-usd"></i> <span>Apply for Loan/Advance</span>',
+            `<div class="form-group"><label>Type</label><select class="form-select" id="loanType"><option>Advance Salary</option><option>Personal Loan</option><option>Emergency Loan</option></select></div>
+             <div class="form-group"><label>Amount (BDT)</label><input type="number" class="form-input" id="loanAmount" placeholder="Enter amount"></div>
+             <div class="form-group"><label>Requested EMI (BDT/month)</label><input type="number" class="form-input" id="loanEMI" placeholder="Monthly installment"></div>
+             <div class="form-group"><label>Reason</label><textarea class="form-textarea" id="loanReason" placeholder="Reason for application"></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages['my-loans'].submit()">Submit</button>`
+        );
+    },
+
+    async submit(){
+        const data = { empID:App.state.empID, type:U.val('loanType'), amount:parseFloat(U.val('loanAmount'))||0, emiAmount:parseFloat(U.val('loanEMI'))||0, reason:U.val('loanReason'), remainingBalance:parseFloat(U.val('loanAmount'))||0, status:'Pending' };
+        if(!data.amount){ Toast.error('Amount required'); return; }
+        Loading.show();
+        const res = await API.saveLoan(data);
+        Loading.hide();
+        if(res.success){ Toast.success('Application submitted'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== PERFORMANCE (Admin) ====================
+Pages.performance = {
+    async render(){
+        Loading.show();
+        const res = await API.getPerformance();
+        Loading.hide();
+        const reviews = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-chart-line"></i> Performance Reviews</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages.performance.openForm()"><i class="fas fa-plus"></i> Add Review</button></div>
+        <div class="page-body">
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>Period</th><th>Rating</th><th>Remarks</th></tr></thead>
+        <tbody>
+        ${reviews.map(r => `
+            <tr>
+                <td><span class="tag">${U.escHtml(r.empID||'')}</span></td>
+                <td>${U.escHtml(r.name||'')}</td>
+                <td>${U.escHtml(r.monthYear||'')}</td>
+                <td>${[1,2,3,4,5].map(i=>`<i class="fas fa-star" style="color:${i<=(r.rating||0)?'#FFA726':'#e5e7eb'};font-size:.8rem"></i>`).join('')}</td>
+                <td>${U.escHtml((r.remarks||'').substring(0,50))}</td>
+            </tr>
+        `).join('') || '<tr><td colspan="5"><div class="empty-state"><p>No performance reviews</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-star"></i> <span>Add Performance Review</span>',
+            `<div class="form-group"><label>Employee ID</label><input type="text" class="form-input" id="perfEmpID" placeholder="Enter Employee ID"></div>
+             <div class="form-group"><label>Period (Month Year)</label><input type="text" class="form-input" id="perfPeriod" value="${U.getMonthYear()}" placeholder="e.g. Jan 2025"></div>
+             <div class="form-group"><label>Rating (1-5)</label><select class="form-select" id="perfRating">${[1,2,3,4,5].map(i=>`<option value="${i}">${i} Star${i>1?'s':''}</option>`).join('')}</select></div>
+             <div class="form-group"><label>Remarks</label><textarea class="form-textarea" id="perfRemarks" placeholder="Evaluation remarks"></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages.performance.submit()">Save</button>`
+        );
+    },
+
+    async submit(){
+        const data = { empID:U.val('perfEmpID'), monthYear:U.val('perfPeriod'), rating:parseInt(U.val('perfRating')), remarks:U.val('perfRemarks') };
+        if(!data.empID){ Toast.error('Employee ID required'); return; }
+        Loading.show();
+        const res = await API.savePerformance(data);
+        Loading.hide();
+        if(res.success){ Toast.success('Review saved'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== DAILY TASKS ADMIN ====================
+Pages['daily-tasks-admin'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getDailyTasks();
+        Loading.hide();
+        const tasks = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-tasks"></i> Daily Tasks</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages['daily-tasks-admin'].openForm()"><i class="fas fa-plus"></i> Assign Task</button></div>
+        <div class="page-body">
+        <div class="filter-bar"><input type="date" class="form-input form-input-sm" id="taskDateFilter" value="${U.today()}" style="width:auto"></div>
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>Date</th><th>Task</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+        ${tasks.map(t => `
+            <tr>
+                <td><span class="tag">${U.escHtml(t.empID||'')}</span></td>
+                <td>${U.escHtml(t.name||'')}</td>
+                <td>${U.formatDate(t.date)}</td>
+                <td>${U.escHtml(t.taskDescription||'')}</td>
+                <td><span class="badge ${t.isCompleted==='Yes'?'badge-success':'badge-warning'}">${t.isCompleted==='Yes'?'Done':'Pending'}</span></td>
+                <td><button class="btn btn-sm btn-${t.isCompleted==='Yes'?'warning':'success'}" onclick="Pages['daily-tasks-admin'].toggle('${t.taskID}',${t.isCompleted==='Yes'?'false':'true'})">
+                    <i class="fas ${t.isCompleted==='Yes'?'fa-undo':'fa-check'}"></i></button></td>
+            </tr>
+        `).join('') || '<tr><td colspan="6"><div class="empty-state"><p>No tasks</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-clipboard-check"></i> <span>Assign Daily Task</span>',
+            `<div class="form-group"><label>Employee ID</label><input type="text" class="form-input" id="taskEmpID" placeholder="Enter Employee ID"></div>
+             <div class="form-group"><label>Task Description</label><textarea class="form-textarea" id="taskDesc" placeholder="Describe the task"></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages['daily-tasks-admin'].submit()">Assign</button>`
+        );
+    },
+
+    async submit(){
+        const data = { empID:U.val('taskEmpID'), date:U.today(), taskDescription:U.val('taskDesc'), isCompleted:'No' };
+        if(!data.empID||!data.taskDescription){ Toast.error('All fields required'); return; }
+        Loading.show();
+        const res = await API.saveTask(data);
+        Loading.hide();
+        if(res.success){ Toast.success('Task assigned'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    },
+
+    async toggle(taskID, completed){
+        Loading.show();
+        const res = await API.updateTask(taskID, completed);
+        Loading.hide();
+        if(res.success) this.render();
+    }
+};
+
+// ==================== MY TASKS (Employee) ====================
+Pages['my-tasks'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getDailyTasks();
+        Loading.hide();
+        const tasks = (res.success?(res.data||[]):[]).filter(t=>t.empID===App.state.empID).sort((a,b)=>new Date(b.date)-new Date(a.date));
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-tasks"></i> My Tasks</h1></div>
+        <div class="page-body">
+        ${tasks.length ? tasks.map(t => `
+        <div class="checklist-item">
+            <input type="checkbox" ${t.isCompleted==='Yes'?'checked':''} onchange="Pages['my-tasks'].toggle('${t.taskID}',this.checked)">
+            <div style="flex:1">
+                <div style="${t.isCompleted==='Yes'?'text-decoration:line-through;opacity:.6':''}">${U.escHtml(t.taskDescription)}</div>
+                <div class="text-muted" style="font-size:.75rem">${U.formatDate(t.date)}</div>
+            </div>
+        </div>`).join('') : '<div class="empty-state"><i class="fas fa-tasks"></i><p>No tasks assigned</p></div>'}
+        </div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    async toggle(taskID, completed){
+        Loading.show();
+        await API.updateTask(taskID, completed?'Yes':'No');
+        Loading.hide();
+        this.render();
+    }
+};
+
+// ==================== PROMOTIONS (Admin) ====================
+Pages.promotions = {
+    async render(){
+        Loading.show();
+        const res = await API.getPromotions();
+        Loading.hide();
+        const records = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-level-up-alt"></i> Promotions & Increments</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages.promotions.openForm()"><i class="fas fa-plus"></i> Add Record</button></div>
+        <div class="page-body">
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>Date</th><th>From</th><th>To</th><th>Prev Salary</th><th>New Salary</th></tr></thead>
+        <tbody>
+        ${records.map(r => `
+            <tr>
+                <td><span class="tag">${U.escHtml(r.empID||'')}</span></td>
+                <td>${U.escHtml(r.name||'')}</td>
+                <td>${U.formatDate(r.date)}</td>
+                <td>${U.escHtml(r.prevDesignation||'')}</td>
+                <td>${U.escHtml(r.newDesignation||'')}</td>
+                <td>${U.formatCurrency(r.prevSalary)}</td>
+                <td class="text-success">${U.formatCurrency(r.newSalary)}</td>
+            </tr>
+        `).join('') || '<tr><td colspan="7"><div class="empty-state"><p>No promotion records</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-level-up-alt"></i> <span>Add Promotion/Increment</span>',
+            `<div class="form-group"><label>Employee ID</label><input type="text" class="form-input" id="promoEmpID" placeholder="Enter Employee ID"></div>
+             <div class="form-group"><label>Effective Date</label><input type="date" class="form-input" id="promoDate"></div>
+             <div class="form-row">
+                <div class="form-group"><label>Previous Designation</label><input type="text" class="form-input" id="promoPrevDesig"></div>
+                <div class="form-group"><label>New Designation</label><input type="text" class="form-input" id="promoNewDesig"></div>
+             </div>
+             <div class="form-row">
+                <div class="form-group"><label>Previous Salary</label><input type="number" class="form-input" id="promoPrevSalary"></div>
+                <div class="form-group"><label>New Salary</label><input type="number" class="form-input" id="promoNewSalary"></div>
+             </div>
+             <div class="form-group"><label>Reason</label><textarea class="form-textarea" id="promoReason" placeholder="Reason for promotion/increment"></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages.promotions.submit()">Save</button>`
+        );
+    },
+
+    async submit(){
+        const data = { empID:U.val('promoEmpID'), date:U.val('promoDate'), prevDesignation:U.val('promoPrevDesig'), newDesignation:U.val('promoNewDesig'), prevSalary:parseFloat(U.val('promoPrevSalary'))||0, newSalary:parseFloat(U.val('promoNewSalary'))||0, reason:U.val('promoReason') };
+        if(!data.empID){ Toast.error('Employee ID required'); return; }
+        Loading.show();
+        const res = await API.savePromotion(data);
+        Loading.hide();
+        if(res.success){ Toast.success('Record saved'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== CLEARANCE / OFFBOARDING ====================
+Pages.clearance = {
+    async render(){
+        Loading.show();
+        const res = await API.getClearance();
+        Loading.hide();
+        const records = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-door-open"></i> Offboarding & Clearance</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages.clearance.openForm()"><i class="fas fa-plus"></i> New Clearance</button></div>
+        <div class="page-body">
+        <div class="table-container">
+        <table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>LWD</th><th>IT</th><th>Accounts</th><th>Handover</th><th>Actions</th></tr></thead>
+        <tbody>
+        ${records.map(r => `
+            <tr>
+                <td><span class="tag">${U.escHtml(r.empID||'')}</span></td>
+                <td>${U.escHtml(r.name||'')}</td>
+                <td>${U.formatDate(r.lwd)}</td>
+                <td><span class="badge ${r.itClearance==='Cleared'?'badge-success':'badge-warning'}">${r.itClearance||'Pending'}</span></td>
+                <td><span class="badge ${r.accountsClearance==='Cleared'?'badge-success':'badge-warning'}">${r.accountsClearance||'Pending'}</span></td>
+                <td><span class="badge ${r.handoverStatus==='Completed'?'badge-success':'badge-warning'}">${r.handoverStatus||'Pending'}</span></td>
+                <td><button class="btn btn-sm btn-primary" onclick="Pages.clearance.editRecord('${r.empID}')"><i class="fas fa-edit"></i></button></td>
+            </tr>
+        `).join('') || '<tr><td colspan="7"><div class="empty-state"><p>No clearance records</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-door-open"></i> <span>New Clearance Record</span>',
+            `<div class="form-group"><label>Employee ID</label><input type="text" class="form-input" id="clrEmpID" placeholder="Enter Employee ID"></div>
+             <div class="form-group"><label>Last Working Date (LWD)</label><input type="date" class="form-input" id="clrLWD"></div>
+             <div class="form-row">
+                <div class="form-group"><label>IT Clearance</label><select class="form-select" id="clrIT"><option>Pending</option><option>Cleared</option></select></div>
+                <div class="form-group"><label>Accounts Clearance</label><select class="form-select" id="clrAcc"><option>Pending</option><option>Cleared</option></select></div>
+                <div class="form-group"><label>Handover Status</label><select class="form-select" id="clrHO"><option>Pending</option><option>Completed</option></select></div>
+             </div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages.clearance.submit()">Save</button>`
+        );
+    },
+
+    editRecord(empID){
+        const record = (this._records||[]).find(r=>r.empID===empID);
+        if(!record) return;
+        Modal.open('<i class="fas fa-edit"></i> <span>Edit Clearance</span>',
+            `<div class="form-group"><label>Employee ID</label><input type="text" class="form-input" value="${empID}" disabled></div>
+             <div class="form-group"><label>LWD</label><input type="date" class="form-input" id="clrLWD" value="${record.lwd||''}"></div>
+             <div class="form-row">
+                <div class="form-group"><label>IT Clearance</label><select class="form-select" id="clrIT"><option ${record.itClearance==='Pending'?'selected':''}>Pending</option><option ${record.itClearance==='Cleared'?'selected':''}>Cleared</option></select></div>
+                <div class="form-group"><label>Accounts Clearance</label><select class="form-select" id="clrAcc"><option ${record.accountsClearance==='Pending'?'selected':''}>Pending</option><option ${record.accountsClearance==='Cleared'?'selected':''}>Cleared</option></select></div>
+                <div class="form-group"><label>Handover Status</label><select class="form-select" id="clrHO"><option ${record.handoverStatus==='Pending'?'selected':''}>Pending</option><option ${record.handoverStatus==='Completed'?'selected':''}>Completed</option></select></div>
+             </div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages.clearance.submit('${empID}')">Update</button>`
+        );
+    },
+
+    async submit(empID=null){
+        const data = { empID:empID||U.val('clrEmpID'), lwd:U.val('clrLWD'), itClearance:U.val('clrIT'), accountsClearance:U.val('clrAcc'), handoverStatus:U.val('clrHO') };
+        if(!data.empID){ Toast.error('Employee ID required'); return; }
+        Loading.show();
+        const res = await API.saveClearance(data);
+        Loading.hide();
+        if(res.success){ Toast.success('Clearance updated'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== NOTICES ADMIN ====================
+Pages['notices-admin'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getNotices();
+        Loading.hide();
+        const notices = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-bullhorn"></i> Notices</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages['notices-admin'].openForm()"><i class="fas fa-plus"></i> Publish Notice</button></div>
+        <div class="page-body">
+        ${notices.length ? notices.map(n => `
+        <div class="notice-card">
+            <div class="flex-between mb-1">
+                <strong>${U.escHtml(n.title)}</strong>
+                <div class="flex-gap">
+                    <span class="text-muted" style="font-size:.75rem">${U.formatDate(n.date||n.noticeDate)}</span>
+                    <button class="btn btn-sm btn-danger" onclick="Pages['notices-admin'].deleteNotice('${n.noticeID}')"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            <p style="font-size:.85rem;color:var(--text-light);white-space:pre-wrap">${U.escHtml(n.content)}</p>
+        </div>`).join('') : '<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No notices published</p></div>'}
+        </div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-bullhorn"></i> <span>Publish Notice</span>',
+            `<div class="form-group"><label>Title</label><input type="text" class="form-input" id="noticeTitle" placeholder="Notice title"></div>
+             <div class="form-group"><label>Content</label><textarea class="form-textarea" id="noticeContent" rows="6" placeholder="Write your notice here..."></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages['notices-admin'].submit()"><i class="fas fa-paper-plane"></i> Publish</button>`
+        );
+    },
+
+    async submit(){
+        const data = { title:U.val('noticeTitle'), content:U.val('noticeContent'), date:U.today() };
+        if(!data.title||!data.content){ Toast.error('Title and content required'); return; }
+        Loading.show();
+        const res = await API.saveNotice(data);
+        Loading.hide();
+        if(res.success){ Toast.success('Notice published'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    },
+
+    async deleteNotice(noticeID){
+        Confirm.open('Delete this notice?', async ()=>{
+            Loading.show();
+            const res = await API.deleteNotice(noticeID);
+            Loading.hide();
+            if(res.success){ Toast.success('Notice deleted'); this.render(); }
+            else Toast.error(res.error||'Failed');
+        });
+    }
+};
+
+// ==================== MY NOTICES (Employee) ====================
+Pages['my-notices'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getNotices();
+        Loading.hide();
+        const notices = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-bullhorn"></i> Notice Board</h1></div>
+        <div class="page-body">
+        ${notices.length ? notices.map(n => `
+        <div class="notice-card">
+            <div class="flex-between mb-1"><strong>${U.escHtml(n.title)}</strong><span class="text-muted" style="font-size:.75rem">${U.formatDate(n.date||n.noticeDate)}</span></div>
+            <p style="font-size:.85rem;color:var(--text-light);white-space:pre-wrap">${U.escHtml(n.content)}</p>
+        </div>`).join('') : '<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No notices yet</p></div>'}
+        </div>`;
+        U.id('pageContent').innerHTML = html;
+    }
+};
+
+// ==================== HELPDESK ADMIN ====================
+Pages['helpdesk-admin'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getTickets();
+        Loading.hide();
+        const tickets = res.success ? (res.data||[]) : [];
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-headset"></i> Helpdesk</h1></div>
+        <div class="page-body">
+        <div class="tabs">
+            <div class="tab active" onclick="Pages['helpdesk-admin'].filter('all',this)">All (${tickets.length})</div>
+            <div class="tab" onclick="Pages['helpdesk-admin'].filter('Open',this)">Open (${tickets.filter(t=>t.status==='Open').length})</div>
+            <div class="tab" onclick="Pages['helpdesk-admin'].filter('Resolved',this)">Resolved (${tickets.filter(t=>t.status==='Resolved').length})</div>
+        </div>
+        <div id="helpdeskTickets">
+        ${tickets.map(t => this.renderTicket(t)).join('') || '<div class="empty-state"><i class="fas fa-headset"></i><p>No tickets</p></div>'}
+        </div></div>`;
+        U.id('pageContent').innerHTML = html;
+        this._allTickets = tickets;
+    },
+
+    renderTicket(t){
+        return `
+        <div class="ticket-card" data-status="${t.status}">
+            <div class="flex-between mb-1">
+                <strong><span class="tag">${U.escHtml(t.ticketID||'')}</span> ${U.escHtml(t.issueCategory||'')}</strong>
+                <span class="badge ${t.status==='Open'?'badge-warning':'badge-success'}">${t.status}</span>
+            </div>
+            <p class="text-muted mb-1" style="font-size:.85rem">${U.escHtml(t.description||'')}</p>
+            <div class="text-muted" style="font-size:.75rem">${U.escHtml(t.empID||'')} — ${U.escHtml(t.name||'')} — ${U.formatDate(t.date)}</div>
+            ${t.adminReply ? `<div class="mt-1" style="padding:10px;background:var(--bg);border-radius:8px"><strong class="text-primary" style="font-size:.8rem">Admin Reply:</strong><p style="font-size:.85rem;margin-top:4px">${U.escHtml(t.adminReply)}</p></div>` : ''}
+            <div class="mt-1 flex-gap">
+                <button class="btn btn-sm btn-primary" onclick="Pages['helpdesk-admin'].reply('${t.ticketID}')"><i class="fas fa-reply"></i> Reply</button>
+                ${t.status==='Open'?`<button class="btn btn-sm btn-success" onclick="Pages['helpdesk-admin'].resolve('${t.ticketID}')"><i class="fas fa-check"></i> Resolve</button>`:''}
+            </div>
+        </div>`;
+    },
+
+    filter(status, el){
+        U.$$('.tab').forEach(t=>t.classList.remove('active'));
+        if(el) el.classList.add('active');
+        U.$$('.ticket-card').forEach(c => {
+            c.style.display = (status==='all' || c.dataset.status===status) ? '' : 'none';
+        });
+    },
+
+    reply(ticketID){
+        Modal.open('<i class="fas fa-reply"></i> <span>Reply to Ticket</span>',
+            `<div class="form-group"><label>Reply</label><textarea class="form-textarea" id="ticketReply" rows="4" placeholder="Write your reply..."></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages['helpdesk-admin'].sendReply('${ticketID}')"><i class="fas fa-paper-plane"></i> Send</button>`
+        );
+    },
+
+    async sendReply(ticketID){
+        const reply = U.val('ticketReply');
+        if(!reply){ Toast.error('Reply required'); return; }
+        Loading.show();
+        const res = await API.replyTicket(ticketID, reply);
+        Loading.hide();
+        if(res.success){ Toast.success('Reply sent'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    },
+
+    async resolve(ticketID){
+        Loading.show();
+        const res = await API.updateTicketStatus(ticketID, 'Resolved');
+        Loading.hide();
+        if(res.success){ Toast.success('Ticket resolved'); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== MY HELPDESK (Employee) ====================
+Pages['my-helpdesk'] = {
+    async render(){
+        Loading.show();
+        const res = await API.getTickets();
+        Loading.hide();
+        const tickets = (res.success?(res.data||[]):[]).filter(t=>t.empID===App.state.empID);
+        let html = `
+        <div class="page-header"><h1><i class="fas fa-headset"></i> My Tickets</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages['my-helpdesk'].openForm()"><i class="fas fa-plus"></i> New Ticket</button></div>
+        <div class="page-body">
+        ${tickets.length ? tickets.map(t => `
+        <div class="ticket-card">
+            <div class="flex-between mb-1">
+                <strong><span class="tag">${U.escHtml(t.ticketID||'')}</span> ${U.escHtml(t.issueCategory||'')}</strong>
+                <span class="badge ${t.status==='Open'?'badge-warning':'badge-success'}">${t.status}</span>
+            </div>
+            <p class="text-muted mb-1" style="font-size:.85rem">${U.escHtml(t.description||'')}</p>
+            <div class="text-muted" style="font-size:.75rem">${U.formatDate(t.date)}</div>
+            ${t.adminReply ? `<div class="mt-1" style="padding:10px;background:var(--bg);border-radius:8px"><strong class="text-primary" style="font-size:.8rem">Admin Reply:</strong><p style="font-size:.85rem;margin-top:4px">${U.escHtml(t.adminReply)}</p></div>` : '<div class="mt-1 text-muted" style="font-size:.8rem"><i class="fas fa-hourglass-half"></i> Awaiting response...</div>'}
+        </div>`).join('') : '<div class="empty-state"><i class="fas fa-headset"></i><p>No tickets submitted</p></div>'}
+        </div>`;
+        U.id('pageContent').innerHTML = html;
+    },
+
+    openForm(){
+        Modal.open('<i class="fas fa-headset"></i> <span>Submit Ticket</span>',
+            `<div class="form-group"><label>Category</label><select class="form-select" id="tkCategory">
+                <option>IT Support</option><option>HR Query</option><option>Finance</option><option>Administration</option><option>Other</option>
+            </select></div>
+             <div class="form-group"><label>Description</label><textarea class="form-textarea" id="tkDesc" rows="4" placeholder="Describe your issue..."></textarea></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages['my-helpdesk'].submit()"><i class="fas fa-paper-plane"></i> Submit</button>`
+        );
+    },
+
+    async submit(){
+        const data = { empID:App.state.empID, issueCategory:U.val('tkCategory'), description:U.val('tkDesc'), status:'Open', date:U.today() };
+        if(!data.description){ Toast.error('Description required'); return; }
+        Loading.show();
+        const res = await API.saveTicket(data);
+        Loading.hide();
+        if(res.success){ Toast.success('Ticket submitted'); Modal.close(); this.render(); }
+        else Toast.error(res.error||'Failed');
+    }
+};
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+    // Safety: always hide loader after max 4s even if errors occur
+    const safetyTimer = setTimeout(() => {
+        const loader = document.getElementById('appLoader');
+        if(loader && !loader.classList.contains('hidden')){
+            loader.classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginScreen').style.display = '';
+        }
+    }, 4000);
+    setTimeout(() => { clearTimeout(safetyTimer); try { App.init(); } catch(e) { console.error('Init error:', e); document.getElementById('appLoader').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); } }, 800);
+
+    // Close modals on overlay click
+    U.id('modalOverlay').addEventListener('click', e => { if(e.target === U.id('modalOverlay')) Modal.close(); });
+    U.id('confirmOverlay').addEventListener('click', e => { if(e.target === U.id('confirmOverlay')) Confirm.close(); });
+
+    // Handle back button
+    window.addEventListener('popstate', () => {
+        if(App.state.token) App.navigate(App.state.currentPage);
+    });
+
+    // Keyboard shortcut
+    document.addEventListener('keydown', e => {
+        if(e.key === 'Escape'){ Modal.close(); Confirm.close(); }
+    });
+
+    // Mobile menu button - add hamburger to page header
+    const observer = new MutationObserver(() => {
+        const header = U.$('.page-header');
+        if(header && !U.id('menuBtn')){
+            const btn = document.createElement('button');
+            btn.id = 'menuBtn';
+            btn.className = 'btn btn-icon';
+            btn.style.cssText = 'display:none;background:var(--card);border:1px solid var(--border);cursor:pointer';
+            btn.innerHTML = '<i class="fas fa-bars"></i>';
+            btn.onclick = () => App.toggleSidebar();
+            header.prepend(btn);
+        }
+        const mb = U.id('menuBtn');
+        if(mb) mb.style.display = window.innerWidth<=768 ? 'flex' : 'none';
+    });
+    observer.observe(document.body, { childList:true, subtree:true });
+});
+</script>
+</body>
+</html>
