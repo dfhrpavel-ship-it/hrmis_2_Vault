@@ -374,7 +374,7 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 // CONFIGURATION
 // ============================================================
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbyvupmj8wRWEykSKgFuH3RvFzq4mROIh49zOOlfMZGdYQA7_nHpf6WrOycl58yyye35/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbybit-Ws0v136t5qTT0hhCaCCcSBddhMb1Togng0OuQ71fhTNbmqQrnAoiLjkFhUORQ/exec',
     LATE_THRESHOLD: 15, // minutes after shift start
     SHIFT_START: '09:00',
     SHIFT_END: '18:00',
@@ -411,12 +411,27 @@ const U = {
 // API SERVICE (Google Apps Script Backend)
 // ============================================================
 const API = {
-    // Robust GAS fetch — handles Google redirect pages + uses form-urlencoded
+    // Most reliable method: GET with payload in URL parameter
+    // This avoids CORS preflight issues entirely
     async gasFetch(payload){
         const json = JSON.stringify(payload);
-        console.log('[HRMIS] Sending:', json);
+        console.log('[HRMIS] Sending payload:', payload.action, payload.empID ? '(empID='+payload.empID+')' : '');
 
-        // Method 1: URLSearchParams (application/x-www-form-urlencoded) — most reliable with GAS
+        // === METHOD 1: GET request (most reliable for GAS cross-origin) ===
+        try {
+            const url = CONFIG.GAS_URL + '?payload=' + encodeURIComponent(json);
+            const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+            const text = await res.text();
+            console.log('[HRMIS] GET response status:', res.status, 'type:', typeof text, 'first 200 chars:', text.substring(0, 200));
+            if (text.trim().startsWith('{')) return JSON.parse(text);
+            if (text.trim().startsWith('<')) {
+                console.warn('[HRMIS] GET returned HTML page — server may need authorization');
+            }
+        } catch(e) {
+            console.error('[HRMIS] GET failed:', e.message);
+        }
+
+        // === METHOD 2: POST with URLSearchParams ===
         try {
             const params = new URLSearchParams();
             params.append('payload', json);
@@ -426,28 +441,13 @@ const API = {
                 redirect: 'follow'
             });
             const text = await res.text();
-            // Check if Google returned a redirect HTML page instead of JSON
-            if (text.trim().startsWith('<') || text.includes('window.location')) {
-                console.warn('[HRMIS] Got HTML redirect, trying text/plain fallback...');
-                // Method 2: text/plain fallback
-                const res2 = await fetch(CONFIG.GAS_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'text/plain'},
-                    body: json,
-                    redirect: 'follow'
-                });
-                const text2 = await res2.text();
-                console.log('[HRMIS] Fallback response:', text2);
-                if (text2.trim().startsWith('{')) return JSON.parse(text2);
-            } else {
-                console.log('[HRMIS] Response:', text);
-                if (text.trim().startsWith('{')) return JSON.parse(text);
-            }
+            console.log('[HRMIS] POST-Params response:', text.substring(0, 200));
+            if (text.trim().startsWith('{')) return JSON.parse(text);
         } catch(e) {
-            console.error('[HRMIS] URLSearchParams method failed:', e);
+            console.error('[HRMIS] POST-Params failed:', e.message);
         }
 
-        // Method 2: text/plain direct
+        // === METHOD 3: POST text/plain ===
         try {
             const res = await fetch(CONFIG.GAS_URL, {
                 method: 'POST',
@@ -456,18 +456,17 @@ const API = {
                 redirect: 'follow'
             });
             const text = await res.text();
-            console.log('[HRMIS] text/plain response:', text);
+            console.log('[HRMIS] POST-Text response:', text.substring(0, 200));
             if (text.trim().startsWith('{')) return JSON.parse(text);
         } catch(e) {
-            console.error('[HRMIS] text/plain method failed:', e);
+            console.error('[HRMIS] POST-Text failed:', e.message);
         }
 
-        return { success: false, error: 'Network error — could not reach server' };
+        return { success: false, error: 'Server unreachable. Please try again or contact admin.' };
     },
 
     async call(action, data={}){
         const body = { action, ...data };
-        // Only attach session auth after login (skip for login action)
         if (App.state.token) {
             body.token = App.state.token;
             body.empID = App.state.empID;
