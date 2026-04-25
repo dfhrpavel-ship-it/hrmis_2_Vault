@@ -412,7 +412,13 @@ const U = {
 // ============================================================
 const API = {
     async call(action, data={}){
-        const body = { action, ...data, token: App.state.token, empID: App.state.empID, role: App.state.role };
+        const body = { action, ...data };
+        // Only attach session auth after login (skip for login action)
+        if (App.state.token) {
+            body.token = App.state.token;
+            body.empID = App.state.empID;
+            body.role = App.state.role;
+        }
         try {
             const res = await fetch(CONFIG.GAS_URL, {
                 method: 'POST',
