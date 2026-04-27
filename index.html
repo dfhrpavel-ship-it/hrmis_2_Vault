@@ -360,6 +360,67 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 </div>
 </div>
 
+<!-- ==================== PROFILE STYLES (Blue & Bottle Green A4) ==================== -->
+<style>
+/* Profile Page Wrapper */
+.profile-page-wrapper{max-width:900px;margin:0 auto}
+.profile-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+
+/* Header Bar — Blue & Bottle Green Gradient */
+.profile-header-bar{background:linear-gradient(135deg,#1565C0 0%,#1B5E20 60%,#004D40 100%);padding:24px 28px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden}
+.profile-header-bar::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.06);border-radius:50%}
+.profile-header-bar::after{content:'';position:absolute;bottom:-20px;right:80px;width:80px;height:80px;background:rgba(255,255,255,.04);border-radius:50%}
+.profile-header-info{flex:1;min-width:0;position:relative;z-index:1}
+
+/* Company Logo */
+.company-logo-img{width:70px;height:70px;border-radius:12px;object-fit:contain;background:rgba(255,255,255,.15);padding:6px;border:2px solid rgba(255,255,255,.2)}
+.company-logo-placeholder{width:70px;height:70px;border-radius:12px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);font-size:1.8rem;border:2px solid rgba(255,255,255,.15)}
+
+/* Body Layout */
+.profile-body-row{display:flex;gap:24px;padding:24px 28px;flex-wrap:wrap}
+.profile-photo-col{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:8px}
+.profile-details-col{flex:1;min-width:280px}
+
+/* Employee Photo */
+.profile-photo{width:130px;height:160px;object-fit:cover;border-radius:12px;border:3px solid #e0e0e0;box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.profile-photo-placeholder{width:130px;height:160px;border-radius:12px;background:linear-gradient(135deg,#e3f2fd,#e8f5e9);display:flex;align-items:center;justify-content:center;font-size:3rem;color:#90a4ae;border:3px solid #e0e0e0}
+
+/* Sections */
+.profile-section{margin-bottom:18px}
+.profile-section:last-child{margin-bottom:0}
+.profile-section-title{font-size:.9rem;font-weight:700;color:#1565C0;margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid #e8f5e9;display:flex;align-items:center;gap:6px}
+.profile-section-title i{color:#2E7D32;font-size:1rem}
+
+/* Field Grid */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
+.profile-field{display:flex;flex-direction:column;padding:6px 10px;background:#fafafa;border-radius:6px;border-left:3px solid #1B5E20}
+.profile-label{font-size:.7rem;color:#757575;text-transform:uppercase;letter-spacing:.3px;font-weight:600;margin-bottom:1px}
+.profile-value{font-size:.85rem;color:#212121;font-weight:500;word-break:break-word}
+
+/* Print Styles — A4 Optimized */
+@media print{
+    body *{visibility:hidden}
+    #empProfileCard,#empProfileCard *{visibility:visible}
+    #empProfileCard{position:absolute;left:0;top:0;width:210mm;padding:0;margin:0}
+    .profile-card{box-shadow:none;border-radius:0;border:1px solid #ccc}
+    .profile-header-bar{background:#1565C0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .profile-section-title{color:#1565C0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .profile-field{border-left-color:#1B5E20!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .profile-photo,.profile-photo-placeholder{width:100px;height:120px}
+    .btn,.page-header,.profile-page-wrapper>div:not(#empProfileCard){display:none!important}
+}
+
+/* Mobile Responsive */
+@media(max-width:600px){
+    .profile-body-row{flex-direction:column;align-items:center;padding:16px}
+    .profile-details-col{min-width:100%}
+    .profile-grid{grid-template-columns:1fr}
+    .profile-photo{width:100px;height:120px}
+    .profile-photo-placeholder{width:100px;height:120px}
+    .profile-header-bar{padding:16px;flex-direction:column;text-align:center}
+}
+</style>
+
 <!-- ==================== CONFIRM DIALOG ==================== -->
 <div class="modal-overlay" id="confirmOverlay">
 <div class="modal" style="max-width:420px">
@@ -374,7 +435,7 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 // CONFIGURATION
 // ============================================================
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbybit-Ws0v136t5qTT0hhCaCCcSBddhMb1Togng0OuQ71fhTNbmqQrnAoiLjkFhUORQ/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbzVEqx8u08kLdPbxMiRSMzBd-0gunwSA1C-VLOsdN3Owjs-KVqsQq66ItqKDkmzUiUw/exec',
     LATE_THRESHOLD: 15, // minutes after shift start
     SHIFT_START: '09:00',
     SHIFT_END: '18:00',
@@ -521,7 +582,7 @@ const API = {
     async updateTicketStatus(ticketID, status){ return await this.call('updateTicketStatus', { ticketID, status }); },
     async getClearance(){ return await this.call('getClearance'); },
     async saveClearance(data){ return await this.call('saveClearance', { clearanceData: data }); },
-    async uploadFile(fileName, base64Data, mimeType, folder){ return await this.call('uploadFile', { fileName, base64Data, mimeType, folder }); },
+    async uploadFile(data){ return await this.gasFetch({ action: 'uploadFile', ...data }); },
     async getPromotions(){ return await this.call('getPromotions'); },
     async savePromotion(data){ return await this.call('savePromotion', { promoData: data }); }
 };
@@ -687,6 +748,7 @@ const App = {
         const empNav = [
             { section:'SELF SERVICE' },
             { id:'dashboard', icon:'fa-tachometer-alt', label:'Dashboard' },
+            { id:'my-profile', icon:'fa-id-card', label:'My Profile' },
             { id:'my-attendance', icon:'fa-fingerprint', label:'Attendance' },
             { id:'my-leaves', icon:'fa-calendar-alt', label:'Leaves' },
             { id:'my-payslips', icon:'fa-file-invoice-dollar', label:'Payslips' },
@@ -847,16 +909,18 @@ Pages.employees = {
     totalSteps: 5,
     editMode: false,
     editEmpID: null,
+    isAdmin(){ return App.state.role === 'Admin'; },
 
     async render(){
         Loading.show();
         const res = await API.getEmployees();
         Loading.hide();
         this.employees = res.success ? (res.data || []) : [];
+        const admin = this.isAdmin();
         let html = `
         <div class="page-header">
             <h1><i class="fas fa-users"></i> Employees</h1>
-            <button class="btn btn-primary btn-sm" onclick="Pages.employees.openWizard()"><i class="fas fa-plus"></i> Add Employee</button>
+            ${admin ? `<button class="btn btn-primary btn-sm" onclick="Pages.employees.openWizard()"><i class="fas fa-plus"></i> Add Employee</button>` : ''}
         </div>
         <div class="page-body">
         <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Search by name, ID, department..." id="empSearchInput" oninput="Pages.employees.filterTable()"></div>
@@ -873,7 +937,7 @@ Pages.employees = {
                 <td><span class="badge ${e.status==='Active'?'badge-success':'badge-danger'}">${U.escHtml(e.status||'Active')}</span></td>
                 <td class="flex-gap">
                     <button class="btn btn-sm btn-primary" onclick="Pages.employees.viewEmployee('${e.empID||e['Employee ID']}')"><i class="fas fa-eye"></i></button>
-                    <button class="btn btn-sm btn-warning" onclick="Pages.employees.openWizard('${e.empID||e['Employee ID']}')"><i class="fas fa-edit"></i></button>
+                    ${admin ? `<button class="btn btn-sm btn-warning" onclick="Pages.employees.openWizard('${e.empID||e['Employee ID']}')"><i class="fas fa-edit"></i></button>` : ''}
                 </td>
             </tr>
         `).join('') : '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users"></i><p>No employees found</p></div></td></tr>'}
@@ -930,6 +994,7 @@ Pages.employees = {
     },
 
     openWizard(empID=null){
+        if(!this.isAdmin()){ Toast.error('Only admin can edit employee data'); return; }
         this.editMode = !!empID;
         this.editEmpID = empID;
         this.currentStep = 1;
@@ -1006,14 +1071,165 @@ Pages.employees = {
     viewEmployee(empID){
         const emp = this.employees.find(e=>(e.empID||e['Employee ID'])===empID);
         if(!emp) return;
+        const admin = this.isAdmin();
         const fields = this.getStepFields();
-        let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
-        fields.forEach(([key, label]) => {
-            const val = emp[key] || emp[label] || '-';
-            html += `<div style="padding:8px;background:var(--bg);border-radius:8px"><div style="font-size:.7rem;color:var(--text-light);margin-bottom:2px">${label}</div><div style="font-weight:500;font-size:.85rem">${U.escHtml(String(val))}</div></div>`;
+        // Group fields by category
+        const categories = {
+            'Personal Information': ['fullName','nickname','empID','designation','department','joiningDate','employeeTenure','probationEndDate','nid','fatherName','motherName','dob','maritalStatus','gender','religion','bloodGroup','email','emailPersonal','mobile','officialPhone','shift','status','employmentType'],
+            'Address & Emergency': ['permanentAddress','presentAddress','emergencyName1','relation1','emergencyPhone1','emergencyName2','relation2','emergencyPhone2'],
+            'Education & Career': ['degree1','subject1','institution1','degree2','subject2','institution2','degree3','subject3','institution3','lastCompany','lastTenure','lastDesignation','lastDept','lastIncrement','references','topSkills','specialDegree'],
+            'Finance & Banking': ['joiningSalary','tin','bankName','accountHolder','bankAccount','routingNumber','nagad','bkash'],
+            'Other Information': ['lineManager','linkedin','facebook','awardRecognition','classifications','assetsAssigned','warningLedger','terminationDate','refTermination']
+        };
+        const fieldMap = {};
+        fields.forEach(([key, label]) => { fieldMap[key] = label; });
+
+        const companyLogo = localStorage.getItem('hrmis_company_logo') || '';
+        const photoUrl = emp['Passport Size Picture (Drive Link)'] || emp.passportPhoto || '';
+
+        let catHtml = '';
+        Object.entries(categories).forEach(([catName, keys]) => {
+            const items = keys.filter(k => { const v = emp[k] || emp[fieldMap[k]] || ''; return v && v !== '-'; });
+            if(items.length === 0) return;
+            catHtml += `<div class="profile-section"><h3 class="profile-section-title"><i class="fas fa-caret-right"></i> ${catName}</h3><div class="profile-grid">`;
+            items.forEach(k => {
+                const label = fieldMap[k] || k;
+                const val = emp[k] || emp[label] || '-';
+                catHtml += `<div class="profile-field"><span class="profile-label">${label}</span><span class="profile-value">${U.escHtml(String(val))}</span></div>`;
+            });
+            catHtml += '</div></div>';
         });
-        html += '</div>';
-        Modal.open(`<i class="fas fa-user"></i> <span>Employee Profile</span>`, html, '', 'lg');
+
+        // Profile photo area
+        const photoHtml = photoUrl
+            ? `<img src="${photoUrl}" class="profile-photo" alt="Photo">`
+            : `<div class="profile-photo-placeholder"><i class="fas fa-user"></i></div>`;
+
+        // Admin actions
+        const adminActions = admin ? `
+            <div style="display:flex;gap:8px;margin-top:12px">
+                <button class="btn btn-warning btn-sm" onclick="Modal.close();Pages.employees.openWizard('${empID}')"><i class="fas fa-edit"></i> Edit</button>
+            </div>` : '';
+
+        const profileHtml = `
+        <div id="empProfileCard" class="profile-card">
+            <div class="profile-header-bar">
+                ${companyLogo ? `<img src="${companyLogo}" class="company-logo-img">` : `<div class="company-logo-placeholder"><i class="fas fa-building"></i></div>`}
+                <div class="profile-header-info">
+                    <h2 style="color:#fff;margin:0;font-size:1.3rem">${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'N/A')}</h2>
+                    <p style="color:rgba(255,255,255,.8);margin:4px 0 0;font-size:.85rem">${U.escHtml(emp.designation||emp.DESIGNATION||'')} ${emp.department ? '| '+U.escHtml(emp.department) : ''} ${emp.status ? '| <span class="badge '+(emp.status==='Active'?'badge-success':'badge-danger')+'">'+emp.status+'</span>' : ''}</p>
+                    <p style="color:rgba(255,255,255,.6);margin:2px 0 0;font-size:.75rem">ID: ${U.escHtml(empID)} | Joined: ${U.formatDate(emp.joiningDate||emp['JOINING DATE'])}</p>
+                </div>
+            </div>
+            <div class="profile-body-row">
+                <div class="profile-photo-col">${photoHtml}</div>
+                <div class="profile-details-col">
+                    ${catHtml}
+                </div>
+            </div>
+            ${adminActions}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px;justify-content:center">
+            <button class="btn btn-primary btn-sm" onclick="Pages.employees.exportProfilePDF('${empID}')"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button class="btn btn-outline btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+            <button class="btn btn-secondary btn-sm" onclick="Pages.employees.uploadCompanyLogo()"><i class="fas fa-image"></i> Set Company Logo</button>
+        </div>`;
+
+        U.id('pageContent').innerHTML = `
+        <div class="page-header">
+            <button class="btn btn-icon" onclick="App.navigate('employees')" style="margin-right:8px"><i class="fas fa-arrow-left"></i></button>
+            <h1><i class="fas fa-id-card"></i> Employee Profile</h1>
+        </div>
+        <div class="page-body profile-page-wrapper">${profileHtml}</div>`;
+    },
+
+    async uploadCompanyLogo(){
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            if(file.size > 2*1024*1024){ Toast.error('File must be under 2MB'); return; }
+            Loading.show();
+            try {
+                const reader = new FileReader();
+                reader.onload = async (ev) => {
+                    const base64 = ev.target.result.split(',')[1];
+                    const res = await API.uploadFile({ fileName: 'company_logo.'+file.name.split('.').pop(), base64Data: base64, mimeType: file.type, folder: 'Logos' });
+                    if(res.success && res.data && res.data.fileUrl){
+                        localStorage.setItem('hrmis_company_logo', res.data.fileUrl);
+                        Toast.success('Company logo updated!');
+                        // Re-render if viewing a profile
+                        if(App.state.currentPage === 'employees') Pages.employees.render();
+                    } else {
+                        Toast.error('Failed to upload logo');
+                    }
+                    Loading.hide();
+                };
+                reader.readAsDataURL(file);
+            } catch(err) {
+                Loading.hide();
+                Toast.error('Upload failed: '+err.message);
+            }
+        };
+        input.click();
+    },
+
+    async uploadEmployeePhoto(empID){
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            if(file.size > 2*1024*1024){ Toast.error('File must be under 2MB'); return; }
+            Loading.show();
+            try {
+                const reader = new FileReader();
+                reader.onload = async (ev) => {
+                    const base64 = ev.target.result.split(',')[1];
+                    const res = await API.uploadFile({ fileName: empID+'_photo.'+file.name.split('.').pop(), base64Data: base64, mimeType: file.type, folder: 'Employee_Photos' });
+                    if(res.success && res.data && res.data.fileUrl){
+                        // Save photo link to employee sheet
+                        await API.saveEmployee({ empID: empID, passportPhoto: res.data.fileUrl, _editMode: true, _editEmpID: empID });
+                        Toast.success('Photo updated!');
+                        this.viewEmployee(empID);
+                        this.render();
+                    } else {
+                        Toast.error('Failed to upload photo');
+                    }
+                    Loading.hide();
+                };
+                reader.readAsDataURL(file);
+            } catch(err) {
+                Loading.hide();
+                Toast.error('Upload failed: '+err.message);
+            }
+        };
+        input.click();
+    },
+
+    async exportProfilePDF(empID){
+        const el = document.getElementById('empProfileCard');
+        if(!el){ Toast.error('Profile not found'); return; }
+        const emp = this.employees.find(e=>(e.empID||e['Employee ID'])===empID);
+        const name = emp ? (emp.fullName || emp['FULL NAME (As per NID)'] || empID) : empID;
+        Toast.info('Generating PDF...');
+        if(typeof html2pdf === 'undefined'){ Toast.error('PDF library not loaded. Please refresh and try again.'); return; }
+        try {
+            await html2pdf().set({
+                margin: [10,10,10,10],
+                filename: 'Employee_Profile_'+name+'.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            }).from(el).save();
+            Toast.success('PDF downloaded!');
+        } catch(err) {
+            Toast.error('PDF generation failed: '+err.message);
+        }
     }
 };
 
@@ -1051,6 +1267,86 @@ Pages['attendance-admin'] = {
         U.id('pageContent').innerHTML = html;
     },
     filter(){ this.render(); }
+};
+
+// ==================== MY PROFILE (Employee — Read-Only) ====================
+Pages['my-profile'] = {
+    myData: null,
+
+    async render(){
+        Loading.show();
+        const res = await API.getEmployees();
+        Loading.hide();
+        const allEmp = res.success ? (res.data||[]) : [];
+        this.myData = allEmp.find(e => (e.empID||e['Employee ID']) === App.state.empID) || null;
+
+        if(!this.myData){
+            U.id('pageContent').innerHTML = '<div class="empty-state"><i class="fas fa-user-slash"></i><p>Your profile data not found. Please contact admin.</p></div>';
+            return;
+        }
+
+        const emp = this.myData;
+        const fields = Pages.employees.getStepFields();
+        const categories = {
+            'Personal Information': ['fullName','nickname','empID','designation','department','joiningDate','employeeTenure','probationEndDate','nid','fatherName','motherName','dob','maritalStatus','gender','religion','bloodGroup','email','emailPersonal','mobile','officialPhone','shift','status','employmentType'],
+            'Address & Emergency': ['permanentAddress','presentAddress','emergencyName1','relation1','emergencyPhone1','emergencyName2','relation2','emergencyPhone2'],
+            'Education & Career': ['degree1','subject1','institution1','degree2','subject2','institution2','degree3','subject3','institution3','lastCompany','lastTenure','lastDesignation','lastDept','lastIncrement','references','topSkills','specialDegree'],
+            'Finance & Banking': ['joiningSalary','tin','bankName','accountHolder','bankAccount','routingNumber','nagad','bkash'],
+            'Other Information': ['lineManager','linkedin','facebook','awardRecognition','classifications','assetsAssigned','warningLedger','terminationDate','refTermination']
+        };
+        const fieldMap = {};
+        fields.forEach(([key, label]) => { fieldMap[key] = label; });
+
+        const companyLogo = localStorage.getItem('hrmis_company_logo') || '';
+        const photoUrl = emp['Passport Size Picture (Drive Link)'] || emp.passportPhoto || '';
+
+        let catHtml = '';
+        Object.entries(categories).forEach(([catName, keys]) => {
+            const items = keys.filter(k => { const v = emp[k] || emp[fieldMap[k]] || ''; return v && v !== '-'; });
+            if(items.length === 0) return;
+            catHtml += `<div class="profile-section"><h3 class="profile-section-title"><i class="fas fa-caret-right"></i> ${catName}</h3><div class="profile-grid">`;
+            items.forEach(k => {
+                const label = fieldMap[k] || k;
+                const val = emp[k] || emp[label] || '-';
+                catHtml += `<div class="profile-field"><span class="profile-label">${label}</span><span class="profile-value">${U.escHtml(String(val))}</span></div>`;
+            });
+            catHtml += '</div></div>';
+        });
+
+        const photoHtml = photoUrl
+            ? `<img src="${photoUrl}" class="profile-photo" alt="Photo">`
+            : `<div class="profile-photo-placeholder"><i class="fas fa-user"></i></div>`;
+
+        U.id('pageContent').innerHTML = `
+        <div class="page-header">
+            <h1><i class="fas fa-id-card"></i> My Profile</h1>
+        </div>
+        <div class="page-body profile-page-wrapper">
+            <div id="empProfileCard" class="profile-card">
+                <div class="profile-header-bar">
+                    ${companyLogo ? `<img src="${companyLogo}" class="company-logo-img">` : `<div class="company-logo-placeholder"><i class="fas fa-building"></i></div>`}
+                    <div class="profile-header-info">
+                        <h2 style="color:#fff;margin:0;font-size:1.3rem">${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'N/A')}</h2>
+                        <p style="color:rgba(255,255,255,.8);margin:4px 0 0;font-size:.85rem">${U.escHtml(emp.designation||emp.DESIGNATION||'')} ${emp.department ? '| '+U.escHtml(emp.department) : ''}</p>
+                        <p style="color:rgba(255,255,255,.6);margin:2px 0 0;font-size:.75rem">ID: ${U.escHtml(App.state.empID)} | Joined: ${U.formatDate(emp.joiningDate||emp['JOINING DATE'])}</p>
+                    </div>
+                </div>
+                <div class="profile-body-row">
+                    <div class="profile-photo-col">${photoHtml}</div>
+                    <div class="profile-details-col">
+                        ${catHtml}
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:16px;justify-content:center">
+                <button class="btn btn-primary btn-sm" onclick="Pages.employees.exportProfilePDF('${App.state.empID}')"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                <button class="btn btn-outline btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+            </div>
+            <div style="text-align:center;margin-top:8px;color:var(--text-muted);font-size:.75rem">
+                <i class="fas fa-lock"></i> This profile is read-only. Contact admin for any changes.
+            </div>
+        </div>`;
+    }
 };
 
 // ==================== MY ATTENDANCE (Employee) ====================
