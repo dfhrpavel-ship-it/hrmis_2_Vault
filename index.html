@@ -286,6 +286,155 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 .checklist-item input[type="checkbox"]{width:20px;height:20px;accent-color:var(--primary)}
 .qr-scanner-container{width:100%;max-width:350px;margin:16px auto;border-radius:var(--radius);overflow:hidden;border:2px solid var(--primary)}
 #qr-reader{width:100%}
+
+/* ========== DARK MODE ========== */
+[data-theme="dark"]{
+--bg:#1a1a2e;--card:#16213e;--text:#e0e0e0;--text-light:#b0b0c0;--text-muted:#8888aa;
+--border:#2a2a4a;--shadow:0 2px 12px rgba(0,0,0,.3);--glass:rgba(26,26,46,.8);--glass-border:rgba(255,255,255,.1);
+}
+[data-theme="dark"] .sidebar{background:linear-gradient(180deg,#0f0f23,#16213e)}
+[data-theme="dark"] .bottom-nav{background:#16213e;border-top-color:var(--border)}
+[data-theme="dark"] .login-container{background:rgba(22,33,62,.9)}
+[data-theme="dark"] .form-input,.data-theme="dark"] .form-select,.data-theme="dark"] .form-textarea{background:#1a1a2e;color:#e0e0e0;border-color:#2a2a4a}
+[data-theme="dark"] table thead{background:#1a1a2e}
+[data-theme="dark"] .search-bar{background:var(--card);border-color:var(--border)}
+[data-theme="dark"] .spinner-overlay{background:rgba(26,26,46,.85)}
+[data-theme="dark"] .notice-card{background:var(--card)}
+[data-theme="dark"] .ticket-card{border-color:var(--border);background:var(--card)}
+[data-theme="dark"] .salary-head-item{border-color:var(--border);background:var(--card)}
+[data-theme="dark"] .modal{background:var(--card)}
+[data-theme="dark"] .profile-field{background:#1a1a2e}
+[data-theme="dark"] .profile-section-title{color:#4FC3F7}
+[data-theme="dark"] .badge-success{background:rgba(76,175,80,.2)}
+[data-theme="dark"] .badge-warning{background:rgba(255,152,0,.2)}
+[data-theme="dark"] .badge-danger{background:rgba(244,67,54,.2)}
+[data-theme="dark"] .badge-info{background:rgba(33,150,243,.2)}
+
+/* ========== SKELETON LOADING ========== */
+.skeleton{position:relative;overflow:hidden;background:var(--border);border-radius:var(--radius);color:transparent!important;min-height:1em;min-width:3em}
+.skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:skeletonShimmer 1.5s infinite}
+@keyframes skeletonShimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.skeleton-text{height:14px;margin-bottom:8px;border-radius:4px}
+.skeleton-title{height:22px;width:60%;margin-bottom:12px;border-radius:4px}
+.skeleton-card{height:120px;border-radius:var(--radius-lg)}
+.skeleton-row{height:42px;border-radius:0;border-bottom:1px solid var(--border)}
+
+/* ========== NOTIFICATION BELL ========== */
+.notif-bell{position:relative;cursor:pointer;padding:6px}
+.notif-badge{position:absolute;top:-2px;right:-4px;background:var(--error);color:#fff;font-size:.6rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.notif-dropdown{position:absolute;top:100%;right:0;width:340px;max-height:400px;overflow-y:auto;background:var(--card);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.2);border:1px solid var(--border);z-index:2000;display:none}
+.notif-dropdown.open{display:block}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--transition)}
+.notif-item:hover{background:var(--bg)}
+.notif-item.unread{border-left:3px solid var(--primary);background:rgba(108,99,255,.05)}
+.notif-item .notif-time{font-size:.7rem;color:var(--text-muted)}
+
+/* ========== USER DROPDOWN ========== */
+.user-dropdown{position:absolute;bottom:100%;left:0;width:220px;background:var(--card);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.2);border:1px solid var(--border);z-index:2000;display:none;padding:6px 0}
+.user-dropdown.open{display:block}
+.user-dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:var(--transition);color:var(--text);font-size:.85rem}
+.user-dropdown-item:hover{background:var(--bg)}
+.user-dropdown-item i{width:18px;text-align:center;color:var(--text-light)}
+
+/* ========== DARK MODE TOGGLE ========== */
+.dark-toggle{display:flex;align-items:center;gap:8px;padding:10px 20px;cursor:pointer;color:rgba(255,255,255,.6);font-size:.8rem;transition:var(--transition);border-top:1px solid rgba(255,255,255,.05)}
+.dark-toggle:hover{color:#fff}
+.dark-toggle .toggle-track{width:36px;height:20px;background:rgba(255,255,255,.15);border-radius:10px;position:relative;transition:var(--transition)}
+.dark-toggle .toggle-thumb{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:var(--transition)}
+[data-theme="dark"] .dark-toggle .toggle-thumb{left:18px}
+
+/* ========== LETTER/DOCUMENT STYLES ========== */
+.letter-preview{background:#fff;color:#1a1a2e;padding:40px;border-radius:8px;border:1px solid #e0e0e0;max-width:800px;margin:0 auto;font-family:'Georgia',serif;line-height:1.6}
+.letter-header{text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:3px double #1565C0}
+.letter-header h1{color:#1565C0;font-size:1.4rem;margin:8px 0 4px}
+.letter-header p{color:#666;font-size:.85rem}
+.letter-body{margin-bottom:30px}
+.letter-body p{margin-bottom:12px;font-size:.95rem}
+.letter-signature{margin-top:40px;text-align:right}
+.letter-signature .sign-line{width:200px;border-bottom:1px solid #333;margin-top:50px;margin-left:auto}
+.letter-footer{margin-top:30px;padding-top:15px;border-top:1px solid #ddd;font-size:.75rem;color:#888;text-align:center}
+.letter-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:5rem;color:rgba(21,101,192,.04);font-weight:700;pointer-events:none;white-space:nowrap}
+
+/* ========== LEAVE CALENDAR ========== */
+.leave-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:16px 0}
+.cal-header{text-align:center;font-weight:700;font-size:.8rem;color:var(--text-light);padding:8px 4px}
+.cal-day{text-align:center;padding:10px 4px;border-radius:8px;cursor:pointer;transition:var(--transition);font-size:.85rem;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative}
+.cal-day:hover{background:var(--bg)}
+.cal-day.today{background:var(--primary);color:#fff;border-radius:8px}
+.cal-day.other-month{opacity:.3}
+.cal-day.has-leave::after{content:'';width:8px;height:8px;background:var(--success);border-radius:50%;position:absolute;bottom:4px}
+.cal-day.has-pending::after{content:'';width:8px;height:8px;background:var(--warning);border-radius:50%;position:absolute;bottom:4px}
+
+/* ========== STAR RATING ========== */
+.star-rating{display:flex;gap:4px}
+.star-rating i{font-size:1.5rem;cursor:pointer;color:#e0e0e0;transition:var(--transition)}
+.star-rating i.active{color:#FFA726}
+.star-rating i:hover{transform:scale(1.2)}
+
+/* ========== BIRTHDAY/ANNIVERSARY CARDS ========== */
+.birthday-card{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-radius:var(--radius);margin-bottom:8px;border-left:4px solid #FF9800}
+.anniversary-card{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:var(--radius);margin-bottom:8px;border-left:4px solid #4CAF50}
+.birthday-card .celebration-icon,.anniversary-card .celebration-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.birthday-card .celebration-icon{background:rgba(255,152,0,.2)}
+.anniversary-card .celebration-icon{background:rgba(76,175,80,.2)}
+
+/* ========== OVERTIME BADGE ========== */
+.overtime-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;background:rgba(255,152,0,.15);color:#E65100;animation:pulse 2s infinite}
+
+/* ========== DOCUMENT VAULT ========== */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.doc-card{padding:16px;border:2px dashed var(--border);border-radius:var(--radius);text-align:center;cursor:pointer;transition:var(--transition)}
+.doc-card:hover{border-color:var(--primary);background:rgba(108,99,255,.05)}
+.doc-card i{font-size:2rem;color:var(--text-muted);margin-bottom:8px}
+.doc-card .doc-name{font-size:.8rem;font-weight:600;margin-bottom:4px}
+.doc-card .doc-type{font-size:.7rem;color:var(--text-muted)}
+
+/* ========== SETTINGS PAGE ========== */
+.settings-section{background:var(--card);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;border:1px solid var(--border)}
+.settings-section h3{font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:var(--primary)}
+.settings-section h3 i{font-size:.9rem}
+
+/* ========== IMPORT PAGE ========== */
+.import-preview-table{max-height:300px;overflow:auto}
+.import-stats{display:flex;gap:16px;margin:12px 0;flex-wrap:wrap}
+.import-stat{padding:12px 20px;border-radius:var(--radius);background:var(--bg);text-align:center}
+.import-stat .num{font-size:1.5rem;font-weight:700}
+.import-stat .lbl{font-size:.75rem;color:var(--text-muted)}
+
+/* ========== ADVANCED FILTER PANEL ========== */
+.adv-filter-toggle{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--card);cursor:pointer;font-size:.85rem;font-weight:500;color:var(--primary);transition:var(--transition)}
+.adv-filter-toggle:hover{border-color:var(--primary);background:rgba(108,99,255,.05)}
+.adv-filter-toggle.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.adv-filter-panel{display:none;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);animation:slideDown .3s ease}
+.adv-filter-panel.active{display:block}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.adv-filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+
+/* ========== EXPENSE CARD ========== */
+.expense-card{padding:16px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;transition:var(--transition);background:var(--card)}
+.expense-card:hover{border-color:var(--primary);box-shadow:0 2px 12px rgba(108,99,255,.08)}
+.expense-card .expense-type{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.expense-card .expense-amount{font-size:1.2rem;font-weight:700;color:var(--text)}
+
+/* ========== SHIFT BADGE ========== */
+.shift-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600}
+.shift-badge.day{background:rgba(33,150,243,.12);color:#1976D2}
+.shift-badge.night{background:rgba(103,58,183,.12);color:#7B1FA2}
+.shift-badge.custom{background:rgba(255,152,0,.12);color:#E65100}
+.shift-badge.off{background:rgba(158,158,158,.12);color:#616161}
+
+/* ========== ROSTER GRID ========== */
+.roster-grid{display:grid;grid-template-columns:120px repeat(7,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.roster-grid .roster-cell{background:var(--card);padding:10px 8px;font-size:.8rem;min-height:60px;display:flex;flex-direction:column;justify-content:center}
+.roster-grid .roster-header{background:var(--bg);font-weight:700;color:var(--text-light);text-align:center;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.roster-grid .roster-emp-name{background:var(--bg);font-weight:600;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ========== TAX CALCULATOR ========== */
+.tax-result{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-radius:var(--radius-xl);padding:24px;margin-bottom:20px}
+.tax-result .tax-value{font-size:2rem;font-weight:700}
+.tax-result .tax-label{font-size:.8rem;opacity:.8}
+.tax-breakdown{border-left:3px solid var(--primary);padding:8px 12px;margin-bottom:8px;background:rgba(108,99,255,.04);border-radius:0 var(--radius) var(--radius) 0}
 </style>
 </head>
 <body>
@@ -325,17 +474,27 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 <div class="sidebar-header">
 <i class="fas fa-building"></i>
 <div><h2>HRMIS</h2><span>Enterprise Edition</span></div>
+<div style="margin-left:auto;position:relative">
+<div class="notif-bell" onclick="App.toggleNotifications(event)" id="notifBellBtn"><i class="fas fa-bell" style="color:rgba(255,255,255,.7);font-size:1.1rem"></i><span class="notif-badge hidden" id="notifCount">0</span></div>
+<div class="notif-dropdown" id="notifDropdown"><div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:.9rem"><i class="fas fa-bell"></i> Notifications</div><div id="notifList"><p class="text-muted text-center" style="padding:20px;font-size:.85rem">No new notifications</p></div></div>
+</div>
 </div>
 <div class="sidebar-nav" id="sidebarNav"></div>
 <div class="sidebar-footer">
-<div class="sidebar-user">
-<div class="avatar" id="sidebarAvatar">A</div>
+<div class="sidebar-user" style="position:relative">
+<div class="avatar" id="sidebarAvatar" style="cursor:pointer" onclick="App.toggleUserDropdown()">A</div>
 <div class="info">
-<div class="name" id="sidebarName">Admin User</div>
+<div class="name" id="sidebarName" style="cursor:pointer" onclick="App.toggleUserDropdown()">Admin User</div>
 <div class="role" id="sidebarRole">Administrator</div>
+</div>
+<div class="user-dropdown" id="userDropdown">
+<div class="user-dropdown-item" onclick="App.navigate('my-profile');App.toggleUserDropdown()"><i class="fas fa-id-card"></i> My Profile</div>
+<div class="user-dropdown-item" onclick="App.navigate('change-password');App.toggleUserDropdown()"><i class="fas fa-key"></i> Change Password</div>
+<div class="user-dropdown-item" onclick="App.logout()" style="color:var(--error)"><i class="fas fa-sign-out-alt"></i> Logout</div>
 </div>
 <button class="btn-icon" style="background:rgba(255,255,255,.1);color:#fff;border:none;cursor:pointer" onclick="App.logout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
 </div>
+<div class="dark-toggle" onclick="App.toggleDarkMode()"><span><i class="fas fa-moon"></i> Dark Mode</span><div class="toggle-track"><div class="toggle-thumb"></div></div></div>
 </div>
 </nav>
 
@@ -435,7 +594,7 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 // CONFIGURATION
 // ============================================================
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbzVEqx8u08kLdPbxMiRSMzBd-0gunwSA1C-VLOsdN3Owjs-KVqsQq66ItqKDkmzUiUw/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbyA0ShnRSX9PG1VXjXXpuqHi8b0Nq5cNVufjNBbxWyrWpbX-C918lXp3UXx2twg2IGn/exec',
     LATE_THRESHOLD: 15, // minutes after shift start
     SHIFT_START: '09:00',
     SHIFT_END: '18:00',
@@ -457,6 +616,7 @@ const U = {
     formatTime(d){ if(!d) return '-'; const dt=new Date(d); return dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) },
     formatDateTime(d){ return U.formatDate(d)+' '+U.formatTime(d) },
     today(){ return new Date().toISOString().split('T')[0] },
+    formatDateISO(d){ const dt=d instanceof Date?d:new Date(d); const y=dt.getFullYear(); const m=String(dt.getMonth()+1).padStart(2,'0'); const dd=String(dt.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; },
     now(){ return new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) },
     getMonthYear(){ const d=new Date(); return d.toLocaleDateString('en-GB',{month:'short',year:'numeric'}) },
     daysInMonth(m,y){ return new Date(y,m+1,0).getDate() },
@@ -465,7 +625,36 @@ const U = {
     timeDiffMin(start, end){
         const [sh,sm]=start.split(':').map(Number), [eh,em]=end.split(':').map(Number);
         return (eh*60+em)-(sh*60+sm);
+    },
+    exportToCSV(data, filename){
+        if(!data||!data.length){Toast.error('No data to export');return;}
+        const headers=Object.keys(data[0]);
+        const csv=[headers.join(','),...data.map(row=>headers.map(h=>{let v=row[h]||'';v=String(v).replace(/"/g,'""');return `"${v}"`}).join(','))].join('\n');
+        const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+        const link=document.createElement('a');
+        link.href=URL.createObjectURL(blob);
+        link.download=(filename||'export')+'.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        Toast.success('CSV exported successfully');
+    },
+    skeletonHTML(rows, cols){
+        let h='';
+        for(let r=0;r<rows;r++){h+='<tr>';for(let c=0;c<cols;c++) h+=`<td><div class="skeleton skeleton-text" style="width:${60+Math.random()*40}%"></div></td>`;h+='</tr>';}
+        return h;
     }
+};
+
+// ============================================================
+// DATA CACHE — Speed up repeated page loads
+// ============================================================
+const Cache = {
+    store: {},
+    TTL: 60000, // 60 seconds cache lifetime
+    set(key, data){ this.store[key] = { data, ts: Date.now() }; },
+    get(key){ const c = this.store[key]; if(c && Date.now()-c.ts < this.TTL) return c.data; delete this.store[key]; return null; },
+    clear(key){ if(key) delete this.store[key]; else this.store={}; },
+    clearAll(){ this.store={}; }
 };
 
 // ============================================================
@@ -552,19 +741,20 @@ const API = {
             return { success: false, error: 'Network error' };
         }
     },
-    async getDashboard(){ return await this.call('getDashboard'); },
-    async getEmployees(){ return await this.call('getEmployees'); },
-    async saveEmployee(data){ return await this.call('saveEmployee', { employeeData: data }); },
+    // Cached API calls — 60s TTL for frequently accessed data
+    async getDashboard(){ const c=Cache.get('dashboard'); if(c) return c; const r=await this.call('getDashboard'); Cache.set('dashboard',r); return r; },
+    async getEmployees(){ const c=Cache.get('employees'); if(c) return c; const r=await this.call('getEmployees'); Cache.set('employees',r); return r; },
+    async saveEmployee(data){ Cache.clearAll(); return await this.call('saveEmployee', { employeeData: data }); },
     async getAttendance(filters){ return await this.call('getAttendance', filters||{}); },
-    async checkIn(data){ return await this.call('checkIn', data); },
-    async checkOut(recordID){ return await this.call('checkOut', { recordID }); },
-    async getLeaves(){ return await this.call('getLeaves'); },
-    async saveLeave(data){ return await this.call('saveLeave', { leaveData: data }); },
-    async updateLeaveStatus(leaveID, status){ return await this.call('updateLeaveStatus', { leaveID, status }); },
-    async getSalaryStructure(){ return await this.call('getSalaryStructure'); },
-    async saveSalaryStructure(data){ return await this.call('saveSalaryStructure', { structureData: data }); },
+    async checkIn(data){ Cache.clear('attendance'); return await this.call('checkIn', data); },
+    async checkOut(recordID){ Cache.clear('attendance'); return await this.call('checkOut', { recordID }); },
+    async getLeaves(){ const c=Cache.get('leaves'); if(c) return c; const r=await this.call('getLeaves'); Cache.set('leaves',r); return r; },
+    async saveLeave(data){ Cache.clearAll(); return await this.call('saveLeave', { leaveData: data }); },
+    async updateLeaveStatus(leaveID, status){ Cache.clearAll(); return await this.call('updateLeaveStatus', { leaveID, status }); },
+    async getSalaryStructure(){ const c=Cache.get('salaryStructure'); if(c) return c; const r=await this.call('getSalaryStructure'); Cache.set('salaryStructure',r); return r; },
+    async saveSalaryStructure(data){ Cache.clearAll(); return await this.call('saveSalaryStructure', { structureData: data }); },
     async getPayroll(monthYear){ return await this.call('getPayroll', { monthYear: monthYear || U.getMonthYear() }); },
-    async generatePayroll(monthYear){ return await this.call('generatePayroll', { monthYear }); },
+    async generatePayroll(monthYear){ Cache.clearAll(); return await this.call('generatePayroll', { monthYear }); },
     async getLoans(){ return await this.call('getLoans'); },
     async saveLoan(data){ return await this.call('saveLoan', { loanData: data }); },
     async updateLoanStatus(loanID, status){ return await this.call('updateLoanStatus', { loanID, status }); },
@@ -584,7 +774,26 @@ const API = {
     async saveClearance(data){ return await this.call('saveClearance', { clearanceData: data }); },
     async uploadFile(data){ return await this.gasFetch({ action: 'uploadFile', ...data }); },
     async getPromotions(){ return await this.call('getPromotions'); },
-    async savePromotion(data){ return await this.call('savePromotion', { promoData: data }); }
+    async savePromotion(data){ return await this.call('savePromotion', { promoData: data }); },
+    // --- New API Methods ---
+    async changePassword(data){ Cache.clearAll(); return await this.call('changePassword', data); },
+    async getAuditLog(){ return await this.call('getAuditLog'); },
+    async getSettings(){ const c=Cache.get('settings'); if(c)return c; const r=await this.call('getSettings'); Cache.set('settings',r); return r; },
+    async saveSettings(data){ Cache.clearAll(); return await this.call('saveSettings', {settingsData:data}); },
+    async editAttendance(data){ Cache.clear('attendance'); return await this.call('editAttendance', data); },
+    async getLeaveBalance(empID){ return await this.call('getLeaveBalance', {empID}); },
+    async saveLeaveBalance(data){ Cache.clearAll(); return await this.call('saveLeaveBalance', data); },
+    async saveDocument(data){ return await this.call('saveDocument', {docData:data}); },
+    async getDocuments(empID){ return await this.call('getDocuments', {empID}); },
+    async getNotifications(){ return await this.call('getNotifications'); },
+    async markNotificationRead(notifID){ return await this.call('markNotificationRead', {notifID}); },
+    // --- Travel & Expense API Methods ---
+    async getTravelExpenses(filters){ return await this.call('getTravelExpenses', filters||{}); },
+    async saveTravelExpense(data){ return await this.call('saveTravelExpense', { expenseData: data }); },
+    async updateExpenseStatus(expenseID, status){ Cache.clearAll(); return await this.call('updateExpenseStatus', { expenseID, status }); },
+    // --- Shift & Roster API Methods ---
+    async getShiftRoster(filters){ return await this.call('getShiftRoster', filters||{}); },
+    async saveShiftRoster(data){ Cache.clearAll(); return await this.call('saveShiftRoster', { rosterData: data }); },
 };
 
 function getEmpName(empID){ return empID; /* Name resolved by backend */ }
@@ -660,12 +869,32 @@ const App = {
                 if(s.token && s.empID){
                     Object.assign(this.state, s);
                     this.showApp();
+                    this.startSessionTimeout();
                     this.navigate('dashboard');
                     return;
                 }
             } catch(e){}
         }
         this.showLogin();
+    },
+
+    startSessionTimeout(){
+        if(this._sessionTimer) clearInterval(this._sessionTimer);
+        let remaining = 30*60; // 30 minutes in seconds
+        this._sessionTimer = setInterval(()=>{
+            remaining--;
+            if(remaining === 5*60){ // 5 min warning
+                Toast.warning('Session will expire in 5 minutes. Please save your work.');
+            }
+            if(remaining <= 0){
+                clearInterval(this._sessionTimer);
+                Toast.error('Session expired. Please login again.');
+                this.logout();
+            }
+        }, 1000);
+        // Reset on activity
+        const resetFn = ()=>{ remaining=30*60; };
+        ['click','keydown','mousemove','scroll'].forEach(ev=>document.addEventListener(ev,resetFn,{passive:true}));
     },
 
     showLogin(){
@@ -703,6 +932,7 @@ const App = {
                 this.state = { ...this.state, token: d.token, empID: d.empID, role: d.role, name: d.name };
                 localStorage.setItem('hrmis_session', JSON.stringify({ token:d.token, empID:d.empID, role:d.role, name:d.name }));
                 this.showApp();
+                this.startSessionTimeout();
                 this.navigate('dashboard');
                 Toast.success('Welcome, ' + d.name + '!');
             } else {
@@ -741,9 +971,31 @@ const App = {
             { id:'daily-tasks-admin', icon:'fa-tasks', label:'Daily Tasks' },
             { id:'promotions', icon:'fa-level-up-alt', label:'Promotions' },
             { id:'clearance', icon:'fa-door-open', label:'Offboarding' },
+            { section:'SECURITY' },
+            { id:'audit-log', icon:'fa-shield-alt', label:'Audit Log' },
+            { id:'change-password', icon:'fa-key', label:'Change Password' },
+            { section:'DOCUMENTS' },
+            { id:'joining-letter', icon:'fa-file-signature', label:'Joining Letter' },
+            { id:'appointment-letter', icon:'fa-file-contract', label:'Appointment Letter' },
+            { id:'experience-letter', icon:'fa-certificate', label:'Experience Letter' },
+            { id:'noc-letter', icon:'fa-stamp', label:'NOC Letter' },
+            { id:'document-vault', icon:'fa-folder-open', label:'Document Vault' },
+            { section:'LEAVE' },
+            { id:'leave-balance', icon:'fa-balance-scale', label:'Leave Balance' },
+            { id:'leave-calendar', icon:'fa-calendar-check', label:'Leave Calendar' },
             { section:'ENGAGEMENT' },
             { id:'notices-admin', icon:'fa-bullhorn', label:'Notices' },
             { id:'helpdesk-admin', icon:'fa-headset', label:'Helpdesk' },
+            { section:'TOOLS' },
+            { id:'salary-history', icon:'fa-history', label:'Salary History' },
+            { id:'import-employees', icon:'fa-file-import', label:'Import Employees' },
+            { id:'edit-attendance', icon:'fa-user-clock', label:'Edit Attendance' },
+            { section:'EXPENSE & TAX' },
+            { id:'travel-expense-admin', icon:'fa-plane', label:'Travel & Expense' },
+            { id:'shift-roster', icon:'fa-clock', label:'Shift & Roster' },
+            { id:'tax-calculator', icon:'fa-calculator', label:'Tax Calculator' },
+            { section:'TOOLS' },
+            { id:'settings', icon:'fa-cogs', label:'Settings' },
         ];
         const empNav = [
             { section:'SELF SERVICE' },
@@ -756,6 +1008,12 @@ const App = {
             { id:'my-tasks', icon:'fa-tasks', label:'My Tasks' },
             { id:'my-notices', icon:'fa-bullhorn', label:'Notices' },
             { id:'my-helpdesk', icon:'fa-headset', label:'Helpdesk' },
+            { id:'change-password', icon:'fa-key', label:'Change Password' },
+            { id:'leave-balance', icon:'fa-balance-scale', label:'Leave Balance' },
+            { id:'leave-calendar', icon:'fa-calendar-check', label:'Leave Calendar' },
+            { id:'document-vault', icon:'fa-folder-open', label:'My Documents' },
+            { section:'EXPENSE' },
+            { id:'my-expenses', icon:'fa-receipt', label:'My Expenses' },
         ];
         const navItems = isAdmin ? adminNav : empNav;
 
@@ -804,6 +1062,47 @@ const App = {
         if(show === undefined) show = !sb.classList.contains('open');
         sb.classList.toggle('open', show);
         ov.classList.toggle('open', show);
+    },
+    toggleDarkMode(){
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if(isDark){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('hrmis_darkmode','off'); }
+        else{ document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('hrmis_darkmode','on'); }
+    },
+    initDarkMode(){
+        if(localStorage.getItem('hrmis_darkmode')==='on') document.documentElement.setAttribute('data-theme','dark');
+    },
+    toggleUserDropdown(){
+        U.id('userDropdown').classList.toggle('open');
+    },
+    toggleNotifications(e){
+        e && e.stopPropagation();
+        const dd = U.id('notifDropdown');
+        dd.classList.toggle('open');
+        if(dd.classList.contains('open')) this.loadNotifications();
+    },
+    async loadNotifications(){
+        try{
+            const res = await API.getNotifications();
+            const notifs = res.success ? (res.data||[]) : [];
+            const unread = notifs.filter(n=>!n.read).length;
+            const badge = U.id('notifCount');
+            if(unread > 0){ badge.textContent = unread; badge.classList.remove('hidden'); }
+            else{ badge.classList.add('hidden'); }
+            const list = U.id('notifList');
+            if(notifs.length){
+                list.innerHTML = notifs.slice(0,10).map(n=>`
+                    <div class="notif-item ${n.read?'':'unread'}" onclick="App.markNotifRead('${n.notifID}')">
+                        <div style="font-size:.85rem;font-weight:${n.read?'400':'600'}">${U.escHtml(n.message||n.title||'')}</div>
+                        <div class="notif-time">${U.formatDateTime(n.date||n.createdAt)}</div>
+                    </div>`).join('');
+            } else {
+                list.innerHTML = '<p class="text-muted text-center" style="padding:20px;font-size:.85rem">No new notifications</p>';
+            }
+        }catch(e){ console.log('Notification load error',e); }
+    },
+    async markNotifRead(notifID){
+        await API.markNotificationRead(notifID);
+        this.loadNotifications();
     }
 };
 
@@ -847,7 +1146,12 @@ Pages.dashboard = {
             html += `<div class="card"><div class="card-header"><h3><i class="fas fa-chart-doughnut"></i> Salary Distribution by Department</h3></div><div class="chart-container"><canvas id="chartSalaryDist"></canvas></div></div>`;
         }
 
-        html += `<div class="card"><div class="card-header"><h3><i class="fas fa-bell"></i> Recent Notices</h3></div><div id="dashNotices"><div class="text-muted text-center" style="padding:20px">Loading...</div></div></div></div>`;
+        html += `<div class="card"><div class="card-header"><h3><i class="fas fa-bell"></i> Recent Notices</h3></div><div id="dashNotices"><div class="text-muted text-center" style="padding:20px">Loading...</div></div></div>`;
+
+        // Birthday & Anniversary reminders
+        html += `<div class="card" id="dashCelebrations"><div class="card-header"><h3><i class="fas fa-birthday-cake"></i> Celebrations This Month</h3></div><div id="celebList"><div class="text-muted text-center" style="padding:20px">Loading...</div></div></div>`;
+
+        html += `</div>`;
         U.id('pageContent').innerHTML = html;
 
         // Charts
@@ -899,6 +1203,28 @@ Pages.dashboard = {
         } else {
             U.id('dashNotices').innerHTML = '<div class="empty-state" style="padding:20px"><p>No recent notices</p></div>';
         }
+
+        // Birthday & Anniversary reminders
+        try{
+            const empRes=await API.getEmployees();
+            const allEmp=empRes.success?(empRes.data||[]):[];
+            const now=new Date(),curMonth=now.getMonth();
+            let celebHtml='';
+            allEmp.forEach(emp=>{
+                const dob=emp.dob||emp['DATE OF BIRTH']||emp.joiningDate||emp['JOINING DATE'];
+                if(!dob)return;
+                const dt=new Date(dob);
+                if(dt.getMonth()===curMonth){
+                    celebHtml+=`<div class="birthday-card"><div class="celebration-icon">🎂</div><div><strong>${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'')}</strong><div style="font-size:.75rem;color:var(--text-muted)">Birthday on ${dt.getDate()} ${now.toLocaleDateString('en-GB',{month:'long'})}</div></div></div>`;
+                }
+                const jd=new Date(emp.joiningDate||emp['JOINING DATE']);
+                if(jd.getMonth()===curMonth && jd.getFullYear()!==now.getFullYear()){
+                    const yrs=now.getFullYear()-jd.getFullYear();
+                    celebHtml+=`<div class="anniversary-card"><div class="celebration-icon">🎉</div><div><strong>${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'')}</strong><div style="font-size:.75rem;color:var(--text-muted)">${yrs} Year Work Anniversary</div></div></div>`;
+                }
+            });
+            U.id('celebList').innerHTML=celebHtml||'<p class="text-muted text-center" style="padding:10px">No celebrations this month</p>';
+        }catch(e){}
     }
 };
 
@@ -920,16 +1246,34 @@ Pages.employees = {
         let html = `
         <div class="page-header">
             <h1><i class="fas fa-users"></i> Employees</h1>
+            <div class="flex-gap">
+            <button class="btn btn-sm btn-secondary" onclick="U.exportToCSV(Pages.employees.employees,'employees')"><i class="fas fa-download"></i> Export CSV</button>
             ${admin ? `<button class="btn btn-primary btn-sm" onclick="Pages.employees.openWizard()"><i class="fas fa-plus"></i> Add Employee</button>` : ''}
+            </div>
         </div>
         <div class="page-body">
         <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Search by name, ID, department..." id="empSearchInput" oninput="Pages.employees.filterTable()"></div>
+        <div class="filter-bar">
+            <select class="form-select form-input-sm" id="filterDept" onchange="Pages.employees.filterTable()"><option value="">All Departments</option></select>
+            <select class="form-select form-input-sm" id="filterStatus" onchange="Pages.employees.filterTable()"><option value="">All Status</option><option>Active</option><option>Inactive</option><option>Terminated</option></select>
+            <button class="adv-filter-toggle" id="advFilterToggle" onclick="Pages.employees.toggleAdvFilter()"><i class="fas fa-sliders-h"></i> Advanced Filters</button>
+        </div>
+        <div class="adv-filter-panel" id="advFilterPanel">
+            <div class="adv-filter-grid">
+                <div class="form-group"><label>Blood Group</label><select class="form-select form-input-sm" id="filterBlood" onchange="Pages.employees.filterTable()"><option value="">All</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+                <div class="form-group"><label>Gender</label><select class="form-select form-input-sm" id="filterGender" onchange="Pages.employees.filterTable()"><option value="">All</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+                <div class="form-group"><label>Employment Type</label><select class="form-select form-input-sm" id="filterEmpType" onchange="Pages.employees.filterTable()"><option value="">All</option><option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Intern</option><option>Probation</option></select></div>
+                <div class="form-group"><label>Designation</label><input type="text" class="form-input form-input-sm" id="filterDesignation" placeholder="Search designation..." oninput="Pages.employees.filterTable()"></div>
+                <div class="form-group"><label>Joining From</label><input type="date" class="form-input form-input-sm" id="filterJoinFrom" onchange="Pages.employees.filterTable()"></div>
+                <div class="form-group"><label>Joining To</label><input type="date" class="form-input form-input-sm" id="filterJoinTo" onchange="Pages.employees.filterTable()"></div>
+            </div>
+        </div>
         <div class="table-container">
         <table>
         <thead><tr><th>Emp ID</th><th>Name</th><th>Department</th><th>Designation</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="empTableBody">
         ${this.employees.length ? this.employees.map(e => `
-            <tr>
+            <tr data-joining="${U.escHtml(e.joiningDate||e['JOINING DATE']||'')}" data-blood="${U.escHtml(e.bloodGroup||e['BLOOD GROUP']||'')}" data-gender="${U.escHtml(e.gender||e.Gender||'')}" data-emptype="${U.escHtml(e.employmentType||e['Employment Type']||'')}">
                 <td><span class="tag">${U.escHtml(e.empID||e['Employee ID']||'')}</span></td>
                 <td><strong>${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')}</strong></td>
                 <td>${U.escHtml(e.department||e.DEPARTMENT||'')}</td>
@@ -943,13 +1287,43 @@ Pages.employees = {
         `).join('') : '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users"></i><p>No employees found</p></div></td></tr>'}
         </tbody></table></div></div>`;
         U.id('pageContent').innerHTML = html;
+        // Populate department filter
+        const depts = [...new Set(this.employees.map(e=>e.department||e.DEPARTMENT).filter(Boolean))];
+        const fd=U.id('filterDept');if(fd) fd.innerHTML='<option value="">All Departments</option>'+depts.map(d=>`<option>${U.escHtml(d)}</option>`).join('');
     },
 
     filterTable(){
-        const q = U.val('empSearchInput').toLowerCase();
+        const q = (U.val('empSearchInput')||'').toLowerCase();
+        const dept = U.id('filterDept')?U.val('filterDept'):'';
+        const status = U.id('filterStatus')?U.val('filterStatus'):'';
+        const blood = U.id('filterBlood')?U.val('filterBlood'):'';
+        const gender = U.id('filterGender')?U.val('filterGender'):'';
+        const empType = U.id('filterEmpType')?U.val('filterEmpType'):'';
+        const designation = U.id('filterDesignation')?U.val('filterDesignation'):'';
+        const joinFrom = U.id('filterJoinFrom')?U.val('filterJoinFrom'):'';
+        const joinTo = U.id('filterJoinTo')?U.val('filterJoinTo'):'';
         U.$$('#empTableBody tr').forEach(tr => {
-            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+            const text = tr.textContent.toLowerCase();
+            const matchSearch = !q || text.includes(q);
+            const matchDept = !dept || text.includes(dept.toLowerCase());
+            const matchStatus = !status || text.includes(status.toLowerCase());
+            const matchBlood = !blood || text.includes(blood.toLowerCase());
+            const matchGender = !gender || text.includes(gender.toLowerCase());
+            const matchEmpType = !empType || text.includes(empType.toLowerCase());
+            const matchDesignation = !designation || text.includes(designation.toLowerCase());
+            // For date range, check hidden data attribute on the row
+            const joinDate = tr.getAttribute('data-joining') || '';
+            const matchJoinFrom = !joinFrom || joinDate >= joinFrom;
+            const matchJoinTo = !joinTo || joinDate <= joinTo;
+            tr.style.display = (matchSearch&&matchDept&&matchStatus&&matchBlood&&matchGender&&matchEmpType&&matchDesignation&&matchJoinFrom&&matchJoinTo) ? '' : 'none';
         });
+    },
+
+    toggleAdvFilter(){
+        const panel = U.id('advFilterPanel');
+        const toggle = U.id('advFilterToggle');
+        if(panel){ panel.classList.toggle('active'); }
+        if(toggle){ toggle.classList.toggle('active'); }
     },
 
     getStepFields(){
@@ -999,6 +1373,14 @@ Pages.employees = {
         this.editEmpID = empID;
         this.currentStep = 1;
         const emp = empID ? this.employees.find(e=>(e.empID||e['Employee ID'])===empID) : null;
+        // Auto-generate next ID for new employee
+        if(!empID && this.employees.length){
+            const maxNum = Math.max(0,...this.employees.map(e=>{
+                const id=e.empID||e['Employee ID']||'';
+                const m=id.match(/(\d+)/);return m?parseInt(m[1]):0;
+            }));
+            this._suggestedID = 'EMP'+String(maxNum+1).padStart(3,'0');
+        } else { this._suggestedID = 'EMP001'; }
         const steps = this.getStepsConfig();
         const allFields = this.getStepFields();
         const perStep = Math.ceil(allFields.length / this.totalSteps);
@@ -1015,7 +1397,9 @@ Pages.employees = {
         const end = Math.min(start+perStep, allFields.length);
         for(let i=start; i<end; i++){
             const [key, label, type] = allFields[i];
-            const val = emp ? (emp[key]||emp[label]||'') : '';
+            let val = emp ? (emp[key]||emp[label]||'') : '';
+            // Auto-fill empID for new employees
+            if(key==='empID' && !empID) val = this._suggestedID;
             let inputHtml = '';
             if(type === 'textarea'){
                 inputHtml = `<textarea class="form-textarea" id="wizard_${key}" placeholder="${label}">${val}</textarea>`;
@@ -1026,6 +1410,18 @@ Pages.employees = {
                 inputHtml = `<input type="${type}" class="form-input" id="wizard_${key}" value="${val}" placeholder="${label}">`;
             }
             formHtml += `<div class="form-group"><label>${label}</label>${inputHtml}</div>`;
+        }
+
+        // Photo upload in step 1
+        if(this.currentStep===1){
+            const photoUrl = emp ? (emp['Passport Size Picture (Drive Link)']||emp.passportPhoto||'') : '';
+            formHtml += `<div class="form-group"><label>Employee Photo</label>
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                    <div id="wizardPhotoPreview" style="width:80px;height:100px;border-radius:8px;overflow:hidden;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;background:var(--bg)">
+                        ${photoUrl?`<img src="${photoUrl}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fas fa-camera" style="font-size:1.5rem;color:var(--text-muted)"></i>'}
+                    </div>
+                    <div class="form-file" style="width:120px"><input type="file" accept="image/*" onchange="Pages.employees.handlePhotoUpload(event)"><div class="file-label" style="padding:10px;font-size:.8rem"><i class="fas fa-upload"></i> Upload Photo</div></div>
+                </div></div>`;
         }
 
         const footerHtml = `
@@ -1191,7 +1587,6 @@ Pages.employees = {
                     const base64 = ev.target.result.split(',')[1];
                     const res = await API.uploadFile({ fileName: empID+'_photo.'+file.name.split('.').pop(), base64Data: base64, mimeType: file.type, folder: 'Employee_Photos' });
                     if(res.success && res.data && res.data.fileUrl){
-                        // Save photo link to employee sheet
                         await API.saveEmployee({ empID: empID, passportPhoto: res.data.fileUrl, _editMode: true, _editEmpID: empID });
                         Toast.success('Photo updated!');
                         this.viewEmployee(empID);
@@ -1209,6 +1604,18 @@ Pages.employees = {
         };
         input.click();
     },
+
+    handlePhotoUpload(e){
+        const file=e.target.files[0];if(!file)return;
+        const reader=new FileReader();
+        reader.onload=(ev)=>{
+            const preview=U.id('wizardPhotoPreview');
+            if(preview) preview.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+            this._uploadedPhotoData=ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    },
+    _uploadedPhotoData:null,
 
     async exportProfilePDF(empID){
         const el = document.getElementById('empProfileCard');
@@ -1387,7 +1794,7 @@ Pages['my-attendance'] = {
             <div class="card-header"><h3><i class="fas fa-history"></i> Recent Records</h3></div>
             <div class="table-container">
             <table>
-            <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Late</th></tr></thead>
+            <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Late</th><th>OT</th></tr></thead>
             <tbody>
             ${records.slice(0,15).map(r => `
                 <tr>
@@ -1395,8 +1802,9 @@ Pages['my-attendance'] = {
                     <td>${U.formatTime(r.checkInTime)}</td>
                     <td>${U.formatTime(r.checkOutTime)||'-'}</td>
                     <td><span class="badge ${r.lateStatus==='Late'?'badge-danger':'badge-success'}">${r.lateStatus||'-'}</span></td>
+                    <td>${r.checkOutTime&&CONFIG.SHIFT_END?(()=>{const diff=U.timeDiffMin(CONFIG.SHIFT_END,r.checkOutTime);return diff>0?`<span class="overtime-badge"><i class="fas fa-clock"></i> +${Math.floor(diff/60)}h${diff%60}m</span>`:'-'})():'-'}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="4"><div class="empty-state"><p>No records yet</p></div></td></tr>'}
+            `).join('') || '<tr><td colspan="5"><div class="empty-state"><p>No records yet</p></div></td></tr>'}
             </tbody></table></div>
         </div></div>`;
         U.id('pageContent').innerHTML = html;
@@ -1917,7 +2325,7 @@ Pages.performance = {
                 <td><span class="tag">${U.escHtml(r.empID||'')}</span></td>
                 <td>${U.escHtml(r.name||'')}</td>
                 <td>${U.escHtml(r.monthYear||'')}</td>
-                <td>${[1,2,3,4,5].map(i=>`<i class="fas fa-star" style="color:${i<=(r.rating||0)?'#FFA726':'#e5e7eb'};font-size:.8rem"></i>`).join('')}</td>
+                <td><span class="star-rating">${[1,2,3,4,5].map(i=>`<i class="fas fa-star" style="color:${i<=(r.rating||0)?'#FFA726':'#e0e0e0'};font-size:.8rem"></i>`).join('')}</span> <small class="text-muted">${r.rating||0}/5</small></td>
                 <td>${U.escHtml((r.remarks||'').substring(0,50))}</td>
             </tr>
         `).join('') || '<tr><td colspan="5"><div class="empty-state"><p>No performance reviews</p></div></td></tr>'}
@@ -1969,8 +2377,11 @@ Pages['daily-tasks-admin'] = {
                 <td>${U.escHtml(t.name||'')}</td>
                 <td>${U.formatDate(t.date)}</td>
                 <td>${U.escHtml(t.taskDescription||'')}</td>
+                <td><span class="badge ${t.priority==='High'?'badge-danger':t.priority==='Low'?'badge-info':'badge-warning'}">${t.priority||'Medium'}</span></td>
+                <td>${t.dueDate?U.formatDate(t.dueDate):'-'}</td>
                 <td><span class="badge ${t.isCompleted==='Yes'?'badge-success':'badge-warning'}">${t.isCompleted==='Yes'?'Done':'Pending'}</span></td>
-                <td><button class="btn btn-sm btn-${t.isCompleted==='Yes'?'warning':'success'}" onclick="Pages['daily-tasks-admin'].toggle('${t.taskID}',${t.isCompleted==='Yes'?'false':'true'})">
+                <td class="flex-gap">
+                    <button class="btn btn-sm btn-${t.isCompleted==='Yes'?'warning':'success'}" onclick="Pages['daily-tasks-admin'].toggle('${t.taskID}',${t.isCompleted==='Yes'?'false':'true'})">
                     <i class="fas ${t.isCompleted==='Yes'?'fa-undo':'fa-check'}"></i></button></td>
             </tr>
         `).join('') || '<tr><td colspan="6"><div class="empty-state"><p>No tasks</p></div></td></tr>'}
@@ -1981,14 +2392,18 @@ Pages['daily-tasks-admin'] = {
     openForm(){
         Modal.open('<i class="fas fa-clipboard-check"></i> <span>Assign Daily Task</span>',
             `<div class="form-group"><label>Employee ID</label><input type="text" class="form-input" id="taskEmpID" placeholder="Enter Employee ID"></div>
-             <div class="form-group"><label>Task Description</label><textarea class="form-textarea" id="taskDesc" placeholder="Describe the task"></textarea></div>`,
+             <div class="form-group"><label>Task Description</label><textarea class="form-textarea" id="taskDesc" placeholder="Describe the task"></textarea></div>
+             <div class="form-row">
+                <div class="form-group"><label>Priority</label><select class="form-select" id="taskPriority"><option value="Medium">Medium</option><option value="High">High</option><option value="Low">Low</option></select></div>
+                <div class="form-group"><label>Due Date</label><input type="date" class="form-input" id="taskDueDate" value="${U.today()}" min="${U.today()}"></div>
+             </div>`,
             `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
              <button class="btn btn-primary btn-sm" onclick="Pages['daily-tasks-admin'].submit()">Assign</button>`
         );
     },
 
     async submit(){
-        const data = { empID:U.val('taskEmpID'), date:U.today(), taskDescription:U.val('taskDesc'), isCompleted:'No' };
+        const data = { empID:U.val('taskEmpID'), date:U.today(), taskDescription:U.val('taskDesc'), isCompleted:'No', priority:U.val('taskPriority')||'Medium', dueDate:U.val('taskDueDate')||'' };
         if(!data.empID||!data.taskDescription){ Toast.error('All fields required'); return; }
         Loading.show();
         const res = await API.saveTask(data);
@@ -2362,10 +2777,1049 @@ Pages['my-helpdesk'] = {
     }
 };
 
+// ==================== CHANGE PASSWORD ====================
+Pages['change-password'] = {
+    async render(){
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-key"></i> Change Password</h1></div>
+        <div class="page-body"><div class="card" style="max-width:500px">
+            <div class="form-group"><label>Current Password</label><input type="password" class="form-input" id="cpCurrent" placeholder="Enter current password"></div>
+            <div class="form-group"><label>New Password</label><input type="password" class="form-input" id="cpNew" placeholder="Enter new password"></div>
+            <div class="form-group"><label>Confirm New Password</label><input type="password" class="form-input" id="cpConfirm" placeholder="Confirm new password"></div>
+            <button class="btn btn-primary btn-full" onclick="Pages['change-password'].submit()"><i class="fas fa-save"></i> Update Password</button>
+        </div></div>`;
+    },
+    async submit(){
+        const current=U.val('cpCurrent'),newPass=U.val('cpNew'),confirm=U.val('cpConfirm');
+        if(!current||!newPass||!confirm){Toast.error('All fields required');return;}
+        if(newPass!==confirm){Toast.error('New passwords do not match');return;}
+        if(newPass.length<6){Toast.error('Password must be at least 6 characters');return;}
+        Loading.show();
+        const res=await API.changePassword({empID:App.state.empID,currentPassword:current,newPassword:newPass});
+        Loading.hide();
+        if(res.success){Toast.success('Password changed successfully');App.logout();}
+        else Toast.error(res.error||'Failed to change password');
+    }
+};
+
+// ==================== AUDIT LOG ====================
+Pages['audit-log'] = {
+    async render(){
+        Loading.show();
+        const res=await API.getAuditLog();
+        Loading.hide();
+        const logs=res.success?(res.data||[]):[];
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-shield-alt"></i> Audit Log</h1>
+        <button class="btn btn-sm btn-secondary" onclick="U.exportToCSV(Pages['audit-log']._logs,'audit_log')"><i class="fas fa-download"></i> Export</button></div>
+        <div class="page-body"><div class="table-container"><table>
+        <thead><tr><th>Date</th><th>EmpID</th><th>Name</th><th>Action</th><th>IP</th></tr></thead>
+        <tbody>${logs.map(l=>`<tr><td>${U.formatDateTime(l.date||l.timestamp)}</td><td><span class="tag">${U.escHtml(l.empID||'')}</span></td><td>${U.escHtml(l.name||'')}</td><td>${U.escHtml(l.action||'')}</td><td>${U.escHtml(l.ip||'')}</td></tr>`).join('')||'<tr><td colspan="5"><div class="empty-state"><p>No audit logs</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        this._logs=logs;
+    }
+};
+
+// ==================== JOINING LETTER ====================
+Pages['joining-letter'] = {
+    async render(){
+        Loading.show();
+        const res=await API.getEmployees();
+        Loading.hide();
+        const emps=res.success?(res.data||[]):[];
+        const options=emps.map(e=>`<option value="${e.empID||e['Employee ID']}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('');
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-file-signature"></i> Joining Letter</h1></div>
+        <div class="page-body">
+        <div class="card" style="max-width:400px;margin-bottom:16px">
+            <div class="form-group"><label>Select Employee</label><select class="form-select" id="jlEmp">${options}</select></div>
+            <button class="btn btn-primary" onclick="Pages['joining-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate Letter</button>
+        </div>
+        <div id="letterContent" class="letter-preview"></div>
+        </div>`;
+        this._emps=emps;
+    },
+    async generate(){
+        const empID=U.val('jlEmp');
+        const emp=this._emps.find(e=>(e.empID||e['Employee ID'])===empID);
+        if(!emp){Toast.error('Select an employee');return;}
+        const logo=localStorage.getItem('hrmis_company_logo')||'';
+        const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+        U.id('letterContent').innerHTML = `
+        <div style="position:relative">
+        <div class="letter-header">
+            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>'}
+            <h1>JOINING LETTER</h1>
+            <p>Reference: HR/${empID}/2025</p>
+        </div>
+        <div class="letter-body">
+            <p><strong>Date:</strong> ${today}</p><br>
+            <p><strong>To,</strong></p>
+            <p>${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'')}</p>
+            <p>${U.escHtml(emp.presentAddress||emp['PRESENT ADDRESS']||'')}</p><br>
+            <p><strong>Subject: Joining Letter for the position of ${U.escHtml(emp.designation||'')}</strong></p><br>
+            <p>Dear ${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'').split(' ')[0]||'Candidate'},</p>
+            <p>We are pleased to offer you the position of <strong>${U.escHtml(emp.designation||'')}</strong> in the <strong>${U.escHtml(emp.department||'')}</strong> department, effective from <strong>${U.formatDate(emp.joiningDate||emp['JOINING DATE'])}</strong>.</p>
+            <p>Your initial compensation will be <strong>${U.formatCurrency(emp.joiningSalary)}</strong> per month, subject to applicable tax deductions. You will be on a probation period of 6 months from the date of joining.</p>
+            <p><strong>Terms & Conditions:</strong></p>
+            <ol style="margin-left:20px;margin-bottom:12px">
+                <li>You are required to report to work at 9:00 AM and maintain regular working hours.</li>
+                <li>You must maintain confidentiality of all company information.</li>
+                <li>Your employment is subject to a 90-day probation period.</li>
+                <li>You will be entitled to leave benefits as per company policy after probation.</li>
+                <li>Either party may terminate this engagement with 30 days written notice.</li>
+            </ol>
+            <p>We look forward to working with you and believe you will make a valuable contribution to our team.</p>
+        </div>
+        <div class="letter-signature">
+            <p>Warm Regards,</p>
+            <div class="sign-line"></div>
+            <p><strong>HR Manager</strong></p>
+            <p>Human Resource Department</p>
+        </div>
+        <div class="letter-footer">This is a system-generated document. | Generated on ${new Date().toLocaleString()}</div>
+        <div class="letter-watermark">OFFICIAL</div>
+        </div>`;
+        Toast.success('Letter generated! Click "Export PDF" to download.');
+    },
+    async exportPDF(){
+        const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate letter first');return;}
+        if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
+        Toast.info('Generating PDF...');
+        try{await html2pdf().set({margin:10,filename:'Joining_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save();Toast.success('PDF downloaded!');}catch(e){Toast.error('PDF failed: '+e.message);}
+    }
+};
+
+// ==================== APPOINTMENT LETTER ====================
+Pages['appointment-letter'] = {
+    async render(){
+        Loading.show();const res=await API.getEmployees();Loading.hide();
+        const emps=res.success?(res.data||[]):[];
+        const options=emps.map(e=>`<option value="${e.empID||e['Employee ID']}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('');
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-file-contract"></i> Appointment Letter</h1></div>
+        <div class="page-body">
+        <div class="card" style="max-width:400px;margin-bottom:16px">
+            <div class="form-group"><label>Select Employee</label><select class="form-select" id="alEmp">${options}</select></div>
+            <button class="btn btn-primary" onclick="Pages['appointment-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate Letter</button>
+        </div>
+        <div id="letterContent" class="letter-preview"></div></div>`;
+        this._emps=emps;
+    },
+    async generate(){
+        const empID=U.val('alEmp');const emp=this._emps.find(e=>(e.empID||e['Employee ID'])===empID);
+        if(!emp){Toast.error('Select employee');return;}
+        const logo=localStorage.getItem('hrmis_company_logo')||'';
+        const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+        U.id('letterContent').innerHTML = `
+        <div style="position:relative"><div class="letter-header">
+            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>'}
+            <h1>APPOINTMENT LETTER</h1><p>Ref: HR/APPT/${empID}/2025</p></div>
+        <div class="letter-body">
+            <p><strong>Date:</strong> ${today}</p><br>
+            <p><strong>To,</strong></p><p>${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'')}</p>
+            <p>${U.escHtml(emp.presentAddress||emp['PRESENT ADDRESS']||'')}</p><br>
+            <p><strong>Subject: Appointment as ${U.escHtml(emp.designation||'')}</strong></p><br>
+            <p>Dear ${U.escHtml((emp.fullName||emp['FULL NAME (As per NID)']||'').split(' ')[0])},</p>
+            <p>With reference to your interview and subsequent discussions, we are delighted to confirm your appointment as <strong>${U.escHtml(emp.designation||'')}</strong> in the <strong>${U.escHtml(emp.department||'')}</strong> department.</p>
+            <p><strong>Key Details:</strong></p>
+            <ul style="margin-left:20px;margin-bottom:12px">
+                <li><strong>Joining Date:</strong> ${U.formatDate(emp.joiningDate||emp['JOINING DATE'])}</li>
+                <li><strong>Probation Period:</strong> 6 (Six) Months</li>
+                <li><strong>Reporting To:</strong> ${U.escHtml(emp.lineManager||'Department Head')}</li>
+                <li><strong>Working Hours:</strong> 9:00 AM to 6:00 PM (Sunday - Thursday)</li>
+                <li><strong>Compensation:</strong> ${U.formatCurrency(emp.joiningSalary)} per month (Gross)</li>
+            </ul>
+            <p><strong>Benefits:</strong></p>
+            <ul style="margin-left:20px;margin-bottom:12px">
+                <li>Provident Fund (10% of Basic)</li><li>Medical Allowance</li>
+                <li>Leave Benefits: Casual Leave (12 days), Sick Leave (10 days), Earned Leave (15 days) per year</li>
+                <li>Festival Bonus (2x per year)</li>
+            </ul>
+            <p>This appointment is subject to satisfactory completion of the probation period and compliance with company policies.</p>
+        </div>
+        <div class="letter-signature"><p>For and on behalf of Management,</p><div class="sign-line"></div><p><strong>Managing Director</strong></p></div>
+        <div class="letter-footer">This is a system-generated document. | ${new Date().toLocaleString()}</div>
+        <div class="letter-watermark">CONFIDENTIAL</div></div>`;
+        Toast.success('Letter generated!');
+    },
+    exportPDF(){ const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
+        if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
+        Toast.info('Generating PDF...');
+        html2pdf().set({margin:10,filename:'Appointment_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save().then(()=>Toast.success('PDF downloaded'));
+    }
+};
+
+// ==================== EXPERIENCE LETTER ====================
+Pages['experience-letter'] = {
+    async render(){
+        Loading.show();const res=await API.getEmployees();Loading.hide();
+        const emps=res.success?(res.data||[]):[];
+        const options=emps.map(e=>`<option value="${e.empID||e['Employee ID']}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('');
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-certificate"></i> Experience Letter</h1></div>
+        <div class="page-body">
+        <div class="card" style="max-width:400px;margin-bottom:16px">
+            <div class="form-group"><label>Select Employee</label><select class="form-select" id="elEmp">${options}</select></div>
+            <div class="form-group"><label>Reason for Leaving</label><input type="text" class="form-input" id="elReason" placeholder="e.g. Resigned, Better Opportunity"></div>
+            <button class="btn btn-primary" onclick="Pages['experience-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate Letter</button>
+        </div>
+        <div id="letterContent" class="letter-preview"></div></div>`;
+        this._emps=emps;
+    },
+    async generate(){
+        const empID=U.val('elEmp');const emp=this._emps.find(e=>(e.empID||e['Employee ID'])===empID);
+        if(!emp){Toast.error('Select employee');return;}
+        const logo=localStorage.getItem('hrmis_company_logo')||'';
+        const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+        const jd=emp.joiningDate||emp['JOINING DATE']||'';
+        const lwd=emp.terminationDate||new Date().toISOString().split('T')[0];
+        U.id('letterContent').innerHTML = `
+        <div style="position:relative"><div class="letter-header">
+            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1B5E20"></i>'}
+            <h1 style="color:#1B5E20">EXPERIENCE CERTIFICATE</h1><p>Ref: HR/EXP/${empID}/2025</p></div>
+        <div class="letter-body">
+            <p><strong>Date:</strong> ${today}</p><br>
+            <p><strong>To Whom It May Concern,</strong></p><br>
+            <p>This is to certify that <strong>${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'')}</strong> (Employee ID: ${empID}) was employed with our organization in the capacity of <strong>${U.escHtml(emp.designation||'')}</strong> within the <strong>${U.escHtml(emp.department||'')}</strong> department.</p>
+            <p><strong>Employment Period:</strong> ${U.formatDate(jd)} to ${U.formatDate(lwd)}</p>
+            <p><strong>Designation(s) Held:</strong> ${U.escHtml(emp.designation||'')}</p>
+            <p><strong>Last Drawn Salary:</strong> ${U.formatCurrency(emp.joiningSalary)}</p>
+            <p><strong>Reason for Leaving:</strong> ${U.escHtml(U.val('elReason')||'Personal Reasons')}</p>
+            <p>During the tenure of employment, we found ${U.escHtml((emp.fullName||'').split(' ')[0])} to be sincere, hardworking, and dedicated to assigned responsibilities. ${U.escHtml((emp.fullName||'').split(' ')[0]||'He/She')} maintained good professional conduct and interpersonal relationships.</p>
+            <p>We wish ${U.escHtml((emp.fullName||'').split(' ')[0]||'him/her')} all the best in future endeavors.</p>
+        </div>
+        <div class="letter-signature"><p>For and on behalf of Management,</p><div class="sign-line"></div><p><strong>HR Manager</strong></p></div>
+        <div class="letter-footer">This is a system-generated document. | ${new Date().toLocaleString()}</div>
+        <div class="letter-watermark">VERIFIED</div></div>`;
+        Toast.success('Experience letter generated!');
+    },
+    exportPDF(){ const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
+        if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
+        Toast.info('Generating PDF...');
+        html2pdf().set({margin:10,filename:'Experience_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save().then(()=>Toast.success('PDF downloaded'));
+    }
+};
+
+// ==================== NOC LETTER ====================
+Pages['noc-letter'] = {
+    async render(){
+        Loading.show();const res=await API.getEmployees();Loading.hide();
+        const emps=res.success?(res.data||[]):[];
+        const options=emps.map(e=>`<option value="${e.empID||e['Employee ID']}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('');
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-stamp"></i> NOC Letter</h1></div>
+        <div class="page-body">
+        <div class="card" style="max-width:400px;margin-bottom:16px">
+            <div class="form-group"><label>Select Employee</label><select class="form-select" id="nocEmp">${options}</select></div>
+            <button class="btn btn-primary" onclick="Pages['noc-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate NOC</button>
+        </div>
+        <div id="letterContent" class="letter-preview"></div></div>`;
+        this._emps=emps;
+    },
+    async generate(){
+        const empID=U.val('nocEmp');const emp=this._emps.find(e=>(e.empID||e['Employee ID'])===empID);
+        if(!emp){Toast.error('Select employee');return;}
+        const logo=localStorage.getItem('hrmis_company_logo')||'';
+        const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+        U.id('letterContent').innerHTML = `
+        <div style="position:relative"><div class="letter-header">
+            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>'}
+            <h1>NO OBJECTION CERTIFICATE (NOC)</h1><p>Ref: HR/NOC/${empID}/2025</p></div>
+        <div class="letter-body">
+            <p><strong>Date:</strong> ${today}</p><br>
+            <p><strong>To Whom It May Concern,</strong></p><br>
+            <p>This is to certify that <strong>${U.escHtml(emp.fullName||emp['FULL NAME (As per NID)']||'')}</strong> bearing Employee ID <strong>${empID}</strong> was employed with our organization as <strong>${U.escHtml(emp.designation||'')}</strong> in the <strong>${U.escHtml(emp.department||'')}</strong> department from <strong>${U.formatDate(emp.joiningDate||emp['JOINING DATE'])}</strong> to <strong>${U.formatDate(emp.terminationDate)}</strong>.</p>
+            <p>We have <strong>no objection</strong> to ${U.escHtml((emp.fullName||'').split(' ')[0]||'the above mentioned employee')} seeking new employment opportunities elsewhere. The employee has cleared all dues and returned all company assets as per our records.</p>
+            <p>During the employment period, we found the employee to be professional, dedicated, and of good character. There are no pending disciplinary actions or legal obligations between the company and the employee.</p>
+            <p>We wish ${U.escHtml((emp.fullName||'').split(' ')[0]||'the employee')} success in all future endeavors.</p>
+        </div>
+        <div class="letter-signature"><p>Authorized Signatory,</p><div class="sign-line"></div><p><strong>HR Manager</strong></p></div>
+        <div class="letter-footer">This is a system-generated NOC. Valid without signature if verified digitally. | ${new Date().toLocaleString()}</div>
+        <div class="letter-watermark">NOC</div></div>`;
+        Toast.success('NOC generated!');
+    },
+    exportPDF(){ const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
+        if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
+        Toast.info('Generating PDF...');
+        html2pdf().set({margin:10,filename:'NOC_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save().then(()=>Toast.success('PDF downloaded'));
+    }
+};
+
+// ==================== LEAVE BALANCE ====================
+Pages['leave-balance'] = {
+    async render(){
+        const isAdmin = App.state.role==='Admin';
+        Loading.show();const res=await API.getEmployees();Loading.hide();
+        const emps=res.success?(res.data||[]):[];
+        const empID = isAdmin ? '' : App.state.empID;
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-balance-scale"></i> Leave Balance</h1></div>
+        <div class="page-body">
+        ${isAdmin?`<div class="card" style="max-width:400px;margin-bottom:16px">
+            <div class="form-group"><label>Select Employee</label><select class="form-select" id="lbEmp" onchange="Pages['leave-balance'].load()">${emps.map(e=>`<option value="${e.empID||e['Employee ID']}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('')}</select></div>
+        </div>`:''}
+        <div class="stats-grid" id="lbCards">
+            <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div><div class="stat-value" id="lbCasual">-</div><div class="stat-label">Casual Leave</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-medkit"></i></div><div class="stat-value" id="lbSick">-</div><div class="stat-label">Sick Leave</div></div>
+            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-award"></i></div><div class="stat-value" id="lbEarned">-</div><div class="stat-label">Earned Leave</div></div>
+        </div>
+        ${isAdmin?`<div class="card" style="max-width:500px"><h3 style="margin-bottom:12px">Configure Leave Balance</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Casual Leave (days/year)</label><input type="number" class="form-input" id="lbSetCasual" value="12"></div>
+                <div class="form-group"><label>Sick Leave (days/year)</label><input type="number" class="form-input" id="lbSetSick" value="10"></div>
+                <div class="form-group"><label>Earned Leave (days/year)</label><input type="number" class="form-input" id="lbSetEarned" value="15"></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="Pages['leave-balance'].save()"><i class="fas fa-save"></i> Save</button>
+        </div>`:''}</div>`;
+        if(!isAdmin && emps.length){ U.id('lbEmp') && (U.id('lbEmp').value=empID); }
+        if(isAdmin && emps.length) this.load();
+        else if(!isAdmin) this.load();
+    },
+    async load(){
+        const empID = U.id('lbEmp') ? U.val('lbEmp') : App.state.empID;
+        try{const res=await API.getLeaveBalance(empID);
+            const d=res.success?(res.data||{}):{};
+            U.id('lbCasual').textContent=d.casual||d.Casual||'0';
+            U.id('lbSick').textContent=d.sick||d.Sick||'0';
+            U.id('lbEarned').textContent=d.earned||d.Earned||'0';
+        }catch(e){
+            U.id('lbCasual').textContent='0';U.id('lbSick').textContent='0';U.id('lbEarned').textContent='0';
+        }
+    },
+    async save(){
+        const empID=U.val('lbEmp');if(!empID){Toast.error('Select employee');return;}
+        Loading.show();
+        const res=await API.saveLeaveBalance({empID,casual:U.val('lbSetCasual'),sick:U.val('lbSetSick'),earned:U.val('lbSetEarned')});
+        Loading.hide();
+        if(res.success)Toast.success('Leave balance updated');else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== LEAVE CALENDAR ====================
+Pages['leave-calendar'] = {
+    month:new Date().getMonth(), year:new Date().getFullYear(),
+    async render(){
+        Loading.show();const res=await API.getLeaves();Loading.hide();
+        this._leaves=res.success?(res.data||[]):[];
+        this._render();
+    },
+    _render(){
+        const m=this.month,y=this.year;
+        const firstDay=new Date(y,m,1).getDay();
+        const daysInMonth=new Date(y,m+1,0).getDate();
+        const prevDays=new Date(y,m,0).getDate();
+        const monthName=new Date(y,m).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+        const todayStr=U.today();
+        const leaveDates={};
+        this._leaves.forEach(l=>{
+            if(l.status!=='Approved')return;
+            let start=new Date(l.startDate),end=new Date(l.endDate);
+            while(start<=end){leaveDates[start.toISOString().split('T')[0]]={empID:l.empID,name:l.name};start.setDate(start.getDate()+1);}
+        });
+        let calHtml=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-header">${d}</div>`).join('');
+        for(let i=0;i<firstDay;i++) calHtml+=`<div class="cal-day other-month">${prevDays-firstDay+1+i}</div>`;
+        for(let d=1;d<=daysInMonth;d++){
+            const dateStr=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const isToday=dateStr===todayStr;
+            const hasLeave=leaveDates[dateStr];
+            calHtml+=`<div class="cal-day${isToday?' today':''}${hasLeave?' has-leave':''}" onclick="Pages['leave-calendar'].showDay('${dateStr}')" title="${hasLeave?hasLeave.name:''}">${d}</div>`;
+        }
+        const remaining=42-firstDay-daysInMonth;
+        for(let i=1;i<=remaining;i++) calHtml+=`<div class="cal-day other-month">${i}</div>`;
+
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-calendar-check"></i> Leave Calendar</h1></div>
+        <div class="page-body">
+        <div class="flex-gap mb-2">
+            <button class="btn btn-sm btn-outline" onclick="Pages['leave-calendar'].changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+            <strong>${monthName}</strong>
+            <button class="btn btn-sm btn-outline" onclick="Pages['leave-calendar'].changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="card"><div class="leave-calendar">${calHtml}</div>
+        <div class="flex-gap mt-2" style="font-size:.8rem"><span><span style="display:inline-block;width:10px;height:10px;background:var(--success);border-radius:50%;margin-right:4px"></span> Approved Leave</span><span><span style="display:inline-block;width:10px;height:10px;background:var(--primary);border-radius:50%;margin-right:4px"></span> Today</span></div>
+        </div></div>`;
+    },
+    changeMonth(dir){this.month+=dir;if(this.month>11){this.month=0;this.year++;}if(this.month<0){this.month=11;this.year--;}this._render();},
+    showDay(dateStr){
+        const onLeave=this._leaves.filter(l=>l.status==='Approved'&&dateStr>=l.startDate&&dateStr<=l.endDate);
+        if(!onLeave.length){Toast.info('No approved leaves on this date');return;}
+        Modal.open('<i class="fas fa-calendar-check"></i> <span>Leaves on '+U.formatDate(dateStr)+'</span>',
+            onLeave.map(l=>`<div class="ticket-card"><strong>${U.escHtml(l.name||'')}</strong><br><span class="text-muted">${l.empID}</span> — ${U.formatDate(l.startDate)} to ${U.formatDate(l.endDate)}</div>`).join(''),
+            '<button class="btn btn-sm btn-outline" onclick="Modal.close()">Close</button>'
+        );
+    }
+};
+
+// ==================== SETTINGS ====================
+Pages['settings'] = {
+    async render(){
+        Loading.show();const res=await API.getSettings();Loading.hide();
+        const s=res.success?(res.data||{}):{};
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-cogs"></i> Settings</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages['settings'].save()"><i class="fas fa-save"></i> Save All</button></div>
+        <div class="page-body">
+        <div class="settings-section"><h3><i class="fas fa-building"></i> Company Information</h3>
+            <div class="form-row"><div class="form-group"><label>Company Name</label><input type="text" class="form-input" id="setCompanyName" value="${U.escHtml(s.companyName||'')}"></div>
+            <div class="form-group"><label>Tagline</label><input type="text" class="form-input" id="setTagline" value="${U.escHtml(s.tagline||'')}"></div></div>
+            <div class="form-row"><div class="form-group"><label>Phone</label><input type="text" class="form-input" id="setPhone" value="${U.escHtml(s.phone||'')}"></div>
+            <div class="form-group"><label>Email</label><input type="email" class="form-input" id="setEmail" value="${U.escHtml(s.email||'')}"></div></div>
+            <div class="form-group"><label>Website</label><input type="url" class="form-input" id="setWebsite" value="${U.escHtml(s.website||'')}"></div>
+            <div class="form-group"><label>Address</label><textarea class="form-textarea" id="setAddress">${U.escHtml(s.address||'')}</textarea></div>
+        </div>
+        <div class="settings-section"><h3><i class="fas fa-clock"></i> Work Settings</h3>
+            <div class="form-row"><div class="form-group"><label>Shift Start</label><input type="time" class="form-input" id="setShiftStart" value="${s.shiftStart||'09:00'}"></div>
+            <div class="form-group"><label>Shift End</label><input type="time" class="form-input" id="setShiftEnd" value="${s.shiftEnd||'18:00'}"></div></div>
+            <div class="form-row"><div class="form-group"><label>Late Threshold (minutes)</label><input type="number" class="form-input" id="setLateThreshold" value="${s.lateThreshold||15}"></div>
+            <div class="form-group"><label>Weekend Days</label><input type="text" class="form-input" id="setWeekends" value="${U.escHtml(s.weekends||'Friday,Saturday')}" placeholder="e.g. Friday,Saturday"></div></div>
+        </div>
+        <div class="settings-section"><h3><i class="fas fa-umbrella-beach"></i> Leave Settings</h3>
+            <div class="form-row"><div class="form-group"><label>Casual Leave (days/year)</label><input type="number" class="form-input" id="setCasualLeave" value="${s.casualLeave||12}"></div>
+            <div class="form-group"><label>Sick Leave (days/year)</label><input type="number" class="form-input" id="setSickLeave" value="${s.sickLeave||10}"></div>
+            <div class="form-group"><label>Earned Leave (days/year)</label><input type="number" class="form-input" id="setEarnedLeave" value="${s.earnedLeave||15}"></div></div>
+        </div>
+        </div>`;
+    },
+    async save(){
+        const data={companyName:U.val('setCompanyName'),tagline:U.val('setTagline'),phone:U.val('setPhone'),email:U.val('setEmail'),website:U.val('setWebsite'),address:U.val('setAddress'),shiftStart:U.val('setShiftStart'),shiftEnd:U.val('setShiftEnd'),lateThreshold:U.val('setLateThreshold'),weekends:U.val('setWeekends'),casualLeave:U.val('setCasualLeave'),sickLeave:U.val('setSickLeave'),earnedLeave:U.val('setEarnedLeave')};
+        Loading.show();const res=await API.saveSettings(data);Loading.hide();
+        if(res.success)Toast.success('Settings saved');else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== IMPORT EMPLOYEES ====================
+Pages['import-employees'] = {
+    _parsedData:[],_headers:[],
+    async render(){
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-file-import"></i> Import Employees</h1></div>
+        <div class="page-body">
+        <div class="card">
+            <h3 style="margin-bottom:12px">Upload CSV File</h3>
+            <p class="text-muted" style="font-size:.85rem;margin-bottom:12px">CSV should have headers: fullName, empID, designation, department, joiningDate, email, mobile, etc.</p>
+            <div class="form-file" style="margin-bottom:16px"><input type="file" accept=".csv" onchange="Pages['import-employees'].parseCSV(event)"><div class="file-label"><i class="fas fa-cloud-upload-alt"></i> Choose CSV file</div></div>
+            <div id="importPreview" class="hidden">
+                <div class="import-stats" id="importStats"></div>
+                <div class="import-preview-table" id="importTable"></div>
+                <button class="btn btn-primary mt-2" onclick="Pages['import-employees'].confirmImport()"><i class="fas fa-upload"></i> Confirm Import</button>
+            </div>
+        </div></div>`;
+    },
+    parseCSV(e){
+        const file=e.target.files[0];if(!file)return;
+        const reader=new FileReader();
+        reader.onload=(ev)=>{
+            const lines=ev.target.result.split('\\n').filter(l=>l.trim());
+            if(lines.length<2){Toast.error('CSV must have headers and at least one row');return;}
+            this._headers=lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+            this._parsedData=lines.slice(1).map(line=>{
+                const values=[];let current='',inQuote=false;
+                for(let ch of line){if(ch==='"')inQuote=!inQuote;else if(ch===','&&!inQuote){values.push(current.trim());current='';}else current+=ch;}
+                values.push(current.trim());
+                const obj={};this._headers.forEach((h,i)=>obj[h]=values[i]||'');return obj;
+            }).filter(r=>r.fullName||r.empID);
+            document.getElementById('importPreview').classList.remove('hidden');
+            document.getElementById('importStats').innerHTML=`
+                <div class="import-stat"><div class="num">${this._parsedData.length}</div><div class="lbl">Records Found</div></div>
+                <div class="import-stat"><div class="num">${this._headers.length}</div><div class="lbl">Columns</div></div>`;
+            let tableHtml='<table><thead><tr>'+this._headers.map(h=>`<th>${U.escHtml(h)}</th>`).join('')+'</tr></thead><tbody>'+this._parsedData.slice(0,10).map(r=>'<tr>'+this._headers.map(h=>`<td>${U.escHtml(r[h]||'')}</td>`).join('')+'</tr>').join('');
+            if(this._parsedData.length>10)tableHtml+=`<tr><td colspan="${this._headers.length}" class="text-muted text-center">...and ${this._parsedData.length-10} more rows</td></tr>`;
+            tableHtml+='</tbody></table>';
+            document.getElementById('importTable').innerHTML=tableHtml;
+        };
+        reader.readAsText(file);
+    },
+    async confirmImport(){
+        if(!this._parsedData.length){Toast.error('No data to import');return;}
+        Confirm.open(`Import ${this._parsedData.length} employees?`,async()=>{
+            Loading.show();
+            for(const emp of this._parsedData){
+                await API.saveEmployee({...emp,_editMode:false,_editEmpID:emp.empID});
+            }
+            Loading.hide();
+            Toast.success(`${this._parsedData.length} employees imported successfully`);
+            App.navigate('employees');
+        });
+    }
+};
+
+// ==================== EDIT ATTENDANCE ====================
+Pages['edit-attendance'] = {
+    async render(){
+        Loading.show();const res=await API.getEmployees();Loading.hide();
+        const emps=res.success?(res.data||[]):[];
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-user-clock"></i> Edit Attendance</h1></div>
+        <div class="page-body"><div class="card" style="max-width:500px">
+            <div class="form-group"><label>Employee</label><select class="form-select" id="eaEmp">${emps.map(e=>`<option value="${e.empID||e['Employee ID']}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('')}</select></div>
+            <div class="form-row"><div class="form-group"><label>Date</label><input type="date" class="form-input" id="eaDate" value="${U.today()}"></div>
+            <div class="form-group"><label>Reason</label><input type="text" class="form-input" id="eaReason" placeholder="Reason for edit"></div></div>
+            <div class="form-row"><div class="form-group"><label>Check In Time</label><input type="time" class="form-input" id="eaCheckIn" value="09:00"></div>
+            <div class="form-group"><label>Check Out Time</label><input type="time" class="form-input" id="eaCheckOut" value="18:00"></div></div>
+            <button class="btn btn-primary btn-full" onclick="Pages['edit-attendance'].save()"><i class="fas fa-save"></i> Update Attendance</button>
+        </div></div>`;
+    },
+    async save(){
+        const data={empID:U.val('eaEmp'),date:U.val('eaDate'),checkInTime:U.val('eaCheckIn'),checkOutTime:U.val('eaCheckOut'),reason:U.val('eaReason')};
+        if(!data.empID||!data.date){Toast.error('Employee and date required');return;}
+        Loading.show();const res=await API.editAttendance(data);Loading.hide();
+        if(res.success)Toast.success('Attendance updated');else Toast.error(res.error||'Failed');
+    }
+};
+
+// ==================== SALARY HISTORY ====================
+Pages['salary-history'] = {
+    async render(){
+        Loading.show();const res=await API.getPromotions();Loading.hide();
+        const records=res.success?(res.data||[]):[];
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-history"></i> Salary History</h1>
+        <button class="btn btn-sm btn-secondary" onclick="U.exportToCSV(Pages['salary-history']._data,'salary_history')"><i class="fas fa-download"></i> Export CSV</button></div>
+        <div class="page-body"><div class="table-container"><table>
+        <thead><tr><th>Emp ID</th><th>Name</th><th>Date</th><th>Previous</th><th>New Salary</th><th>Difference</th><th>Designation Change</th></tr></thead>
+        <tbody>${records.map(r=>{const diff=(r.newSalary||0)-(r.prevSalary||0);return`<tr><td><span class="tag">${U.escHtml(r.empID||'')}</span></td><td>${U.escHtml(r.name||'')}</td><td>${U.formatDate(r.date)}</td><td>${U.formatCurrency(r.prevSalary)}</td><td class="text-success">${U.formatCurrency(r.newSalary)}</td><td class="${diff>0?'text-success':'text-danger'}">${diff>0?'+':''}${U.formatCurrency(diff)}</td><td>${r.prevDesignation!==r.newDesignation?U.escHtml(r.prevDesignation||'')+' → '+U.escHtml(r.newDesignation||''):'-'}</td></tr>`}).join('')||'<tr><td colspan="7"><div class="empty-state"><p>No salary history</p></div></td></tr>'}
+        </tbody></table></div></div>`;
+        this._data=records;
+    }
+};
+
+// ==================== DOCUMENT VAULT ====================
+Pages['document-vault'] = {
+    async render(){
+        const empID=App.state.role==='Admin'?'':App.state.empID;
+        Loading.show();const res=await API.getDocuments(empID||'all');Loading.hide();
+        const docs=res.success?(res.data||[]):[];
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-folder-open"></i> ${App.state.role==='Admin'?'Document Vault':'My Documents'}</h1>
+        <button class="btn btn-primary btn-sm" onclick="Pages['document-vault'].upload()"><i class="fas fa-upload"></i> Upload Document</button></div>
+        <div class="page-body">
+        ${App.state.role==='Admin'?`<div class="search-bar mb-2"><i class="fas fa-search"></i><input type="text" placeholder="Search by employee ID..." id="docSearch" oninput="Pages['document-vault'].render()"></div>`:''}
+        <div class="doc-grid">${docs.map(d=>`
+            <div class="doc-card" onclick="window.open('${d.fileUrl||d.url||'#'}','_blank')">
+                <i class="fas ${d.docType==='NID'?'fa-id-card':d.docType==='CV'?'fa-file-alt':'fa-file-pdf'}"></i>
+                <div class="doc-name">${U.escHtml(d.docName||d.fileName||'')}</div>
+                <div class="doc-type">${U.escHtml(d.docType||'Document')} — ${d.empID||''}</div>
+            </div>`).join('')||'<div class="empty-state"><i class="fas fa-folder-open"></i><p>No documents uploaded</p></div>'}
+        </div></div>`;
+        this._docs=docs;
+    },
+    upload(){
+        Modal.open('<i class="fas fa-upload"></i> <span>Upload Document</span>',
+            `<div class="form-group"><label>Employee ID</label><input type="text" class="form-input" id="docEmpID" value="${App.state.role==='Admin'?'':App.state.empID}" placeholder="Employee ID"></div>
+            <div class="form-group"><label>Document Type</label><select class="form-select" id="docType"><option>NID</option><option>CV</option><option>Certificate</option><option>Offer Letter</option><option>Other</option></select></div>
+            <div class="form-group"><label>Document Name</label><input type="text" class="form-input" id="docName" placeholder="e.g. NID Scan"></div>
+            <div class="form-file"><input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="Pages['document-vault']._file=this.files[0];document.getElementById('docFileLabel').textContent=this.files[0]?this.files[0].name:'Choose file'"><div class="file-label" id="docFileLabel"><i class="fas fa-cloud-upload-alt"></i> Choose file (PDF, JPG, PNG)</div></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+            <button class="btn btn-primary btn-sm" onclick="Pages['document-vault'].submitUpload()"><i class="fas fa-upload"></i> Upload</button>`
+        );
+    },
+    _file:null,
+    async submitUpload(){
+        const empID=U.val('docEmpID'),docType=U.val('docType'),docName=U.val('docName'),file=this._file;
+        if(!empID||!file){Toast.error('Employee ID and file required');return;}
+        if(file.size>5*1024*1024){Toast.error('File must be under 5MB');return;}
+        Loading.show();
+        const reader=new FileReader();
+        reader.onload=async(ev)=>{
+            const base64=ev.target.result.split(',')[1];
+            const res=await API.uploadFile({fileName:empID+'_'+docType+'_'+file.name,base64Data:base64,mimeType:file.type,folder:'Documents'});
+            if(res.success&&res.data&&res.data.fileUrl){
+                await API.saveDocument({empID,docType,docName:docName||docType,fileUrl:res.data.fileUrl,fileName:file.name});
+                Toast.success('Document uploaded');Modal.close();this.render();
+            }else Toast.error('Upload failed');Loading.hide();
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+// ============================================================
+// TAX CALCULATOR PAGE (Admin-only)
+// ============================================================
+Pages['tax-calculator'] = {
+    chart: null,
+    render(){
+        if(App.state.role!=='Admin'){Toast.error('Access denied');return;}
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-calculator"></i> Tax & Deduction Calculator</h1></div>
+        <div class="page-body">
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-money-bill-wave"></i> Bangladesh Tax Calculator (2024-2025)</h3></div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1">
+                    <label>Annual Gross Salary (BDT)</label>
+                    <input type="number" class="form-input" id="taxGrossSalary" placeholder="e.g. 600000" value="600000" oninput="Pages['tax-calculator'].calculate()">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="Pages['tax-calculator'].calculate()"><i class="fas fa-calculator"></i> Calculate Tax</button>
+        </div>
+        <div id="taxResults"></div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-chart-pie"></i> Tax Breakdown Chart</h3></div>
+            <div class="chart-container" style="max-height:350px"><canvas id="taxChart"></canvas></div>
+        </div>
+        </div>`;
+        this.calculate();
+    },
+    calculate(){
+        const gross = parseFloat(U.val('taxGrossSalary')) || 0;
+        // Bangladesh tax slabs 2024-2025
+        const slabs = [
+            { min:0, max:300000, rate:0, label:'0 - 3,00,000' },
+            { min:300001, max:800000, rate:5, label:'3,00,001 - 8,00,000' },
+            { min:800001, max:1200000, rate:10, label:'8,00,001 - 12,00,000' },
+            { min:1200001, max:2000000, rate:15, label:'12,00,001 - 20,00,000' },
+            { min:2000001, max:4000000, rate:20, label:'20,00,001 - 40,00,000' },
+            { min:4000001, max:Infinity, rate:25, label:'Above 40,00,000' }
+        ];
+
+        let totalTax = 0;
+        const breakdown = [];
+        slabs.forEach(s => {
+            if(gross >= s.min){
+                const taxableInThisSlab = Math.min(gross, s.max) - s.min + (s.min === 300001 ? 1 : 0);
+                const adjustedAmount = s.min === 0 ? Math.min(gross, s.max) : (gross >= s.max ? (s.max - s.min + 1) : (gross - s.min + 1));
+                // Simpler calculation
+                let slabTax = 0;
+                if(gross > s.min){
+                    const taxable = Math.min(gross, s.max) - (s.min === 0 ? 0 : s.min - 1);
+                    if(s.min === 0){ slabTax = 0; }
+                    else { slabTax = taxable * (s.rate / 100); }
+                }
+                slabTax = Math.round(slabTax);
+                if(slabTax > 0 || s.rate === 0){
+                    breakdown.push({ ...s, tax: slabTax, range: Math.min(gross, s.max) - (s.min === 0 ? 0 : s.min - 1) });
+                }
+                totalTax += slabTax;
+            }
+        });
+
+        // Recalculate properly
+        totalTax = 0;
+        breakdown.length = 0;
+        let remaining = gross;
+        slabs.forEach(s => {
+            if(remaining <= 0) return;
+            let slabWidth;
+            if(s.min === 0){ slabWidth = Math.min(remaining, 300000); remaining -= slabWidth; }
+            else { slabWidth = Math.min(remaining, s.max - s.min + 1); remaining -= slabWidth; }
+            const slabTax = Math.round(slabWidth * (s.rate / 100));
+            breakdown.push({ label: s.label, rate: s.rate, amount: slabWidth, tax: slabTax });
+            totalTax += slabTax;
+        });
+
+        totalTax = Math.round(totalTax);
+        const netAnnual = gross - totalTax;
+        const monthlyTax = Math.round(totalTax / 12);
+        const netMonthly = Math.round(netAnnual / 12);
+        const effectiveRate = gross > 0 ? ((totalTax / gross) * 100).toFixed(1) : '0.0';
+
+        U.id('taxResults').innerHTML = `
+        <div class="stats-grid">
+            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value">${U.formatCurrency(gross)}</div><div class="stat-label">Annual Gross</div></div>
+            <div class="stat-card red"><div class="stat-icon"><i class="fas fa-percentage"></i></div><div class="stat-value">${U.formatCurrency(totalTax)}</div><div class="stat-label">Annual Tax (${effectiveRate}%)</div></div>
+            <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-calendar-alt"></i></div><div class="stat-value">${U.formatCurrency(monthlyTax)}</div><div class="stat-label">Monthly Tax</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="stat-value">${U.formatCurrency(netMonthly)}</div><div class="stat-label">Net Monthly</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-list-ol"></i> Slab-wise Breakdown</h3></div>
+            ${breakdown.map(b => `
+                <div class="tax-breakdown">
+                    <div class="flex-between">
+                        <div>
+                            <strong>BDT ${b.label}</strong>
+                            <span class="badge badge-${b.rate===0?'info':b.rate<=5?'success':b.rate<=10?'warning':'danger'}" style="margin-left:8px">${b.rate}%</span>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-muted" style="font-size:.8rem">Taxable: ${U.formatCurrency(b.amount)}</div>
+                            <strong class="text-danger">${U.formatCurrency(b.tax)}</strong>
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+            <div class="divider"></div>
+            <div class="flex-between" style="font-size:1.1rem">
+                <strong>Net Annual Income</strong>
+                <strong class="text-success">${U.formatCurrency(netAnnual)}</strong>
+            </div>
+        </div>`;
+
+        // Render chart
+        this.renderChart(breakdown, gross, totalTax);
+    },
+    renderChart(breakdown, gross, totalTax){
+        if(this.chart){ this.chart.destroy(); }
+        const ctx = document.getElementById('taxChart');
+        if(!ctx) return;
+        const labels = breakdown.map(b => b.label);
+        const taxData = breakdown.map(b => b.tax);
+        const netData = gross - totalTax;
+        this.chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [...labels, 'Net Income'],
+                datasets: [{
+                    data: [...taxData, netData],
+                    backgroundColor: ['#6C63FF','#FF6B6B','#FFA726','#4CAF50','#2196F3','#9C27B0','#E0E0E0'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } },
+                    tooltip: { callbacks: { label: ctx => ` ${ctx.label}: BDT ${ctx.raw.toLocaleString()}` } }
+                }
+            }
+        });
+    }
+};
+
+// ============================================================
+// TRAVEL & EXPENSE ADMIN PAGE (Admin-only)
+// ============================================================
+Pages['travel-expense-admin'] = {
+    expenses: [],
+    async render(){
+        if(App.state.role!=='Admin'){Toast.error('Access denied');return;}
+        Loading.show();
+        const res = await API.getTravelExpenses();
+        Loading.hide();
+        this.expenses = res.success ? (res.data||[]) : [];
+        const pending = this.expenses.filter(e=>e.Status==='Pending');
+        const approved = this.expenses.filter(e=>e.Status==='Approved');
+        const totalAmount = this.expenses.reduce((s,e)=>s+(parseFloat(e.Amount)||0),0);
+        const pendingAmount = pending.reduce((s,e)=>s+(parseFloat(e.Amount)||0),0);
+
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-plane"></i> Travel & Expense Management</h1></div>
+        <div class="page-body">
+        <div class="stats-grid">
+            <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">${pending.length}</div><div class="stat-label">Pending (BDT ${U.formatCurrency(pendingAmount)})</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value">${approved.length}</div><div class="stat-label">Approved</div></div>
+            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value">${U.formatCurrency(totalAmount)}</div><div class="stat-label">Total Amount</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-filter"></i> Filters</h3></div>
+            <div class="filter-bar">
+                <select class="form-select form-input-sm" id="expFilterStatus" onchange="Pages['travel-expense-admin'].filter()"><option value="">All Status</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+                <input type="text" class="form-input form-input-sm" id="expFilterEmp" placeholder="Search by employee..." oninput="Pages['travel-expense-admin'].filter()" style="width:200px">
+            </div>
+        </div>
+        <div class="table-container">
+        <table>
+        <thead><tr><th>ID</th><th>Employee</th><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="expenseAdminBody">
+        ${this.expenses.map(e => this.renderRow(e)).join('') || '<tr><td colspan="8"><div class="empty-state"><i class="fas fa-receipt"></i><p>No expenses found</p></div></td></tr>'}
+        </tbody>
+        </table>
+        </div>
+        </div>`;
+    },
+    renderRow(e){
+        const statusClass = e.Status==='Approved'?'badge-success':e.Status==='Rejected'?'badge-danger':'badge-warning';
+        return `<tr data-status="${U.escHtml(e.Status||'')}" data-emp="${(U.escHtml(e.Name||'')+' '+U.escHtml(e.EmpID||'')).toLowerCase()}">
+            <td><span class="tag">${U.escHtml((e.ExpenseID||'').split('_').pop()||'')}</span></td>
+            <td><strong>${U.escHtml(e.Name||'')}</strong><br><span class="text-muted" style="font-size:.75rem">${U.escHtml(e.EmpID||'')}</span></td>
+            <td>${U.formatDate(e.Date)}</td>
+            <td><span class="badge badge-info">${U.escHtml(e.ExpenseType||'')}</span></td>
+            <td>${U.escHtml(e.Description||'-')}</td>
+            <td><strong>${U.formatCurrency(e.Amount)}</strong></td>
+            <td><span class="badge ${statusClass}">${U.escHtml(e.Status||'Pending')}</span></td>
+            <td class="flex-gap">${e.Status==='Pending'?`
+                <button class="btn btn-sm btn-success" onclick="Pages['travel-expense-admin'].updateStatus('${e.ExpenseID}','Approved')"><i class="fas fa-check"></i></button>
+                <button class="btn btn-sm btn-danger" onclick="Pages['travel-expense-admin'].updateStatus('${e.ExpenseID}','Rejected')"><i class="fas fa-times"></i></button>
+            `:'<span class="text-muted" style="font-size:.8rem">Processed</span>'}</td>
+        </tr>`;
+    },
+    filter(){
+        const status = U.val('expFilterStatus')||'';
+        const emp = (U.val('expFilterEmp')||'').toLowerCase();
+        U.$$('#expenseAdminBody tr').forEach(tr => {
+            const matchStatus = !status || tr.getAttribute('data-status') === status;
+            const matchEmp = !emp || tr.getAttribute('data-emp').includes(emp);
+            tr.style.display = (matchStatus && matchEmp) ? '' : 'none';
+        });
+    },
+    async updateStatus(expenseID, status){
+        Loading.show();
+        const res = await API.updateExpenseStatus(expenseID, status);
+        Loading.hide();
+        if(res.success){ Toast.success('Expense ' + status); this.render(); }
+        else Toast.error(res.error || 'Failed to update');
+    }
+};
+
+// ============================================================
+// MY EXPENSES PAGE (Employee)
+// ============================================================
+Pages['my-expenses'] = {
+    expenses: [],
+    async render(){
+        Loading.show();
+        const res = await API.getTravelExpenses();
+        Loading.hide();
+        this.expenses = res.success ? (res.data||[]) : [];
+        const totalClaimed = this.expenses.reduce((s,e)=>s+(parseFloat(e.Amount)||0),0);
+        const pending = this.expenses.filter(e=>e.Status==='Pending');
+        const approved = this.expenses.filter(e=>e.Status==='Approved');
+
+        U.id('pageContent').innerHTML = `
+        <div class="page-header">
+            <h1><i class="fas fa-receipt"></i> My Expenses</h1>
+            <button class="btn btn-primary btn-sm" onclick="Pages['my-expenses'].openForm()"><i class="fas fa-plus"></i> Submit Expense</button>
+        </div>
+        <div class="page-body">
+        <div class="stats-grid">
+            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value">${U.formatCurrency(totalClaimed)}</div><div class="stat-label">Total Claimed</div></div>
+            <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">${pending.length}</div><div class="stat-label">Pending</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value">${approved.length}</div><div class="stat-label">Approved</div></div>
+        </div>
+        ${this.expenses.length ? this.expenses.map(e => {
+            const statusClass = e.Status==='Approved'?'badge-success':e.Status==='Rejected'?'badge-danger':'badge-warning';
+            const typeIcons = { 'Transport':'fa-bus','Accommodation':'fa-hotel','Meals':'fa-utensils','Client Meeting':'fa-handshake','Office Supplies':'fa-paperclip','Other':'fa-ellipsis-h' };
+            const icon = typeIcons[e.ExpenseType] || 'fa-receipt';
+            return `<div class="expense-card">
+                <div class="flex-between mb-1">
+                    <div class="flex-gap">
+                        <span class="expense-type badge badge-info"><i class="fas ${icon}"></i> ${U.escHtml(e.ExpenseType||'')}</span>
+                        <span class="badge ${statusClass}">${U.escHtml(e.Status||'Pending')}</span>
+                    </div>
+                    <div class="expense-amount">${U.formatCurrency(e.Amount)}</div>
+                </div>
+                <div style="font-size:.85rem;color:var(--text-light)">${U.escHtml(e.Description||'No description')}</div>
+                <div class="text-muted" style="font-size:.75rem;margin-top:6px"><i class="fas fa-calendar"></i> ${U.formatDate(e.Date)} <span style="margin-left:12px"><i class="fas fa-clock"></i> Submitted: ${e.SubmittedDate||'-'}</span></div>
+            </div>`;
+        }).join('') : '<div class="empty-state"><i class="fas fa-receipt"></i><p>No expenses submitted yet</p></div>'}
+        </div>`;
+    },
+    openForm(){
+        Modal.open(
+            '<i class="fas fa-plus-circle"></i> <span>Submit Expense</span>',
+            `<div class="form-group"><label>Expense Type</label><select class="form-select" id="expType">
+                <option value="Transport">Transport</option><option value="Accommodation">Accommodation</option>
+                <option value="Meals">Meals</option><option value="Client Meeting">Client Meeting</option>
+                <option value="Office Supplies">Office Supplies</option><option value="Other">Other</option>
+            </select></div>
+            <div class="form-group"><label>Date</label><input type="date" class="form-input" id="expDate" value="${U.today()}"></div>
+            <div class="form-group"><label>Description</label><textarea class="form-textarea" id="expDesc" placeholder="Describe the expense..." rows="3"></textarea></div>
+            <div class="form-group"><label>Amount (BDT)</label><input type="number" class="form-input" id="expAmount" placeholder="Enter amount"></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-primary btn-sm" onclick="Pages['my-expenses'].submit()"><i class="fas fa-paper-plane"></i> Submit</button>`
+        );
+    },
+    async submit(){
+        const type = U.val('expType');
+        const date = U.val('expDate');
+        const desc = U.val('expDesc');
+        const amount = parseFloat(U.val('expAmount'));
+        if(!date){Toast.error('Date is required');return;}
+        if(!amount || amount <= 0){Toast.error('Enter a valid amount');return;}
+        Loading.show();
+        const res = await API.saveTravelExpense({ empID: App.state.empID, name: App.state.name, date, expenseType: type, description: desc, amount });
+        Loading.hide();
+        if(res.success){ Toast.success('Expense submitted'); Modal.close(); this.render(); }
+        else Toast.error(res.error || 'Submission failed');
+    }
+};
+
+// ============================================================
+// SHIFT & ROSTER PAGE (Admin-only)
+// ============================================================
+Pages['shift-roster'] = {
+    roster: [],
+    weekStart: null,
+    async render(){
+        if(App.state.role!=='Admin'){Toast.error('Access denied');return;}
+        Loading.show();
+        const res = await API.getShiftRoster();
+        Loading.hide();
+        this.roster = res.success ? (res.data||[]) : [];
+
+        // Get current week start (Monday)
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        this.weekStart = new Date(today);
+        this.weekStart.setDate(today.getDate() - diff);
+        const weekEnd = new Date(this.weekStart);
+        weekEnd.setDate(this.weekStart.getDate() + 6);
+
+        // Today's date string
+        const todayStr = U.today();
+        const activeRoster = this.roster.filter(r => r.IsActive === 'Yes');
+
+        // Stats for today
+        const todayRoster = activeRoster.filter(r => {
+            const d = typeof r.Date === 'string' ? r.Date.split('T')[0] : r.Date;
+            return d === todayStr;
+        });
+        const dayShift = todayRoster.filter(r => r.ShiftName === 'Day').length;
+        const nightShift = todayRoster.filter(r => r.ShiftName === 'Night').length;
+
+        // Generate week dates
+        const weekDates = [];
+        for(let i = 0; i < 7; i++){
+            const d = new Date(this.weekStart);
+            d.setDate(this.weekStart.getDate() + i);
+            weekDates.push(U.formatDateISO(d));
+        }
+        const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+        // Group roster by employee for the week
+        const empMap = {};
+        activeRoster.forEach(r => {
+            if(!empMap[r.EmpID]) empMap[r.EmpID] = { name: r.Name || r.EmpID, shifts: {} };
+            const d = typeof r.Date === 'string' ? r.Date.split('T')[0] : r.Date;
+            empMap[r.EmpID].shifts[d] = r;
+        });
+        const empIDs = Object.keys(empMap);
+
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-clock"></i> Shift & Roster Management</h1>
+            <button class="btn btn-primary btn-sm" onclick="Pages['shift-roster'].openAssignForm()"><i class="fas fa-plus"></i> Assign Shift</button>
+        </div>
+        <div class="page-body">
+        <div class="stats-grid">
+            <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-sun"></i></div><div class="stat-value">${dayShift}</div><div class="stat-label">Day Shift Today</div></div>
+            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-moon"></i></div><div class="stat-value">${nightShift}</div><div class="stat-label">Night Shift Today</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">${empIDs.length}</div><div class="stat-label">Employees on Roster</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-calendar-week"></i> Weekly Roster View</h3>
+                <div class="flex-gap">
+                    <button class="btn btn-sm btn-outline" onclick="Pages['shift-roster'].changeWeek(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <strong style="font-size:.9rem">${U.formatDate(weekDates[0])} — ${U.formatDate(weekDates[6])}</strong>
+                    <button class="btn btn-sm btn-outline" onclick="Pages['shift-roster'].changeWeek(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div class="roster-grid" style="overflow-x:auto">
+                <div class="roster-cell roster-header">Employee</div>
+                ${dayNames.map((dn,i) => `<div class="roster-cell roster-header">${dn}<br><span style="font-size:.65rem;opacity:.7">${weekDates[i].split('-').slice(1).join('/')}</span></div>`).join('')}
+                ${empIDs.length ? empIDs.map(eid => {
+                    const emp = empMap[eid];
+                    return `<div class="roster-cell roster-emp-name" title="${U.escHtml(emp.name)} (${U.escHtml(eid)})">${U.escHtml(emp.name)}</div>
+                    ${weekDates.map(d => {
+                        const shift = emp.shifts[d];
+                        if(shift){
+                            const cls = shift.ShiftName==='Day'?'day':shift.ShiftName==='Night'?'night':'custom';
+                            return `<div class="roster-cell"><span class="shift-badge ${cls}"><i class="fas fa-${shift.ShiftName==='Day'?'sun':shift.ShiftName==='Night'?'moon':'clock'}"></i> ${shift.StartTime||''}-${shift.EndTime||''}</span></div>`;
+                        }
+                        return `<div class="roster-cell"><span class="shift-badge off">Off</span></div>`;
+                    }).join('')}`;
+                }).join('') : `<div class="roster-cell" style="grid-column:span 8"><div class="empty-state"><i class="fas fa-calendar-times"></i><p>No shifts assigned this week</p></div></div>`}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-list"></i> All Shift Assignments</h3></div>
+            <div class="table-container">
+            <table>
+            <thead><tr><th>Employee</th><th>Date</th><th>Shift</th><th>Time</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+            ${activeRoster.slice(0, 50).map(r => `
+                <tr>
+                    <td><strong>${U.escHtml(r.Name||'')}</strong><br><span class="text-muted" style="font-size:.75rem">${U.escHtml(r.EmpID||'')}</span></td>
+                    <td>${U.formatDate(r.Date)}</td>
+                    <td><span class="shift-badge ${r.ShiftName==='Day'?'day':r.ShiftName==='Night'?'night':'custom'}"><i class="fas fa-${r.ShiftName==='Day'?'sun':r.ShiftName==='Night'?'moon':'clock'}"></i> ${U.escHtml(r.ShiftName||'')}</span></td>
+                    <td>${U.escHtml(r.StartTime||'')} - ${U.escHtml(r.EndTime||'')}</td>
+                    <td><span class="badge badge-${r.IsActive==='Yes'?'success':'danger'}">${U.escHtml(r.IsActive||'No')}</span></td>
+                    <td><button class="btn btn-sm btn-danger" onclick="Pages['shift-roster'].deactivate('${r.RosterID}')"><i class="fas fa-times"></i></button></td>
+                </tr>
+            `).join('') || '<tr><td colspan="6"><div class="empty-state"><p>No shift assignments</p></div></td></tr>'}
+            </tbody>
+            </table>
+            </div>
+        </div>
+        </div>`;
+    },
+    changeWeek(offset){
+        this.weekStart.setDate(this.weekStart.getDate() + (offset * 7));
+        this.render();
+    },
+    openAssignForm(){
+        Loading.show();
+        API.getEmployees().then(res => {
+            Loading.hide();
+            const emps = res.success ? (res.data||[]) : [];
+            Modal.open(
+                '<i class="fas fa-user-clock"></i> <span>Assign Shift</span>',
+                `<div class="form-group"><label>Employee</label><select class="form-select" id="shiftEmp">${emps.map(e=>`<option value="${e.empID||e['Employee ID']}" data-name="${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('')}</select></div>
+                <div class="form-group"><label>Shift Type</label><select class="form-select" id="shiftType" onchange="Pages['shift-roster'].onShiftTypeChange()">
+                    <option value="Day">Day (09:00 - 18:00)</option>
+                    <option value="Night">Night (18:00 - 06:00)</option>
+                    <option value="Custom">Custom</option>
+                </select></div>
+                <div id="customTimeFields" class="hidden"><div class="form-row">
+                    <div class="form-group"><label>Start Time</label><input type="time" class="form-input" id="shiftStart" value="09:00"></div>
+                    <div class="form-group"><label>End Time</label><input type="time" class="form-input" id="shiftEnd" value="18:00"></div>
+                </div></div>
+                <div class="form-group"><label>Date From</label><input type="date" class="form-input" id="shiftDateFrom" value="${U.today()}"></div>
+                <div class="form-group"><label>Date To</label><input type="date" class="form-input" id="shiftDateTo" value="${U.today()}"></div>
+                <p class="text-muted" style="font-size:.8rem"><i class="fas fa-info-circle"></i> Shift will be assigned for each day in the date range (excluding weekends).</p>`,
+                `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+                 <button class="btn btn-primary btn-sm" onclick="Pages['shift-roster'].submitAssign()"><i class="fas fa-save"></i> Assign</button>`
+            );
+        });
+    },
+    onShiftTypeChange(){
+        const type = U.val('shiftType');
+        const custom = U.id('customTimeFields');
+        if(custom) custom.classList.toggle('hidden', type !== 'Custom');
+    },
+    async submitAssign(){
+        const empSelect = U.id('shiftEmp');
+        const empID = empSelect ? empSelect.value : '';
+        const name = empSelect ? empSelect.options[empSelect.selectedIndex].getAttribute('data-name') : '';
+        const shiftType = U.val('shiftType');
+        const dateFrom = U.val('shiftDateFrom');
+        const dateTo = U.val('shiftDateTo');
+        if(!empID || !dateFrom || !dateTo){Toast.error('Employee and dates are required');return;}
+        if(dateFrom > dateTo){Toast.error('Date From must be before Date To');return;}
+
+        let startTime = '09:00', endTime = '18:00';
+        if(shiftType === 'Day'){ startTime = '09:00'; endTime = '18:00'; }
+        else if(shiftType === 'Night'){ startTime = '18:00'; endTime = '06:00'; }
+        else { startTime = U.val('shiftStart') || '09:00'; endTime = U.val('shiftEnd') || '18:00'; }
+
+        // Generate dates (skip weekends)
+        const dates = [];
+        const current = new Date(dateFrom);
+        const end = new Date(dateTo);
+        while(current <= end){
+            const day = current.getDay();
+            if(day !== 0 && day !== 6){
+                dates.push(U.formatDateISO(current));
+            }
+            current.setDate(current.getDate() + 1);
+        }
+
+        Loading.show();
+        let successCount = 0;
+        for(const date of dates){
+            const res = await API.saveShiftRoster({ empID, name, date, shiftName: shiftType, startTime, endTime, isActive: 'Yes' });
+            if(res.success) successCount++;
+        }
+        Loading.hide();
+        if(successCount > 0){ Toast.success(`Shift assigned for ${successCount} day(s)`); Modal.close(); this.render(); }
+        else Toast.error('Failed to assign shift');
+    },
+    async deactivate(rosterID){
+        Loading.show();
+        const res = await API.saveShiftRoster({ rosterID, isActive: 'No' });
+        Loading.hide();
+        if(res.success){ Toast.success('Shift deactivated'); this.render(); }
+        else Toast.error(res.error || 'Failed');
+    }
+};
+
 // ============================================================
 // INITIALIZATION
 // ============================================================
 window.addEventListener('DOMContentLoaded', () => {
+    App.initDarkMode();
     // Safety: always hide loader after max 4s even if errors occur
     const safetyTimer = setTimeout(() => {
         const loader = document.getElementById('appLoader');
