@@ -345,7 +345,13 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 [data-theme="dark"] .dark-toggle .toggle-thumb{left:18px}
 
 /* ========== LETTER/DOCUMENT STYLES ========== */
-.letter-preview{background:#fff;color:#1a1a2e;padding:40px;border-radius:8px;border:1px solid #e0e0e0;max-width:800px;margin:0 auto;font-family:'Georgia',serif;line-height:1.6}
+.letter-preview{background:#fff;color:#1a1a2e;border-radius:8px;border:1px solid #e0e0e0;max-width:800px;margin:0 auto;font-family:'Georgia',serif;line-height:1.6;overflow:hidden}
+.letter-preview.with-pad{padding:0}
+.letter-preview.without-pad{padding:40px}
+.letterhead-pad{width:100%;display:block;object-fit:cover}
+.letterhead-pad-wrap{text-align:center;background:#fff}
+.letterhead-pad-wrap img{max-width:100%;height:auto;display:block;margin:0 auto}
+.letter-content-area{padding:30px 40px 40px}
 .letter-header{text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:3px double #1565C0}
 .letter-header h1{color:#1565C0;font-size:1.4rem;margin:8px 0 4px}
 .letter-header p{color:#666;font-size:.85rem}
@@ -355,6 +361,14 @@ tbody tr:hover{background:rgba(108,99,255,.03)}
 .letter-signature .sign-line{width:200px;border-bottom:1px solid #333;margin-top:50px;margin-left:auto}
 .letter-footer{margin-top:30px;padding-top:15px;border-top:1px solid #ddd;font-size:.75rem;color:#888;text-align:center}
 .letter-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:5rem;color:rgba(21,101,192,.04);font-weight:700;pointer-events:none;white-space:nowrap}
+.pad-upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;background:var(--card)}
+.pad-upload-zone:hover{border-color:var(--primary);background:rgba(21,101,192,.03)}
+.pad-upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.pad-upload-zone i{font-size:2rem;color:var(--primary);margin-bottom:8px}
+.pad-upload-zone p{color:var(--text-light);font-size:.85rem}
+.pad-preview-box{margin-top:12px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:relative}
+.pad-preview-box img{width:100%;height:auto;display:block;max-height:300px;object-fit:contain;background:#fff}
+.pad-preview-box .remove-pad{position:absolute;top:8px;right:8px;background:rgba(244,67,54,.9);color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;z-index:2}
 
 /* ========== LEAVE CALENDAR ========== */
 .leave-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:16px 0}
@@ -637,6 +651,12 @@ const U = {
         link.click();
         URL.revokeObjectURL(link.href);
         Toast.success('CSV exported successfully');
+    },
+    // Returns letterhead pad HTML wrapper + class for letter-preview
+    letterheadPadHTML(){
+        const pad=localStorage.getItem('hrmis_letterhead_pad')||'';
+        if(pad) return { hasPad:true, cls:'with-pad', topHTML:`<div class="letterhead-pad-wrap"><img src="${pad}" class="letterhead-pad" alt="Company Letterhead"></div>`, contentWrap:'letter-content-area' };
+        return { hasPad:false, cls:'without-pad', topHTML:'', contentWrap:'' };
     },
     skeletonHTML(rows, cols){
         let h='';
@@ -2831,11 +2851,13 @@ Pages['joining-letter'] = {
         U.id('pageContent').innerHTML = `
         <div class="page-header"><h1><i class="fas fa-file-signature"></i> Joining Letter</h1></div>
         <div class="page-body">
-        <div class="card" style="max-width:400px;margin-bottom:16px">
+        <div class="card" style="max-width:500px;margin-bottom:16px">
             <div class="form-group"><label>Select Employee</label><select class="form-select" id="jlEmp">${options}</select></div>
-            <button class="btn btn-primary" onclick="Pages['joining-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate Letter</button>
+            <div class="flex-gap"><button class="btn btn-primary" onclick="Pages['joining-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate</button>
+                <button class="btn btn-success" onclick="Pages['joining-letter'].exportPDF()"><i class="fas fa-download"></i> PDF</button>
+                <button class="btn btn-outline" onclick="Pages['joining-letter'].printLetter()"><i class="fas fa-print"></i> Print</button></div>
         </div>
-        <div id="letterContent" class="letter-preview"></div>
+        <div id="letterContent"></div>
         </div>`;
         this._emps=emps;
     },
@@ -2845,10 +2867,13 @@ Pages['joining-letter'] = {
         if(!emp){Toast.error('Select an employee');return;}
         const logo=localStorage.getItem('hrmis_company_logo')||'';
         const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+        const pad=U.letterheadPadHTML();
         U.id('letterContent').innerHTML = `
-        <div style="position:relative">
+        <div class="letter-preview ${pad.cls}" style="position:relative">
+        ${pad.topHTML}
+        <div class="${pad.contentWrap}">
         <div class="letter-header">
-            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>'}
+            ${!pad.hasPad? (logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>') :''}
             <h1>JOINING LETTER</h1>
             <p>Reference: HR/${empID}/2025</p>
         </div>
@@ -2879,7 +2904,7 @@ Pages['joining-letter'] = {
         </div>
         <div class="letter-footer">This is a system-generated document. | Generated on ${new Date().toLocaleString()}</div>
         <div class="letter-watermark">OFFICIAL</div>
-        </div>`;
+        </div></div>`;
         Toast.success('Letter generated! Click "Export PDF" to download.');
     },
     async exportPDF(){
@@ -2887,6 +2912,12 @@ Pages['joining-letter'] = {
         if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
         Toast.info('Generating PDF...');
         try{await html2pdf().set({margin:10,filename:'Joining_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save();Toast.success('PDF downloaded!');}catch(e){Toast.error('PDF failed: '+e.message);}
+    },
+    printLetter(){
+        const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate letter first');return;}
+        const pw=window.open('','_blank','width=900,height=700');
+        pw.document.write('<!DOCTYPE html><html><head><title>Joining Letter</title><style>body{margin:0;padding:0;}</style></head><body>'+el.innerHTML+'</body></html>');
+        pw.document.close();pw.focus();pw.print();
     }
 };
 
@@ -2899,11 +2930,13 @@ Pages['appointment-letter'] = {
         U.id('pageContent').innerHTML = `
         <div class="page-header"><h1><i class="fas fa-file-contract"></i> Appointment Letter</h1></div>
         <div class="page-body">
-        <div class="card" style="max-width:400px;margin-bottom:16px">
+        <div class="card" style="max-width:500px;margin-bottom:16px">
             <div class="form-group"><label>Select Employee</label><select class="form-select" id="alEmp">${options}</select></div>
-            <button class="btn btn-primary" onclick="Pages['appointment-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate Letter</button>
+            <div class="flex-gap"><button class="btn btn-primary" onclick="Pages['appointment-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate</button>
+                <button class="btn btn-success" onclick="Pages['appointment-letter'].exportPDF()"><i class="fas fa-download"></i> PDF</button>
+                <button class="btn btn-outline" onclick="Pages['appointment-letter'].printLetter()"><i class="fas fa-print"></i> Print</button></div>
         </div>
-        <div id="letterContent" class="letter-preview"></div></div>`;
+        <div id="letterContent"></div></div>`;
         this._emps=emps;
     },
     async generate(){
@@ -2911,9 +2944,13 @@ Pages['appointment-letter'] = {
         if(!emp){Toast.error('Select employee');return;}
         const logo=localStorage.getItem('hrmis_company_logo')||'';
         const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+        const pad=U.letterheadPadHTML();
         U.id('letterContent').innerHTML = `
-        <div style="position:relative"><div class="letter-header">
-            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>'}
+        <div class="letter-preview ${pad.cls}" style="position:relative">
+        ${pad.topHTML}
+        <div class="${pad.contentWrap}">
+        <div class="letter-header">
+            ${!pad.hasPad? (logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>') :''}
             <h1>APPOINTMENT LETTER</h1><p>Ref: HR/APPT/${empID}/2025</p></div>
         <div class="letter-body">
             <p><strong>Date:</strong> ${today}</p><br>
@@ -2940,13 +2977,20 @@ Pages['appointment-letter'] = {
         </div>
         <div class="letter-signature"><p>For and on behalf of Management,</p><div class="sign-line"></div><p><strong>Managing Director</strong></p></div>
         <div class="letter-footer">This is a system-generated document. | ${new Date().toLocaleString()}</div>
-        <div class="letter-watermark">CONFIDENTIAL</div></div>`;
+        <div class="letter-watermark">CONFIDENTIAL</div>
+        </div></div>`;
         Toast.success('Letter generated!');
     },
     exportPDF(){ const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
         if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
         Toast.info('Generating PDF...');
         html2pdf().set({margin:10,filename:'Appointment_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save().then(()=>Toast.success('PDF downloaded'));
+    },
+    printLetter(){
+        const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
+        const pw=window.open('','_blank','width=900,height=700');
+        pw.document.write('<!DOCTYPE html><html><head><title>Appointment Letter</title><style>body{margin:0;padding:0;}</style></head><body>'+el.innerHTML+'</body></html>');
+        pw.document.close();pw.focus();pw.print();
     }
 };
 
@@ -2959,12 +3003,14 @@ Pages['experience-letter'] = {
         U.id('pageContent').innerHTML = `
         <div class="page-header"><h1><i class="fas fa-certificate"></i> Experience Letter</h1></div>
         <div class="page-body">
-        <div class="card" style="max-width:400px;margin-bottom:16px">
+        <div class="card" style="max-width:500px;margin-bottom:16px">
             <div class="form-group"><label>Select Employee</label><select class="form-select" id="elEmp">${options}</select></div>
             <div class="form-group"><label>Reason for Leaving</label><input type="text" class="form-input" id="elReason" placeholder="e.g. Resigned, Better Opportunity"></div>
-            <button class="btn btn-primary" onclick="Pages['experience-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate Letter</button>
+            <div class="flex-gap"><button class="btn btn-primary" onclick="Pages['experience-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate</button>
+                <button class="btn btn-success" onclick="Pages['experience-letter'].exportPDF()"><i class="fas fa-download"></i> PDF</button>
+                <button class="btn btn-outline" onclick="Pages['experience-letter'].printLetter()"><i class="fas fa-print"></i> Print</button></div>
         </div>
-        <div id="letterContent" class="letter-preview"></div></div>`;
+        <div id="letterContent"></div></div>`;
         this._emps=emps;
     },
     async generate(){
@@ -2974,9 +3020,13 @@ Pages['experience-letter'] = {
         const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
         const jd=emp.joiningDate||emp['JOINING DATE']||'';
         const lwd=emp.terminationDate||new Date().toISOString().split('T')[0];
+        const pad=U.letterheadPadHTML();
         U.id('letterContent').innerHTML = `
-        <div style="position:relative"><div class="letter-header">
-            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1B5E20"></i>'}
+        <div class="letter-preview ${pad.cls}" style="position:relative">
+        ${pad.topHTML}
+        <div class="${pad.contentWrap}">
+        <div class="letter-header">
+            ${!pad.hasPad? (logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1B5E20"></i>') :''}
             <h1 style="color:#1B5E20">EXPERIENCE CERTIFICATE</h1><p>Ref: HR/EXP/${empID}/2025</p></div>
         <div class="letter-body">
             <p><strong>Date:</strong> ${today}</p><br>
@@ -2991,13 +3041,20 @@ Pages['experience-letter'] = {
         </div>
         <div class="letter-signature"><p>For and on behalf of Management,</p><div class="sign-line"></div><p><strong>HR Manager</strong></p></div>
         <div class="letter-footer">This is a system-generated document. | ${new Date().toLocaleString()}</div>
-        <div class="letter-watermark">VERIFIED</div></div>`;
+        <div class="letter-watermark">VERIFIED</div>
+        </div></div>`;
         Toast.success('Experience letter generated!');
     },
     exportPDF(){ const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
         if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
         Toast.info('Generating PDF...');
         html2pdf().set({margin:10,filename:'Experience_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save().then(()=>Toast.success('PDF downloaded'));
+    },
+    printLetter(){
+        const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
+        const pw=window.open('','_blank','width=900,height=700');
+        pw.document.write('<!DOCTYPE html><html><head><title>Experience Letter</title><style>body{margin:0;padding:0;}</style></head><body>'+el.innerHTML+'</body></html>');
+        pw.document.close();pw.focus();pw.print();
     }
 };
 
@@ -3010,11 +3067,13 @@ Pages['noc-letter'] = {
         U.id('pageContent').innerHTML = `
         <div class="page-header"><h1><i class="fas fa-stamp"></i> NOC Letter</h1></div>
         <div class="page-body">
-        <div class="card" style="max-width:400px;margin-bottom:16px">
+        <div class="card" style="max-width:500px;margin-bottom:16px">
             <div class="form-group"><label>Select Employee</label><select class="form-select" id="nocEmp">${options}</select></div>
-            <button class="btn btn-primary" onclick="Pages['noc-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate NOC</button>
+            <div class="flex-gap"><button class="btn btn-primary" onclick="Pages['noc-letter'].generate()"><i class="fas fa-file-pdf"></i> Generate</button>
+                <button class="btn btn-success" onclick="Pages['noc-letter'].exportPDF()"><i class="fas fa-download"></i> PDF</button>
+                <button class="btn btn-outline" onclick="Pages['noc-letter'].printLetter()"><i class="fas fa-print"></i> Print</button></div>
         </div>
-        <div id="letterContent" class="letter-preview"></div></div>`;
+        <div id="letterContent"></div></div>`;
         this._emps=emps;
     },
     async generate(){
@@ -3022,9 +3081,13 @@ Pages['noc-letter'] = {
         if(!emp){Toast.error('Select employee');return;}
         const logo=localStorage.getItem('hrmis_company_logo')||'';
         const today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+        const pad=U.letterheadPadHTML();
         U.id('letterContent').innerHTML = `
-        <div style="position:relative"><div class="letter-header">
-            ${logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>'}
+        <div class="letter-preview ${pad.cls}" style="position:relative">
+        ${pad.topHTML}
+        <div class="${pad.contentWrap}">
+        <div class="letter-header">
+            ${!pad.hasPad? (logo?`<img src="${logo}" style="max-width:80px;max-height:80px;border-radius:8px;margin-bottom:8px">`:'<i class="fas fa-building" style="font-size:2.5rem;color:#1565C0"></i>') :''}
             <h1>NO OBJECTION CERTIFICATE (NOC)</h1><p>Ref: HR/NOC/${empID}/2025</p></div>
         <div class="letter-body">
             <p><strong>Date:</strong> ${today}</p><br>
@@ -3036,13 +3099,20 @@ Pages['noc-letter'] = {
         </div>
         <div class="letter-signature"><p>Authorized Signatory,</p><div class="sign-line"></div><p><strong>HR Manager</strong></p></div>
         <div class="letter-footer">This is a system-generated NOC. Valid without signature if verified digitally. | ${new Date().toLocaleString()}</div>
-        <div class="letter-watermark">NOC</div></div>`;
+        <div class="letter-watermark">NOC</div>
+        </div></div>`;
         Toast.success('NOC generated!');
     },
     exportPDF(){ const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
         if(typeof html2pdf==='undefined'){Toast.error('PDF library not loaded');return;}
         Toast.info('Generating PDF...');
         html2pdf().set({margin:10,filename:'NOC_Letter.pdf',html2canvas:{scale:2},jsPDF:{format:'a4'}}).from(el).save().then(()=>Toast.success('PDF downloaded'));
+    },
+    printLetter(){
+        const el=U.id('letterContent');if(!el||!el.innerHTML){Toast.error('Generate first');return;}
+        const pw=window.open('','_blank','width=900,height=700');
+        pw.document.write('<!DOCTYPE html><html><head><title>NOC Letter</title><style>body{margin:0;padding:0;}</style></head><body>'+el.innerHTML+'</body></html>');
+        pw.document.close();pw.focus();pw.print();
     }
 };
 
@@ -3179,7 +3249,83 @@ Pages['settings'] = {
             <div class="form-group"><label>Sick Leave (days/year)</label><input type="number" class="form-input" id="setSickLeave" value="${s.sickLeave||10}"></div>
             <div class="form-group"><label>Earned Leave (days/year)</label><input type="number" class="form-input" id="setEarnedLeave" value="${s.earnedLeave||15}"></div></div>
         </div>
+        <div class="settings-section"><h3><i class="fas fa-file-image"></i> Company Letterhead Pad</h3>
+            <p class="text-muted" style="font-size:.8rem;margin-bottom:12px"><i class="fas fa-info-circle"></i> Upload your company letterhead pad image/PDF. It will appear on all generated letters.</p>
+            <div class="pad-upload-zone" id="padUploadZone">
+                <input type="file" accept="image/*,.pdf" onchange="Pages['settings'].handlePadUpload(event)">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload Letterhead Pad</p>
+                <p style="font-size:.75rem;opacity:.6">Supports: PNG, JPG, JPEG, PDF</p>
+            </div>
+            <div id="padPreviewBox" class="pad-preview-box" style="display:none">
+                <img id="padPreviewImg" src="" alt="Letterhead Preview">
+                <button class="remove-pad" onclick="Pages['settings'].removePad()"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
         </div>`;
+    },
+    async render(){
+        Loading.show();const res=await API.getSettings();Loading.hide();
+        const s=res.success?(res.data||{}):{};
+        const savedPad=localStorage.getItem('hrmis_letterhead_pad')||'';
+        U.id('pageContent').innerHTML = `
+        <div class="page-header"><h1><i class="fas fa-cogs"></i> Settings</h1>
+            <button class="btn btn-primary btn-sm" onclick="Pages['settings'].save()"><i class="fas fa-save"></i> Save All</button></div>
+        <div class="page-body">
+        <div class="settings-section"><h3><i class="fas fa-building"></i> Company Information</h3>
+            <div class="form-row"><div class="form-group"><label>Company Name</label><input type="text" class="form-input" id="setCompanyName" value="${U.escHtml(s.companyName||'')}"></div>
+            <div class="form-group"><label>Tagline</label><input type="text" class="form-input" id="setTagline" value="${U.escHtml(s.tagline||'')}"></div></div>
+            <div class="form-row"><div class="form-group"><label>Phone</label><input type="text" class="form-input" id="setPhone" value="${U.escHtml(s.phone||'')}"></div>
+            <div class="form-group"><label>Email</label><input type="email" class="form-input" id="setEmail" value="${U.escHtml(s.email||'')}"></div></div>
+            <div class="form-group"><label>Website</label><input type="url" class="form-input" id="setWebsite" value="${U.escHtml(s.website||'')}"></div>
+            <div class="form-group"><label>Address</label><textarea class="form-textarea" id="setAddress">${U.escHtml(s.address||'')}</textarea></div>
+        </div>
+        <div class="settings-section"><h3><i class="fas fa-clock"></i> Work Settings</h3>
+            <div class="form-row"><div class="form-group"><label>Shift Start</label><input type="time" class="form-input" id="setShiftStart" value="${s.shiftStart||'09:00'}"></div>
+            <div class="form-group"><label>Shift End</label><input type="time" class="form-input" id="setShiftEnd" value="${s.shiftEnd||'18:00'}"></div></div>
+            <div class="form-row"><div class="form-group"><label>Late Threshold (minutes)</label><input type="number" class="form-input" id="setLateThreshold" value="${s.lateThreshold||15}"></div>
+            <div class="form-group"><label>Weekend Days</label><input type="text" class="form-input" id="setWeekends" value="${U.escHtml(s.weekends||'Friday,Saturday')}"></div></div>
+        </div>
+        <div class="settings-section"><h3><i class="fas fa-umbrella-beach"></i> Leave Settings</h3>
+            <div class="form-row"><div class="form-group"><label>Casual Leave (days/year)</label><input type="number" class="form-input" id="setCasualLeave" value="${s.casualLeave||12}"></div>
+            <div class="form-group"><label>Sick Leave (days/year)</label><input type="number" class="form-input" id="setSickLeave" value="${s.sickLeave||10}"></div>
+            <div class="form-group"><label>Earned Leave (days/year)</label><input type="number" class="form-input" id="setEarnedLeave" value="${s.earnedLeave||15}"></div></div>
+        </div>
+        <div class="settings-section"><h3><i class="fas fa-file-image"></i> Company Letterhead Pad</h3>
+            <p class="text-muted" style="font-size:.8rem;margin-bottom:12px"><i class="fas fa-info-circle"></i> Upload your company letterhead pad image. It will appear on all generated letters (Joining, Appointment, Experience, NOC).</p>
+            <div class="pad-upload-zone" id="padUploadZone">
+                <input type="file" accept="image/png,image/jpeg,image/jpg" onchange="Pages['settings'].handlePadUpload(event)">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload Letterhead Pad</p>
+                <p style="font-size:.75rem;opacity:.6">Supports: PNG, JPG, JPEG (Recommended: 800px wide)</p>
+            </div>
+            <div id="padPreviewBox" class="pad-preview-box" style="display:none">
+                <img id="padPreviewImg" src="" alt="Letterhead Preview">
+                <button class="remove-pad" onclick="Pages['settings'].removePad()"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        </div>`;
+        if(savedPad){U.id('padPreviewImg').src=savedPad;U.id('padPreviewBox').style.display='block';U.id('padUploadZone').style.display='none';}
+    },
+    handlePadUpload(e){
+        const file=e.target.files[0];if(!file)return;
+        if(file.size>5*1024*1024){Toast.error('File too large. Max 5MB.');return;}
+        const reader=new FileReader();
+        reader.onload=function(ev){
+            const base64=ev.target.result;
+            localStorage.setItem('hrmis_letterhead_pad',base64);
+            U.id('padPreviewImg').src=base64;
+            U.id('padPreviewBox').style.display='block';
+            U.id('padUploadZone').style.display='none';
+            Toast.success('Letterhead pad uploaded!');
+        };
+        reader.readAsDataURL(file);
+    },
+    removePad(){
+        localStorage.removeItem('hrmis_letterhead_pad');
+        U.id('padPreviewBox').style.display='none';
+        U.id('padUploadZone').style.display='';
+        Toast.info('Letterhead pad removed');
     },
     async save(){
         const obj={companyName:U.val('setCompanyName'),tagline:U.val('setTagline'),phone:U.val('setPhone'),email:U.val('setEmail'),website:U.val('setWebsite'),address:U.val('setAddress'),shiftStart:U.val('setShiftStart'),shiftEnd:U.val('setShiftEnd'),lateThreshold:U.val('setLateThreshold'),weekends:U.val('setWeekends'),casualLeave:U.val('setCasualLeave'),sickLeave:U.val('setSickLeave'),earnedLeave:U.val('setEarnedLeave')};
@@ -3627,7 +3773,7 @@ Pages['my-expenses'] = {
 };
 
 // ============================================================
-// SHIFT & ROSTER PAGE (Admin-only)
+// SHIFT & ROSTER PAGE (Admin-only) — ENRICHED
 // ============================================================
 Pages['shift-roster'] = {
     roster: [],
@@ -3639,55 +3785,67 @@ Pages['shift-roster'] = {
         Loading.hide();
         this.roster = res.success ? (res.data||[]) : [];
 
-        // Get current week start (Monday)
         const today = new Date();
         const dayOfWeek = today.getDay();
         const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
         this.weekStart = new Date(today);
         this.weekStart.setDate(today.getDate() - diff);
-        const weekEnd = new Date(this.weekStart);
-        weekEnd.setDate(this.weekStart.getDate() + 6);
-
-        // Today's date string
         const todayStr = U.today();
         const activeRoster = this.roster.filter(r => r.IsActive === 'Yes');
+        const todayRoster = activeRoster.filter(r => { const d = typeof r.Date==='string'?r.Date.split('T')[0]:r.Date; return d===todayStr; });
+        const dayShift = todayRoster.filter(r => r.ShiftName==='Day').length;
+        const nightShift = todayRoster.filter(r => r.ShiftName==='Night').length;
+        const customShift = todayRoster.filter(r => r.ShiftName!=='Day'&&r.ShiftName!=='Night').length;
 
-        // Stats for today
-        const todayRoster = activeRoster.filter(r => {
-            const d = typeof r.Date === 'string' ? r.Date.split('T')[0] : r.Date;
-            return d === todayStr;
-        });
-        const dayShift = todayRoster.filter(r => r.ShiftName === 'Day').length;
-        const nightShift = todayRoster.filter(r => r.ShiftName === 'Night').length;
-
-        // Generate week dates
         const weekDates = [];
-        for(let i = 0; i < 7; i++){
-            const d = new Date(this.weekStart);
-            d.setDate(this.weekStart.getDate() + i);
-            weekDates.push(U.formatDateISO(d));
-        }
+        for(let i=0;i<7;i++){const d=new Date(this.weekStart);d.setDate(this.weekStart.getDate()+i);weekDates.push(U.formatDateISO(d));}
         const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-        // Group roster by employee for the week
         const empMap = {};
         activeRoster.forEach(r => {
-            if(!empMap[r.EmpID]) empMap[r.EmpID] = { name: r.Name || r.EmpID, shifts: {} };
-            const d = typeof r.Date === 'string' ? r.Date.split('T')[0] : r.Date;
-            empMap[r.EmpID].shifts[d] = r;
+            if(!empMap[r.EmpID]) empMap[r.EmpID]={name:r.Name||r.EmpID,shifts:{}};
+            const d=typeof r.Date==='string'?r.Date.split('T')[0]:r.Date;
+            empMap[r.EmpID].shifts[d]=r;
         });
-        const empIDs = Object.keys(empMap);
+        const empIDs=Object.keys(empMap);
+
+        // Count total active assignments
+        const totalAssign=activeRoster.length;
 
         U.id('pageContent').innerHTML = `
-        <div class="page-header"><h1><i class="fas fa-clock"></i> Shift & Roster Management</h1>
-            <button class="btn btn-primary btn-sm" onclick="Pages['shift-roster'].openAssignForm()"><i class="fas fa-plus"></i> Assign Shift</button>
+        <div class="page-header">
+            <h1><i class="fas fa-clock"></i> Shift & Roster Management</h1>
+            <div class="flex-gap" style="flex-wrap:wrap">
+                <button class="btn btn-primary btn-sm" onclick="Pages['shift-roster'].openAssignForm()"><i class="fas fa-plus"></i> Assign</button>
+                <button class="btn btn-success btn-sm" onclick="Pages['shift-roster'].openBulkAssignForm()"><i class="fas fa-users"></i> Bulk Assign</button>
+                <button class="btn btn-info btn-sm" onclick="Pages['shift-roster'].openCopyWeekModal()"><i class="fas fa-copy"></i> Copy Week</button>
+                <button class="btn btn-outline btn-sm" onclick="Pages['shift-roster'].exportRosterPDF()"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            </div>
         </div>
         <div class="page-body">
-        <div class="stats-grid">
+        <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">
             <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-sun"></i></div><div class="stat-value">${dayShift}</div><div class="stat-label">Day Shift Today</div></div>
             <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-moon"></i></div><div class="stat-value">${nightShift}</div><div class="stat-label">Night Shift Today</div></div>
-            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">${empIDs.length}</div><div class="stat-label">Employees on Roster</div></div>
+            <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">${customShift}</div><div class="stat-label">Custom Today</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">${empIDs.length}</div><div class="stat-label">Employees</div></div>
+            <div class="stat-card teal"><div class="stat-icon"><i class="fas fa-calendar-check"></i></div><div class="stat-value">${totalAssign}</div><div class="stat-label">Total Assignments</div></div>
         </div>
+
+        <!-- PDF Export Date Range -->
+        <div class="card" style="margin-bottom:16px">
+            <div class="card-header">
+                <h3><i class="fas fa-file-pdf"></i> Export Roster (Date Range)</h3>
+            </div>
+            <div class="form-row" style="align-items:end">
+                <div class="form-group"><label>From Date</label><input type="date" class="form-input" id="rosterExportFrom" value="${weekDates[0]}"></div>
+                <div class="form-group"><label>To Date</label><input type="date" class="form-input" id="rosterExportTo" value="${weekDates[6]}"></div>
+                <div style="display:flex;gap:8px;padding-bottom:4px">
+                    <button class="btn btn-primary btn-sm" onclick="Pages['shift-roster'].exportRosterPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <button class="btn btn-outline btn-sm" onclick="Pages['shift-roster'].printRoster()"><i class="fas fa-print"></i> Print</button>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-header">
                 <h3><i class="fas fa-calendar-week"></i> Weekly Roster View</h3>
@@ -3701,12 +3859,12 @@ Pages['shift-roster'] = {
                 <div class="roster-cell roster-header">Employee</div>
                 ${dayNames.map((dn,i) => `<div class="roster-cell roster-header">${dn}<br><span style="font-size:.65rem;opacity:.7">${weekDates[i].split('-').slice(1).join('/')}</span></div>`).join('')}
                 ${empIDs.length ? empIDs.map(eid => {
-                    const emp = empMap[eid];
+                    const emp=empMap[eid];
                     return `<div class="roster-cell roster-emp-name" title="${U.escHtml(emp.name)} (${U.escHtml(eid)})">${U.escHtml(emp.name)}</div>
                     ${weekDates.map(d => {
-                        const shift = emp.shifts[d];
+                        const shift=emp.shifts[d];
                         if(shift){
-                            const cls = shift.ShiftName==='Day'?'day':shift.ShiftName==='Night'?'night':'custom';
+                            const cls=shift.ShiftName==='Day'?'day':shift.ShiftName==='Night'?'night':'custom';
                             return `<div class="roster-cell"><span class="shift-badge ${cls}"><i class="fas fa-${shift.ShiftName==='Day'?'sun':shift.ShiftName==='Night'?'moon':'clock'}"></i> ${shift.StartTime||''}-${shift.EndTime||''}</span></div>`;
                         }
                         return `<div class="roster-cell"><span class="shift-badge off">Off</span></div>`;
@@ -3734,17 +3892,22 @@ Pages['shift-roster'] = {
             </table>
             </div>
         </div>
+
+        <!-- Hidden div for PDF export -->
+        <div id="rosterPrintArea" style="display:none"></div>
         </div>`;
     },
     changeWeek(offset){
-        this.weekStart.setDate(this.weekStart.getDate() + (offset * 7));
+        this.weekStart.setDate(this.weekStart.getDate() + (offset*7));
         this.render();
     },
+
+    // ===== ASSIGN SHIFT (Single Employee) =====
     openAssignForm(){
         Loading.show();
         API.getEmployees().then(res => {
             Loading.hide();
-            const emps = res.success ? (res.data||[]) : [];
+            const emps=res.success?(res.data||[]):[];
             Modal.open(
                 '<i class="fas fa-user-clock"></i> <span>Assign Shift</span>',
                 `<div class="form-group"><label>Employee</label><select class="form-select" id="shiftEmp">${emps.map(e=>`<option value="${e.empID||e['Employee ID']}" data-name="${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')}">${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})</option>`).join('')}</select></div>
@@ -3757,62 +3920,337 @@ Pages['shift-roster'] = {
                     <div class="form-group"><label>Start Time</label><input type="time" class="form-input" id="shiftStart" value="09:00"></div>
                     <div class="form-group"><label>End Time</label><input type="time" class="form-input" id="shiftEnd" value="18:00"></div>
                 </div></div>
-                <div class="form-group"><label>Date From</label><input type="date" class="form-input" id="shiftDateFrom" value="${U.today()}"></div>
-                <div class="form-group"><label>Date To</label><input type="date" class="form-input" id="shiftDateTo" value="${U.today()}"></div>
-                <p class="text-muted" style="font-size:.8rem"><i class="fas fa-info-circle"></i> Shift will be assigned for each day in the date range (excluding weekends).</p>`,
+                <div class="form-row">
+                    <div class="form-group"><label>Date From</label><input type="date" class="form-input" id="shiftDateFrom" value="${U.today()}"></div>
+                    <div class="form-group"><label>Date To</label><input type="date" class="form-input" id="shiftDateTo" value="${U.today()}"></div>
+                </div>
+                <p class="text-muted" style="font-size:.8rem"><i class="fas fa-info-circle"></i> Shift will be assigned for each working day (Fri/Sat excluded).</p>`,
                 `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
                  <button class="btn btn-primary btn-sm" onclick="Pages['shift-roster'].submitAssign()"><i class="fas fa-save"></i> Assign</button>`
             );
         });
     },
     onShiftTypeChange(){
-        const type = U.val('shiftType');
-        const custom = U.id('customTimeFields');
-        if(custom) custom.classList.toggle('hidden', type !== 'Custom');
+        const type=U.val('shiftType');
+        const custom=U.id('customTimeFields');
+        if(custom) custom.classList.toggle('hidden', type!=='Custom');
     },
     async submitAssign(){
-        const empSelect = U.id('shiftEmp');
-        const empID = empSelect ? empSelect.value : '';
-        const name = empSelect ? empSelect.options[empSelect.selectedIndex].getAttribute('data-name') : '';
-        const shiftType = U.val('shiftType');
-        const dateFrom = U.val('shiftDateFrom');
-        const dateTo = U.val('shiftDateTo');
-        if(!empID || !dateFrom || !dateTo){Toast.error('Employee and dates are required');return;}
-        if(dateFrom > dateTo){Toast.error('Date From must be before Date To');return;}
-
-        let startTime = '09:00', endTime = '18:00';
-        if(shiftType === 'Day'){ startTime = '09:00'; endTime = '18:00'; }
-        else if(shiftType === 'Night'){ startTime = '18:00'; endTime = '06:00'; }
-        else { startTime = U.val('shiftStart') || '09:00'; endTime = U.val('shiftEnd') || '18:00'; }
-
-        // Generate dates (skip weekends)
-        const dates = [];
-        const current = new Date(dateFrom);
-        const end = new Date(dateTo);
-        while(current <= end){
-            const day = current.getDay();
-            if(day !== 0 && day !== 6){
-                dates.push(U.formatDateISO(current));
-            }
-            current.setDate(current.getDate() + 1);
+        const empSelect=U.id('shiftEmp');
+        const empID=empSelect?empSelect.value:'';
+        const name=empSelect?empSelect.options[empSelect.selectedIndex].getAttribute('data-name'):'';
+        const shiftType=U.val('shiftType');
+        const dateFrom=U.val('shiftDateFrom');
+        const dateTo=U.val('shiftDateTo');
+        if(!empID||!dateFrom||!dateTo){Toast.error('Employee and dates required');return;}
+        if(dateFrom>dateTo){Toast.error('Date From must be before Date To');return;}
+        let startTime='09:00',endTime='18:00';
+        if(shiftType==='Day'){startTime='09:00';endTime='18:00';}
+        else if(shiftType==='Night'){startTime='18:00';endTime='06:00';}
+        else{startTime=U.val('shiftStart')||'09:00';endTime=U.val('shiftEnd')||'18:00';}
+        const dates=this._generateDates(dateFrom,dateTo,false);
+        if(dates.length===0){Toast.error('No working days in range');return;}
+        // Conflict check
+        const conflicts=this._checkConflicts(empID,dates);
+        if(conflicts.length>0){
+            const confirm=window.confirm(`Conflict: ${empID} already has shifts on ${conflicts.join(', ')}. Overwrite?`);
+            if(!confirm) return;
+            for(const d of conflicts){ await API.saveShiftRoster({rosterID:this._findRosterID(empID,d),isActive:'No'}); }
         }
-
         Loading.show();
-        let successCount = 0;
-        for(const date of dates){
-            const res = await API.saveShiftRoster({ empID, name, date, shiftName: shiftType, startTime, endTime, isActive: 'Yes' });
-            if(res.success) successCount++;
-        }
+        let ok=0;
+        for(const date of dates){ const res=await API.saveShiftRoster({empID,name,date,shiftName:shiftType,startTime,endTime,isActive:'Yes'}); if(res.success) ok++; }
         Loading.hide();
-        if(successCount > 0){ Toast.success(`Shift assigned for ${successCount} day(s)`); Modal.close(); this.render(); }
+        if(ok>0){Toast.success(`Shift assigned for ${ok} day(s)`);Modal.close();this.render();}
         else Toast.error('Failed to assign shift');
     },
-    async deactivate(rosterID){
+
+    // ===== BULK ASSIGN (Multiple Employees) =====
+    openBulkAssignForm(){
         Loading.show();
-        const res = await API.saveShiftRoster({ rosterID, isActive: 'No' });
+        API.getEmployees().then(res => {
+            Loading.hide();
+            const emps=res.success?(res.data||[]):[];
+            Modal.open(
+                '<i class="fas fa-users"></i> <span>Bulk Assign Shift</span>',
+                `<div class="form-group"><label>Select Employees</label>
+                    <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:8px">
+                    ${emps.map((e,i)=>`<label style="display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;font-size:.85rem">
+                        <input type="checkbox" class="bulk-emp-check" value="${e.empID||e['Employee ID']}" data-name="${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')}">
+                        ${U.escHtml(e.fullName||e['FULL NAME (As per NID)']||'')} (${e.empID||e['Employee ID']})
+                    </label>`).join('')}
+                    </div>
+                    <div style="margin-top:6px"><button class="btn btn-sm btn-outline" onclick="document.querySelectorAll('.bulk-emp-check').forEach(c=>c.checked=true)">Select All</button>
+                    <button class="btn btn-sm btn-outline" onclick="document.querySelectorAll('.bulk-emp-check').forEach(c=>c.checked=false)" style="margin-left:4px">Deselect</button></div>
+                </div>
+                <div class="form-group"><label>Shift Type</label><select class="form-select" id="bulkShiftType" onchange="Pages['shift-roster'].onShiftTypeChange()">
+                    <option value="Day">Day (09:00 - 18:00)</option>
+                    <option value="Night">Night (18:00 - 06:00)</option>
+                    <option value="Custom">Custom</option>
+                </select></div>
+                <div id="customTimeFields" class="hidden"><div class="form-row">
+                    <div class="form-group"><label>Start Time</label><input type="time" class="form-input" id="shiftStart" value="09:00"></div>
+                    <div class="form-group"><label>End Time</label><input type="time" class="form-input" id="shiftEnd" value="18:00"></div>
+                </div></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Date From</label><input type="date" class="form-input" id="shiftDateFrom" value="${U.today()}"></div>
+                    <div class="form-group"><label>Date To</label><input type="date" class="form-input" id="shiftDateTo" value="${U.today()}"></div>
+                </div>`,
+                `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+                 <button class="btn btn-success btn-sm" onclick="Pages['shift-roster'].submitBulkAssign()"><i class="fas fa-users"></i> Bulk Assign</button>`,
+                'wide'
+            );
+        });
+    },
+    async submitBulkAssign(){
+        const checks=document.querySelectorAll('.bulk-emp-check:checked');
+        if(checks.length===0){Toast.error('Select at least 1 employee');return;}
+        const shiftType=U.val('bulkShiftType');
+        const dateFrom=U.val('shiftDateFrom');
+        const dateTo=U.val('shiftDateTo');
+        if(!dateFrom||!dateTo){Toast.error('Dates required');return;}
+        if(dateFrom>dateTo){Toast.error('Invalid date range');return;}
+        let startTime='09:00',endTime='18:00';
+        if(shiftType==='Day'){startTime='09:00';endTime='18:00';}
+        else if(shiftType==='Night'){startTime='18:00';endTime='06:00';}
+        else{startTime=U.val('shiftStart')||'09:00';endTime=U.val('shiftEnd')||'18:00';}
+        const dates=this._generateDates(dateFrom,dateTo,false);
+        if(dates.length===0){Toast.error('No working days in range');return;}
+        const totalOps=checks.length*dates.length;
+        const confirmed=window.confirm(`Assign ${shiftType} shift to ${checks.length} employee(s) for ${dates.length} day(s) = ${totalOps} total assignments. Continue?`);
+        if(!confirmed) return;
+        Loading.show();
+        let ok=0,fail=0;
+        for(const chk of checks){
+            const empID=chk.value;
+            const name=chk.getAttribute('data-name');
+            for(const date of dates){
+                const conflicts=this._checkConflicts(empID,[date]);
+                if(conflicts.length>0){ await API.saveShiftRoster({rosterID:this._findRosterID(empID,date),isActive:'No'}); }
+                const res=await API.saveShiftRoster({empID,name,date,shiftName:shiftType,startTime,endTime,isActive:'Yes'});
+                if(res.success) ok++; else fail++;
+            }
+        }
         Loading.hide();
-        if(res.success){ Toast.success('Shift deactivated'); this.render(); }
-        else Toast.error(res.error || 'Failed');
+        Toast.success(`Bulk assign done: ${ok} success, ${fail} failed`);
+        Modal.close();this.render();
+    },
+
+    // ===== COPY WEEK =====
+    openCopyWeekModal(){
+        const fromStart=new Date(this.weekStart);
+        const toStart=new Date(this.weekStart);toStart.setDate(toStart.getDate()+7);
+        const fromStr=U.formatDate(fromStart)+' — '+U.formatDate(new Date(fromStart.getTime()+6*86400000));
+        const toDefault=U.formatDate(toStart)+' — '+U.formatDate(new Date(toStart.getTime()+6*86400000));
+        Modal.open(
+            '<i class="fas fa-copy"></i> <span>Copy Week Roster</span>',
+            `<p class="text-muted" style="font-size:.85rem;margin-bottom:12px">Copy this week's roster to another week. Existing assignments in target week will be overwritten.</p>
+            <div class="form-group"><label>Source Week</label><input type="text" class="form-input" value="${fromStr}" readonly style="background:var(--bg)"></div>
+            <div class="form-group"><label>Target Week Start (Monday)</label><input type="date" class="form-input" id="copyWeekTarget" value="${U.formatDateISO(toStart)}"></div>`,
+            `<button class="btn btn-outline btn-sm" onclick="Modal.close()">Cancel</button>
+             <button class="btn btn-info btn-sm" onclick="Pages['shift-roster'].executeCopyWeek()"><i class="fas fa-copy"></i> Copy</button>`
+        );
+    },
+    async executeCopyWeek(){
+        const targetDate=U.val('copyWeekTarget');
+        if(!targetDate){Toast.error('Select target week');return;}
+        const targetMonday=new Date(targetDate);
+        const targetDay=targetMonday.getDay();
+        const diff=targetDay===0?6:targetDay-1;
+        targetMonday.setDate(targetMonday.getDate()-diff);
+        const sourceWeekDates=[];
+        for(let i=0;i<7;i++){const d=new Date(this.weekStart);d.setDate(this.weekStart.getDate()+i);sourceWeekDates.push(U.formatDateISO(d));}
+        const targetWeekDates=[];
+        for(let i=0;i<7;i++){const d=new Date(targetMonday);d.setDate(targetMonday.getDate()+i);targetWeekDates.push(U.formatDateISO(d));}
+        const activeRoster=this.roster.filter(r=>r.IsActive==='Yes'&&sourceWeekDates.includes((typeof r.Date==='string'?r.Date.split('T')[0]:r.Date)));
+        if(activeRoster.length===0){Toast.error('No active shifts this week to copy');return;}
+        const confirmed=window.confirm(`Copy ${activeRoster.length} shift(s) to week starting ${U.formatDate(targetMonday)}?`);
+        if(!confirmed) return;
+        Loading.show();
+        let ok=0;
+        activeRoster.forEach(r => {
+            const srcDate=typeof r.Date==='string'?r.Date.split('T')[0]:r.Date;
+            const dayIdx=sourceWeekDates.indexOf(srcDate);
+            if(dayIdx>=0){
+                // Deactivate existing in target
+                this.roster.filter(x=>x.IsActive==='Yes'&&x.EmpID===r.EmpID&&(typeof x.Date==='string'?x.Date.split('T')[0]:x.Date)===targetWeekDates[dayIdx]).forEach(x=>{
+                    API.saveShiftRoster({rosterID:x.RosterID,isActive:'No'});
+                });
+            }
+        });
+        // Small delay then create new
+        await new Promise(r=>setTimeout(r,500));
+        for(const r of activeRoster){
+            const srcDate=typeof r.Date==='string'?r.Date.split('T')[0]:r.Date;
+            const dayIdx=sourceWeekDates.indexOf(srcDate);
+            if(dayIdx>=0){
+                const res=await API.saveShiftRoster({empID:r.EmpID,name:r.Name,date:targetWeekDates[dayIdx],shiftName:r.ShiftName,startTime:r.StartTime,endTime:r.EndTime,isActive:'Yes'});
+                if(res.success) ok++;
+            }
+        }
+        Loading.hide();
+        Toast.success(`Week copied: ${ok} shift(s) assigned`);
+        Modal.close();this.render();
+    },
+
+    // ===== DEACTIVATE =====
+    async deactivate(rosterID){
+        if(!confirm('Deactivate this shift assignment?')) return;
+        Loading.show();
+        const res=await API.saveShiftRoster({rosterID,isActive:'No'});
+        Loading.hide();
+        if(res.success){Toast.success('Shift deactivated');this.render();}
+        else Toast.error(res.error||'Failed');
+    },
+
+    // ===== CONFLICT DETECTION =====
+    _checkConflicts(empID,dates){
+        const active=this.roster.filter(r=>r.IsActive==='Yes'&&r.EmpID===empID);
+        return dates.filter(d=>active.some(r=>(typeof r.Date==='string'?r.Date.split('T')[0]:r.Date)===d));
+    },
+    _findRosterID(empID,date){
+        const found=this.roster.find(r=>r.IsActive==='Yes'&&r.EmpID===empID&&(typeof r.Date==='string'?r.Date.split('T')[0]:r.Date)===date);
+        return found?found.RosterID:null;
+    },
+
+    // ===== DATE GENERATOR =====
+    _generateDates(from,to,skipWeekends=true){
+        const dates=[];const cur=new Date(from);const end=new Date(to);
+        while(cur<=end){
+            const day=cur.getDay();
+            if(skipWeekends){if(day!==5&&day!==6) dates.push(U.formatDateISO(cur));}
+            else dates.push(U.formatDateISO(cur));
+            cur.setDate(cur.getDate()+1);
+        }
+        return dates;
+    },
+
+    // ===== ROSTER PDF EXPORT (Date Range) =====
+    exportRosterPDF(){
+        const fromEl=U.id('rosterExportFrom');
+        const toEl=U.id('rosterExportTo');
+        const from=fromEl?fromEl.value:(this.weekStart?U.formatDateISO(this.weekStart):U.today());
+        const to=toEl?toEl.value:U.today();
+        if(!from||!to){Toast.error('Select date range');return;}
+        if(from>to){Toast.error('Invalid range');return;}
+        const dates=this._generateDates(from,to,false);
+        const activeRoster=this.roster.filter(r=>r.IsActive==='Yes');
+        const filteredRoster=activeRoster.filter(r=>{const d=typeof r.Date==='string'?r.Date.split('T')[0]:r.Date;return d>=from&&d<=to;});
+        const empMap={};
+        filteredRoster.forEach(r=>{
+            if(!empMap[r.EmpID]) empMap[r.EmpID]={name:r.Name||r.EmpID,shifts:{}};
+            const d=typeof r.Date==='string'?r.Date.split('T')[0]:r.Date;
+            empMap[r.EmpID].shifts[d]=r;
+        });
+        const empIDs=Object.keys(empMap);
+        if(empIDs.length===0){Toast.error('No roster data for selected range');return;}
+        const company=localStorage.getItem('hrmis_company_name')||'HRMIS';
+
+        // Build printable HTML table
+        let printHTML=`
+        <div style="font-family:Arial,sans-serif;padding:20px;color:#1a1a2e">
+            <div style="text-align:center;margin-bottom:20px;border-bottom:2px solid #1565C0;padding-bottom:15px">
+                <h2 style="margin:0;color:#1565C0">Duty Roster</h2>
+                <p style="margin:4px 0 0;color:#666">${U.escHtml(company)} | ${U.formatDate(from)} to ${U.formatDate(to)}</p>
+            </div>
+            <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+                <thead><tr style="background:#1565C0;color:#fff">
+                    <th style="padding:8px;border:1px solid #ddd;text-align:left">Employee</th>
+                    ${dates.map(d=>`<th style="padding:6px 4px;border:1px solid #ddd;text-align:center;font-size:.7rem">${new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}<br><span style="font-weight:400;font-size:.65rem">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(d).getDay()]}</span></th>`).join('')}
+                </tr></thead><tbody>`;
+        empIDs.forEach((eid,idx)=>{
+            const emp=empMap[eid];
+            printHTML+=`<tr style="background:${idx%2===0?'#f8f9fa':'#fff'}">
+                <td style="padding:6px 8px;border:1px solid #ddd;font-weight:600;font-size:.75rem">${U.escHtml(emp.name)}<br><span style="font-weight:400;color:#888;font-size:.65rem">${U.escHtml(eid)}</span></td>
+                ${dates.map(d=>{
+                    const shift=emp.shifts[d];
+                    if(shift){
+                        const bg=shift.ShiftName==='Day'?'#e3f2fd':shift.ShiftName==='Night'?'#f3e5f5':'#fff3e0';
+                        const color=shift.ShiftName==='Day'?'#1565C0':shift.ShiftName==='Night'?'#7B1FA2':'#E65100';
+                        return `<td style="padding:4px;border:1px solid #ddd;text-align:center;background:${bg};font-size:.7rem;color:${color};font-weight:600">${shift.StartTime||''}-${shift.EndTime||''}</td>`;
+                    }
+                    return `<td style="padding:4px;border:1px solid #ddd;text-align:center;color:#999;font-size:.7rem">-</td>`;
+                }).join('')}
+            </tr>`;
+        });
+        printHTML+=`</tbody></table>
+            <div style="margin-top:20px;font-size:.7rem;color:#888;text-align:center">
+                <p>Generated on ${new Date().toLocaleString()} | Total Employees: ${empIDs.length} | Total Days: ${dates.length}</p>
+            </div>
+            <div style="margin-top:30px;display:flex;justify-content:space-between;font-size:.8rem">
+                <div><div style="border-top:1px solid #333;width:180px;margin-top:40px;padding-top:4px">Prepared By</div></div>
+                <div><div style="border-top:1px solid #333;width:180px;margin-top:40px;padding-top:4px">Approved By</div></div>
+            </div>
+        </div>`;
+
+        // Show in hidden div and export
+        const el=U.id('rosterPrintArea');
+        el.style.display='block';
+        el.innerHTML=printHTML;
+        if(typeof html2pdf!=='undefined'){
+            Toast.info('Generating PDF...');
+            html2pdf().set({
+                margin:8,
+                filename:`Roster_${from}_to_${to}.pdf`,
+                html2canvas:{scale:2,useCORS:true},
+                jsPDF:{format:'a4',orientation:'landscape'}
+            }).from(el).save().then(()=>{
+                el.style.display='none';
+                Toast.success('PDF downloaded!');
+            }).catch(err=>{
+                el.style.display='none';
+                Toast.error('PDF failed: '+err.message);
+            });
+        } else {
+            Toast.error('PDF library not loaded');
+            el.style.display='none';
+        }
+    },
+
+    // ===== PRINT ROSTER =====
+    printRoster(){
+        const fromEl=U.id('rosterExportFrom');
+        const toEl=U.id('rosterExportTo');
+        const from=fromEl?fromEl.value:(this.weekStart?U.formatDateISO(this.weekStart):U.today());
+        const to=toEl?toEl.value:U.today();
+        if(!from||!to){Toast.error('Select date range');return;}
+        const dates=this._generateDates(from,to,false);
+        const activeRoster=this.roster.filter(r=>r.IsActive==='Yes');
+        const filteredRoster=activeRoster.filter(r=>{const d=typeof r.Date==='string'?r.Date.split('T')[0]:r.Date;return d>=from&&d<=to;});
+        const empMap={};
+        filteredRoster.forEach(r=>{
+            if(!empMap[r.EmpID]) empMap[r.EmpID]={name:r.Name||r.EmpID,shifts:{}};
+            const d=typeof r.Date==='string'?r.Date.split('T')[0]:r.Date;
+            empMap[r.EmpID].shifts[d]=r;
+        });
+        const empIDs=Object.keys(empMap);
+        if(empIDs.length===0){Toast.error('No roster data');return;}
+        const company=localStorage.getItem('hrmis_company_name')||'HRMIS';
+        const printWin=window.open('','_blank','width=1000,height=700');
+        printWin.document.write(`<!DOCTYPE html><html><head><title>Roster - ${from} to ${to}</title>
+            <style>body{font-family:Arial,sans-serif;padding:20px}table{width:100%;border-collapse:collapse;font-size:.8rem}th,td{padding:6px 8px;border:1px solid #ddd}th{background:#1565C0;color:#fff}h2{color:#1565C0;margin:0 0 5px}@media print{body{padding:10px}}</style>
+            </head><body>
+            <div style="text-align:center;margin-bottom:20px;border-bottom:2px solid #1565C0;padding-bottom:12px">
+                <h2>Duty Roster</h2>
+                <p style="color:#666">${company} | ${U.formatDate(from)} to ${U.formatDate(to)}</p>
+            </div>
+            <table><thead><tr><th>Employee</th>
+                ${dates.map(d=>`<th style="text-align:center;font-size:.7rem">${new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}<br>${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(d).getDay()]}</th>`).join('')}
+            </tr></thead><tbody>
+            ${empIDs.map((eid,idx)=>{
+                const emp=empMap[eid];
+                return `<tr style="background:${idx%2===0?'#f8f9fa':'#fff'}"><td style="font-weight:600;font-size:.75rem">${emp.name}<br><span style="font-weight:400;color:#888;font-size:.65rem">${eid}</span></td>
+                ${dates.map(d=>{const s=emp.shifts[d];return s?`<td style="text-align:center;font-size:.7rem;font-weight:600;color:${s.ShiftName==='Day'?'#1565C0':s.ShiftName==='Night'?'#7B1FA2':'#E65100'}">${s.StartTime||''}-${s.EndTime||''}</td>`:'<td style="text-align:center;color:#999">-</td>';}).join('')}
+                </tr>`;
+            }).join('')}
+            </tbody></table>
+            <div style="margin-top:30px;display:flex;justify-content:space-between;font-size:.8rem">
+                <div style="border-top:1px solid #333;width:180px;margin-top:40px;padding-top:4px">Prepared By</div>
+                <div style="border-top:1px solid #333;width:180px;margin-top:40px;padding-top:4px">Approved By</div>
+            </div>
+            <script>window.onload=function(){window.print();}<\/script>
+            </body></html>`);
+        printWin.document.close();
     }
 };
 
