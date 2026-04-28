@@ -3181,12 +3181,11 @@ Pages['settings'] = {
         </div>
         </div>`;
     },
-        async save(){
+    async save(){
         const obj={companyName:U.val('setCompanyName'),tagline:U.val('setTagline'),phone:U.val('setPhone'),email:U.val('setEmail'),website:U.val('setWebsite'),address:U.val('setAddress'),shiftStart:U.val('setShiftStart'),shiftEnd:U.val('setShiftEnd'),lateThreshold:U.val('setLateThreshold'),weekends:U.val('setWeekends'),casualLeave:U.val('setCasualLeave'),sickLeave:U.val('setSickLeave'),earnedLeave:U.val('setEarnedLeave')};
         const arr=Object.entries(obj).filter(([k,v])=>v).map(([k,v])=>({key:k,value:v}));
         Loading.show();const res=await API.saveSettings(arr);Loading.hide();
         if(res.success)Toast.success('Settings saved');else Toast.error(res.error||'Failed');
-    }
     }
 };
 
